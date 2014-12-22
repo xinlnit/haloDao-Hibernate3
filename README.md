@@ -7,12 +7,17 @@ haloDao
 -------
 ##主要实现了:
 ##1.动态hql的实现
-     一般我们不会查询值为null值或者为空值的条件.<br/>
+     一般我们不会查询值为null值或者为空值的条件.
      比如:findListByMap(new HaloMap().set("userName","vonchange").set("password","123").set("email",null)).
      查询用户名为vonchange和password为123的结果集.若要查询email为null 则为set("email:=:in",null).
+     
      比如:findListByMap(new HaloMap().set("userName:like","vonchange").set("createDate:<=",new Date())
      .set("email:in",new String[]{"123@vonchange.com","345@vonchange.com"}))
      查询用户名左模糊于vonchange,创建时间小于当前,邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
+     
+     findListByMap(new HaloMap().set("userName:like","vonchange").set("(createDate:<=",new Date())
+      .set("|email:in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
+      查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
 ##2.扩展like条件查询
      比如:findListByMap(new HaloMap().set("userName:like","vonchange") 默认为左模糊查询.
      而userName:5like为右模糊查询 userName:5like5 为全模糊查询
