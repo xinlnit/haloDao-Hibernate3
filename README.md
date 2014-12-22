@@ -15,7 +15,7 @@ haloDao
    比如:findListByMap(new HaloMap().set("userName:like","vonchange") 默认为左模糊查询<br/>
    而userName:5like为右模糊查询 userName:5like5 为全模糊查询<br/>
 ##3.扩展和日期相关条件查询
-     查询2014年12月份:new HaloMap().set(createDate:monthlike,'2014-12');<br/>
+     查询2014年12月份:new HaloMap().set(createDate:monthlike,'2014-12')<br/>
      查询从2012年11月到2014年12月 new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthge,'2014-14')<br/>
 ##4.查询第一条数据
         findFirstByMap(new HaloMap().set("userName","vonchange"))<br/>
