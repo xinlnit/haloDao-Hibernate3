@@ -32,6 +32,8 @@ haloDao
 ##扩展和日期相关条件查询
      查询2014年12月份:new HaloMap().set(createDate:monthlike,'2014-12').
      查询从2012年11月到2014年12月 new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthle,'2014-14').
+     
+     day(dd) 天 mounth(MM)月 year(yyyy)年 hour(HH) 小时  minute(mm) 分 second(ss) 秒
 ##查询第一条数据
         findFirstByMap(new HaloMap().set("userName","vonchange")).
         findListByMap(Map<String,?> parameter, int begin, int end):查询从begin到end条数据.
@@ -42,7 +44,7 @@ haloDao
           findListByMap(new HaloMap().set("userName:like","vonchange").addColumn("userName","passWord")
           .addColumn("email");
           查询是实体中用户,密码,邮箱字段并封装到实体中(不支持懒加载)
-##分页也支持groupBy
+##分页支持groupBy
          findPageByMap(new HaloMap().set("userName:like","vonchange").addGroup("role"));
 ##hql其他
 ###order by
@@ -70,9 +72,9 @@ haloDao
 ##基于sql实现的haloView 中addHql及haloView传的sql片段无数据库字段
       比如:addHql(" and userName =:userName") set("aa:data","and userName =:userName")
 ##实现原理全部基于字符串,可值前台传map并便于修改
-   addColumn("userName")==set("addColumn","userName") 
-   addOrder("createdate")==set("addOrder","createdate")
-   addGroup("role")==set("addGroup","role") 
-   用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2
+      addColumn("userName")==set("addColumn","userName") 
+     addOrder("createdate")==set("addOrder","createdate")
+     addGroup("role")==set("addGroup","role") 
+     用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2
 
      
