@@ -3,10 +3,13 @@ haloDao
 
 基于hibernate的通用Dao实现
 =====
-该通用dao层基于hql和sql实现,很容易扩展基于其他orm或者jdbc
+该通用dao层基于hql和sql实现,很容易扩展基于其他orm或者jdb
+-------
 主要实现了:
    1.动态hql的实现
+   ------------
    一般我们不会查询值为null值或者为空值的条件.
+---------------
    比如:findListByMap(new HaloMap().set("userName","vonchange").set("password","123").set("email",null))
    查询用户名为vonchange和password为123的结果集.若要查询email为null 则为set("email:=:in",null)
    2.扩展like条件查询
