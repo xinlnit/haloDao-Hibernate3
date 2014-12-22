@@ -2,6 +2,7 @@ haloDao
 =======
 
 基于hibernate的通用Dao实现
+=====
 该通用dao层基于hql和sql实现,很容易扩展基于其他orm或者jdbc
 主要实现了:
    1.动态hql的实现
