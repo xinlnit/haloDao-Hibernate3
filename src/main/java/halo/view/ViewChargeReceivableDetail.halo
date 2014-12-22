@@ -1,0 +1,2 @@
+select crd.*  from charge_receivable_detail crd
+where crd.house_id='${houseId}'
