@@ -49,11 +49,11 @@ haloDao
         并只查询出用户名及密码字段并封装到实体中
 #其他说明
 ##1.无特殊字符化
-   5==% 比如全模糊5like5==%like% (键盘对应)
-   9==( 0==) (键盘对应)
-   3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
-   6==:    1==|(形象一) 8==.
-   注:生成的条件包含QWRTYUIOP对应键盘上方数字
+     5==% 比如全模糊5like5==%like% (键盘对应)
+     9==( 0==) (键盘对应)
+     3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
+     6==:    1==|(形象一) 8==.
+      注:生成的条件包含QWRTYUIOP对应键盘上方数字
 ##2.基于sql实现的haloView 中addHql及haloView传的sql片段无数据库字段
-   比如:addHql(" and userName =:userName") set("aa:data","and userName =:userName")
+      比如:addHql(" and userName =:userName") set("aa:data","and userName =:userName")
      
