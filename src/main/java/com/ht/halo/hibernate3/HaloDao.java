@@ -272,7 +272,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * TODO 分析key值.
+	 * 分析key值.
 	 * @param key
 	 * @return ColumnWithCondition
 	 */
@@ -374,7 +374,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 *TODO 取自锐道hibernateUtil类 获取类型 包含关联的
+	 * 取自锐道hibernateUtil类 获取类型 包含关联的
 	 * @param property
 	 * @param classMetadata
 	 * @param sessionFactory
@@ -404,9 +404,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 
 	/**
-	 * 
-	 * @Title: convert
-	 * @Description: TODO 转换成当前字段类型 如果值是String类型但字段类型不为String 其他类型转换(请扩展)
+	 *  convert
+	 *  转换成当前字段类型 如果值是String类型但字段类型不为String 其他类型转换(请扩展)
 	 * @param proType
 	 * @param value
 	 * @return
@@ -464,8 +463,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: convertColumn
-	 * @Description: TODO 转换成当前字段类型 如果值是String类型但字段类型不为String
+	 * 转换成当前字段类型 如果值是String类型但字段类型不为String
 	 * @param column
 	 * @param value
 	 * @return
@@ -476,6 +474,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return convert(new ColumnWithCondition().setType(proType).setValue(value));
 	}
 
+	/**
+	 * 生成动态hql及其参数Map.
+	 * @param parameter
+	 * @return HqlWithParameter
+	 */
 	public HqlWithParameter createQueryHql(Map<String,?> parameter) {
 		HqlWithParameter hqlWithParameter = new HqlWithParameter();
 		StringBuffer hql = new StringBuffer();
@@ -602,10 +605,9 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: createMyQuery
-	 * @Description: TODO 自定义参数生成Query
+	 * 生成动态hql的Query.
 	 * @param parameter
-	 * @return
+	 * @return Query
 	 */
 	public Query createMyQuery(Map<String,?> parameter) {
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
@@ -623,17 +625,44 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return query;
 	}
 
+	/**
+	 * 动态生成的hql查询.
+	 * 一般不会查询值为null值或者为空值的条件.
+     *比如:findListByMap(new HaloMap().set("userName","vonchange").set("password","123").set("email",null)).
+     *查询用户名为vonchange和password为123的结果集.
+     *若要查询email为null 则为set("email:=:in",null).
+     *比如:findListByMap(new HaloMap().set("userName:like","vonchange").set("createDate:<=",new Date())
+     *.set("email:in",new String[]{"123@vonchange.com","345@vonchange.com"}))
+     * 查询用户名左模糊于vonchange,创建时间小于当前,邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
+     *findListByMap(new HaloMap().set("userName:like","vonchange").set("(createDate:<=",new Date())
+     * .set("|email:in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
+     * 查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
+	 * @param parameter
+	 * @return List
+	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByMap(Map<String,?> parameter) {
 		return createMyQuery(parameter).list();
 	}
 
+	/**
+	 * 根据实体值查询.
+	 * @param entity
+	 * @return List
+	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByEntity(T entity) {
 		Map<String,Object> haloMap = EntityUtils.toHaloMap(entity);
 		return createMyQuery(haloMap).list();
 	}
 
+	/**
+	 * 查询从某条到某条的记录
+	 * @param parameter
+	 * @param begin
+	 * @param end
+	 * @return List
+	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByMap(Map<String,?> parameter, int begin, int end) {
 		Query query = createMyQuery(parameter);
@@ -643,16 +672,20 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: findEntityList
-	 * @Description: TODO 查询前num条数据
+	 * 查询前num条数据记录
 	 * @param parameters
 	 * @param num
-	 * @return
+	 * @return List
 	 */
 	public <X> List<X> findListByMap(Map<String,?> parameter, int num) {
 		return findListByMap(parameter, 0, num);
 	}
 
+	/**
+	 * 查询第一条记录
+	 * @param parameter
+	 * @return entity
+	 */
 	@SuppressWarnings({ "unchecked" })
 	public T findFirstByMap(Map<String,?> parameter) {
 		Query query = createMyQuery(parameter);
@@ -661,18 +694,33 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return (T) query.uniqueResult();
 	}
 
+	/**
+	 * 查询唯一记录
+	 * @param parameter
+	 * @return entity
+	 */
 	@SuppressWarnings("unchecked")
 	public T findUnique(Map<String,?> parameter) {
 		return (T) createMyQuery(parameter).uniqueResult();
 	}
 
+	/**
+	 * 生成计算总条数的hql
+	 * @param hql
+	 * @return String
+	 */
 	private String generateMyCountHql(String hql) {
 		hql = "from " + StringUtils.substringAfter(hql, "from");
 		hql = StringUtils.substringBefore(hql, "order by");
 		return "select count(*) " + hql;
 	}
 
-	private String hqlToSql(String hql) {
+	/**
+	 * hql转sql
+	 * @param hql
+	 * @return sql语句
+	 */
+	public String hqlToSql(String hql) {
 		SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl) this.getSessionFactory();
 		QueryTranslatorFactory queryTranslatorFactory = sessionFactoryImpl.getSettings().getQueryTranslatorFactory();
 		FilterTranslator filterTranslator = queryTranslatorFactory.createFilterTranslator(hql, hql, Collections.EMPTY_MAP, sessionFactoryImpl);
@@ -681,6 +729,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	}
 
+	/**
+	 * 计算总条数
+	 * @param hql
+	 * @param parameter
+	 * @return 总条数
+	 */
 	protected long countMyHqlResult(String hql, Map<String,?> parameter) {
 		String countHql = generateMyCountHql(hql);
 		if (countHql.indexOf("group by") != -1) {
@@ -694,6 +748,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	}
 
+	/**
+	 * 分页查询(支持groupBy).
+	 * @param page
+	 * @param parameter
+	 * @return Page
+	 */
 	@SuppressWarnings("unchecked")
 	public Page<T> findPageByMap(Page<T> page, Map<String,?> parameter) {
 		notNull(page, "page");
@@ -714,6 +774,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return page;
 	}
 
+	/**
+	 * 生成SQLQuery
+	 * @param sql
+	 * @param 可变参数
+	 * @return SQLQuery
+	 */
 	private SQLQuery createSQLQuery(String sql, Object... parameter) {
 		SQLQuery q = getSession().createSQLQuery(sql);
 		if (parameter != null) {
@@ -725,29 +791,39 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 
+	/**
+	 *  生成SQLQuery
+	 * @param sql
+	 * @param Map
+	 * @return SQLQuery
+	 */
 	private SQLQuery createSQLQuery(String sql, Map<String,?> parameter) {
 		SQLQuery q = getSession().createSQLQuery(sql);
 		q.setProperties(parameter);
 		return q;
 	}
 
-	public SQLQuery createProcQuery(String procedureName, Map<String,?> parameter) {
+	/**
+	 * 生成存储过程的SQLQuery.
+	 * @param 存储过程名及参数占位符
+	 * @param parameter
+	 * @return SQLQuery
+	 */
+	public SQLQuery createProcQuery(String procedure, Map<String,?> parameter) {
 		if (null == parameter) {
 			parameter = new HaloMap();
 		}
-		StringBuffer stringBuffer = new StringBuffer();
-		for (Entry<String, ?> entry : parameter.entrySet()) {
-			stringBuffer.append(":" + entry.getKey() + ",");
-		}
-		String result = stringBuffer.toString();
-		if (!"".equals(result)) {
-			result = result.substring(0, result.length() - 1);
-		}
-		String sql = String.format("{Call %s(%s) }", procedureName, result);
+		String sql = String.format("{Call %s }", procedure);
 		SQLQuery query = createSQLQuery(sql, parameter);
 		return query;
 	}
 
+	/**
+	 * 生成的存储过程结果集可以映射到实体上.
+	 * @param procedureName
+	 * @param parameter
+	 * @return List
+	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByProc(String procedureName, Map<String,?> parameter) {
 		SQLQuery query = createProcQuery(procedureName, parameter);
@@ -756,8 +832,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: deleteByMap
-	 * @Description: TODO 根据HaloMap删除
+	  * 根据HaloMap删除
 	 * @param parameter
 	 * @return 返回行数 失败返回-1
 	 */
@@ -782,8 +857,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 
-	 * @Title: updateWithNotNull
-	 * @Description: TODO 更新不为null的字段
+	 *  updateWithNotNull
+	 * 更新不为null的字段
 	 * @param entity
 	 */
 	public void updateWithNotNull(T entity) {
@@ -792,9 +867,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 
-	 * @Title: updateByUpdater
-	 * @Description: TODO 根据Upadter 更新实体
+	 *  根据Upadter 更新实体
 	 * @param updater
 	 * @return
 	 */
@@ -810,9 +883,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 
-	 * @Title: updaterCopyToPersistentObject
-	 * @Description: TODO 将更新对象拷贝至实体对象
+	 *  将更新对象拷贝至实体对象
 	 * @param updater
 	 * @param po
 	 * @param cm
@@ -839,6 +910,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		}
 	}
 
+	/**
+	 * 获得更新hql
+	 * @param entity
+	 * @param parameter
+	 * @return String
+	 */
 	private String getUpdateHql(T entity, Map<String,Object> parameter) {
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String[] propNames = cm.getPropertyNames();
@@ -869,11 +946,10 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: updateByHql
-	 * @Description: TODO 根据hql更新 不更新为null的值
+	 *  根据haloMap更新不为null的实体 
 	 * @param entity
 	 * @param parameter
-	 * @return
+	 * @return  更新条数
 	 */
 	public int updateWithNotNullByHql(T entity, Map<String,?> parameter) {
 		Map<String,Object> newParameter = new HaloMap();
@@ -894,6 +970,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return query.executeUpdate();
 	}
 
+	/**
+	 * 自定义hql方式更新实体
+	 * @param entity
+	 * @return  更新条数
+	 */
 	public int updateWithNotNullByHql(T entity) {
 		return updateWithNotNullByHql(entity, new HaloMap());
 	}
@@ -1075,7 +1156,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 
+	 * 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role ${email} ${groupBy}
+     * 调用findListByHaloView("ViewTest",new HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
+     * .set("email:data"," and email=:eamil ").set("email:prm","123@ww.com").set("userName:like","von")
+     *.addColumn("userName","password").addOrder("createDate","role");
+     *为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
+     *并只查询出用户名及密码字段并封装到实体中
 	 * @param viewName:haloView的sql文件名,可以加入包名:test.ViewTest(全:halo.view.test.ViewTest.halo)
 	 * @param parameter
 	 * @return {@link List}
@@ -1086,6 +1172,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return query.list();
 	}
 
+	/**
+	 * 生成总条数的sql语句.
+	 * @param sql
+	 * @return sql语句
+	 */
 	private String generateMyCountSql(String sql) {
 		sql = StringUtils.substringAfter(sql, " from ");
 		sql = StringUtils.substringBefore(sql, "order by");
@@ -1094,12 +1185,25 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return String.format("select count(%s) from (select %s from %s)temp ", entityIdName, entityIdName, sql);
 	}
 
+	/**
+	 * 获得查询总条数.
+	 * @param sql
+	 * @param parameter
+	 * @return 总条数
+	 */
 	protected long countMySqlResult(String sql, Map<String,?> parameter) {
 		String countSql = generateMyCountSql(sql);
 		Query query = this.createSQLQuery(countSql, parameter);
 		return ((Number) query.uniqueResult()).longValue();
 	}
 
+	/**
+	 * haloView的分页查询
+	 * @param viewName
+	 * @param page
+	 * @param parameter
+	 * @return Page
+	 */
 	@SuppressWarnings("unchecked")
 	public Page<T> findPageByHaloView(String viewName, Page<T> page, Map<String,?> parameter) {
 		notNull(page, "page");
