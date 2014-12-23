@@ -24,6 +24,8 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
         long a= System.currentTimeMillis();
 		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
 		.set("houseId", "4028813a47f2772c0147f2780578056a")
+		.addHql("fcy.charge.chargeReceivableDetail.aa")
+		.set("houseOwnerName:prm", "李树")
 		 //  .set("houseOwnerName:in", new String[]{"33","44"})
 		//.addColumn("houseOwnerName")
 		); 
@@ -131,7 +133,8 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	   .set("houseId:data", "4028813a47f2772c0147f2780578056a")
 	   .set("houseOwnerName:in", new String[]{"李树平","李树平"})
 	   .set("createDate:<=", "2014-12-12")
-	   .addHql("houseOwnerName =:aa")
+	   //.addHql("houseOwnerName =:aa")
+	   .addHql("fcy.charge.chargeReceivableDetail.ab")
 	   .set("aa:prm", "李树平")
 	  // .set("houseOwnerName:in", new String[]{"33","44"})
 	 //  .addSql("house_owner_name in (:aa)")

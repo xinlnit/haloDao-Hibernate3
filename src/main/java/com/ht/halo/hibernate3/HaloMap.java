@@ -29,6 +29,10 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 /*	private String removeAllSpace(String value) {
 		return value.replaceAll(SPACE, "");
 	}*/
+	private String getHqlSnippet(){
+	    	
+			return null;
+	 }
 	public HaloMap  set(String key, Object value) {
 		if(key.startsWith(HaloDao.ADDORDER)){
 			addOrder++;
