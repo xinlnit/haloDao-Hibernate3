@@ -19,7 +19,6 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
     private int addOrder=0;
     private int addGroup=0;
     private int addHql=0;
-    private StringBuffer tempStr=new StringBuffer();
 	public HaloMap() {
 	}
 	public HaloMap(Map<String, Object> map) {
@@ -77,7 +76,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 			this.set(HaloDao.ADDHQL, hql);
 		}
 		return this;
-	}
+	}                  
 	public HaloMap addColumn(String... columnNames){
 		for (String columnName : columnNames) {
 			this.set(HaloDao.ADDCOLUMN, columnName);

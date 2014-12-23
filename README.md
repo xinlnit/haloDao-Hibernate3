@@ -75,6 +75,8 @@ haloDao
       比如:addHql(" and userName =:userName") set("aa:data","and userName =:userName")
 ##实现原理全部基于字符串,可值前台传map并便于修改
       addColumn("userName")==set("addColumn","userName") 
-     addOrder("createdate")==set("addOrder","createdate")
-     addGroup("role")==set("addGroup","role") 
-     用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2
+      addOrder("createdate")==set("addOrder","createdate")
+      addGroup("role")==set("addGroup","role") 
+      用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
+ ##基于haloView的视图对应实体
+     需要加入@Entity和@Id注解,其他不需
