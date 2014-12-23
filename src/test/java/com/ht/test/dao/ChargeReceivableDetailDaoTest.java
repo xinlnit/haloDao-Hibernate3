@@ -9,9 +9,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
+import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.gson.HtGson;
-import com.ht.halo.hibernate3.map.HaloMap;
 import com.ht.test.entity.ChargeReceivableDetail;
 import com.ht.utils.junit.BaseDaoTestCase;
 

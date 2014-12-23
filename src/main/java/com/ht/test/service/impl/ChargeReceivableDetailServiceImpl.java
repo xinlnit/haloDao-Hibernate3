@@ -7,8 +7,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
-import com.ht.halo.hibernate3.map.HaloMap;
 import com.ht.test.dao.ChargeReceivableDetailDao;
 import com.ht.test.entity.ChargeReceivableDetail;
 import com.ht.test.service.IChargeReceivableDetailService;

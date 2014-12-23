@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.ht.halo.hibernate3.map.HaloMap;
+import com.ht.halo.hibernate3.HaloMap;
 
 public class Test {
     public static void main(String[] args) throws IllegalAccessException, InvocationTargetException {

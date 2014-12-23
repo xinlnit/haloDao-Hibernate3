@@ -2,8 +2,8 @@ package com.ht.test.service;
 
 import java.util.List;
 
+import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
-import com.ht.halo.hibernate3.map.HaloMap;
 import com.ht.test.entity.ChargeReceivableDetail;
 /**
  * @ClassName: IChargeReceivableDetailService
