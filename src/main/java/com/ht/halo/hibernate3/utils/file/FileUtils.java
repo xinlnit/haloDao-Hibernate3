@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.base;
+package com.ht.halo.hibernate3.utils.file;
 
 import java.io.BufferedReader;
 import java.io.File;

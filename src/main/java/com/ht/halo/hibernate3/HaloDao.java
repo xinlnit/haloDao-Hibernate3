@@ -30,7 +30,6 @@ import com.ht.halo.hibernate3.base.BaseHibernateDao;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.DateUtils;
 import com.ht.halo.hibernate3.base.EntityUtils;
-import com.ht.halo.hibernate3.base.FileUtils;
 import com.ht.halo.hibernate3.base.MyBeanUtils;
 import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.base.TableUtil;
@@ -39,6 +38,7 @@ import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.HqlWithParameter;
 import com.ht.halo.hibernate3.bean.SqlWithParameter;
 import com.ht.halo.hibernate3.feemarker.FreemarkerUtils;
+import com.ht.halo.hibernate3.utils.file.FileUtils;
 
 /**
  * @ClassName: HaloDao
