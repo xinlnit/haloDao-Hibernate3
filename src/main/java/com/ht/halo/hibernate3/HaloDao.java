@@ -46,7 +46,7 @@ import com.ht.halo.hibernate3.map.HaloMap;
  * @Description: TODO 基于hibernate的通用Dao
  * @author fengchangyi
  * @date 2014-12-20 下午3:14:10
- * @version 3.0 
+ * @version 3.0
  */
 public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Serializable> {
 	private static final Log logger = LogFactory.getLog(HaloDao.class);
@@ -57,7 +57,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	public static final String ADDGROUP = "addGroup";// 添加排序
 	public static final String ADDHQL = "addHql";// 添加查询hql片段
 	private static final String PRM = "prm";// 添加查询hql中的参数标识
-	private static final String DATA = "data";//haloView中的模板数据
+	private static final String DATA = "data";// haloView中的模板数据
 	private static final String SPACE = "\u0020";
 	private static final char SPACECHAR = '\u0020';
 	private static final String TAPESPT = "#";
@@ -158,8 +158,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 扩展like条件.
-	 * 1.全模糊5like5,左模糊5like
+	 * 扩展like条件. 1.全模糊5like5,左模糊5like
+	 * 
 	 * @param extCondtion
 	 * @param value
 	 * @param columnWithCondition
@@ -201,9 +201,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 扩展日期条件.
-	 * 1.daylike,monthlike 当天,当月
-	 * 2.dayge dayle 从某天到某天
+	 * 扩展日期条件. 1.daylike,monthlike 当天,当月 2.dayge dayle 从某天到某天
+	 * 
 	 * @param extCondtion
 	 * @param like
 	 * @param addOne
@@ -218,7 +217,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				date = DateUtils.addDays(date, 1);
 				columnWithCondition.setCondition("<");
 			}
-			columnWithCondition.setDirectValue("'"+DateUtils.format("yyyy-MM-dd", date) + like+"'");
+			columnWithCondition.setDirectValue("'" + DateUtils.format("yyyy-MM-dd", date) + like + "'");
 			return columnWithCondition;
 		}
 		if ("month".equals(extCondtion) || "MM".equals(extCondtion)) {
@@ -227,7 +226,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				date = DateUtils.addMonths(date, 1);
 				columnWithCondition.setCondition("<");
 			}
-			columnWithCondition.setDirectValue("'"+DateUtils.format("yyyy-MM", date) + like+"'");
+			columnWithCondition.setDirectValue("'" + DateUtils.format("yyyy-MM", date) + like + "'");
 			return columnWithCondition;
 		}
 		if ("year".equals(extCondtion) || "yyyy".equals(extCondtion)) {
@@ -236,7 +235,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				date = DateUtils.addYears(date, 1);
 				columnWithCondition.setCondition("<");
 			}
-			columnWithCondition.setDirectValue("'"+DateUtils.format("yyyy", date) + like+"'");
+			columnWithCondition.setDirectValue("'" + DateUtils.format("yyyy", date) + like + "'");
 			return columnWithCondition;
 		}
 		if ("hour".equals(extCondtion) || "HH".equals(extCondtion)) {
@@ -245,7 +244,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				date = DateUtils.addHours(date, 1);
 				columnWithCondition.setCondition("<");
 			}
-			columnWithCondition.setDirectValue("'"+DateUtils.format("yyyy-MM-dd HH", date) + like+"'");
+			columnWithCondition.setDirectValue("'" + DateUtils.format("yyyy-MM-dd HH", date) + like + "'");
 			return columnWithCondition;
 		}
 		if ("minute".equals(extCondtion) || "mm".equals(extCondtion)) {
@@ -254,7 +253,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				date = DateUtils.addMinutes(date, 1);
 				columnWithCondition.setCondition("<");
 			}
-			columnWithCondition.setDirectValue("'"+DateUtils.format("yyyy-MM-dd HH:mm", date) + like+"'");
+			columnWithCondition.setDirectValue("'" + DateUtils.format("yyyy-MM-dd HH:mm", date) + like + "'");
 			return columnWithCondition;
 		}
 
@@ -264,7 +263,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				date = DateUtils.addSeconds(date, 1);
 				columnWithCondition.setCondition("<");
 			}
-			columnWithCondition.setDirectValue("'"+DateUtils.format("yyyy-MM-dd HH:mm:ss", date) + like+"'");
+			columnWithCondition.setDirectValue("'" + DateUtils.format("yyyy-MM-dd HH:mm:ss", date) + like + "'");
 			return columnWithCondition;
 		}
 
@@ -273,6 +272,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 分析key值.
+	 * 
 	 * @param key
 	 * @return ColumnWithCondition
 	 */
@@ -375,6 +375,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 取自锐道hibernateUtil类 获取类型 包含关联的
+	 * 
 	 * @param property
 	 * @param classMetadata
 	 * @param sessionFactory
@@ -402,10 +403,9 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return null;
 	}
 
-
 	/**
-	 *  convert
-	 *  转换成当前字段类型 如果值是String类型但字段类型不为String 其他类型转换(请扩展)
+	 * convert 转换成当前字段类型 如果值是String类型但字段类型不为String 其他类型转换(请扩展)
+	 * 
 	 * @param proType
 	 * @param value
 	 * @return
@@ -464,6 +464,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 转换成当前字段类型 如果值是String类型但字段类型不为String
+	 * 
 	 * @param column
 	 * @param value
 	 * @return
@@ -476,10 +477,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成动态hql及其参数Map.
+	 * 
 	 * @param parameter
 	 * @return HqlWithParameter
 	 */
-	public HqlWithParameter createQueryHql(Map<String,?> parameter) {
+	public HqlWithParameter createQueryHql(Map<String, ?> parameter) {
 		HqlWithParameter hqlWithParameter = new HqlWithParameter();
 		StringBuffer hql = new StringBuffer();
 		StringBuffer hqlSelect = new StringBuffer();
@@ -487,7 +489,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		StringBuffer group = new StringBuffer();
 		StringBuffer column = new StringBuffer();
 		boolean queryByBlankFlag = false;
-		Map<String,Object> hqlPrmMap = new HaloMap();// ....
+		Map<String, Object> hqlPrmMap = new HaloMap();// ....
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 
@@ -530,10 +532,10 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				String type = columnWithCondition.getType();
 				if (null == type) {
 					try {
-					type = getHibernateType(columnWithCondition.getColumnName(), cm, sessionFactory).getName();
+						type = getHibernateType(columnWithCondition.getColumnName(), cm, sessionFactory).getName();
 					} catch (Exception e) {
 						logger.warn("could not resolve property(无法得到字段类型)");
-						type=null;
+						type = null;
 					}
 					columnWithCondition.setType(type);
 				}
@@ -542,8 +544,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				}
 
 				if (columnWithCondition.getCondition().equals(PRM)) {
-					if(null!=type){
-					value = convert(columnWithCondition);
+					if (null != type) {
+						value = convert(columnWithCondition);
 					}
 					hqlPrmMap.put(columnWithCondition.getColumnName(), value);
 					continue;// 添加参数
@@ -571,8 +573,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 						continue;
 					}
 					if (!StringUtils.isBlank(String.valueOf(value)) || queryByBlankFlag) {
-						if(null!=type){
-						value = convert(columnWithCondition);
+						if (null != type) {
+							value = convert(columnWithCondition);
 						}
 						hql.append(String.format(" %s %s %s %s:%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 						hqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
@@ -606,14 +608,15 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成动态hql的Query.
+	 * 
 	 * @param parameter
 	 * @return Query
 	 */
-	public Query createMyQuery(Map<String,?> parameter) {
+	public Query createMyQuery(Map<String, ?> parameter) {
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
 		String hql = hqlWithParameter.getHql();
 
-		Map<String,Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		if (hqlWithParameter.getAddColumn()) {
 			query.setResultTransformer(new ColumnToBean(this.entityType));
@@ -626,45 +629,52 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 动态生成的hql查询.
-	 * 一般不会查询值为null值或者为空值的条件.
-     *比如:findListByMap(new HaloMap().set("userName","vonchange").set("password","123").set("email",null)).
-     *查询用户名为vonchange和password为123的结果集.
-     *若要查询email为null 则为set("email:=:in",null).
-     *比如:findListByMap(new HaloMap().set("userName:like","vonchange").set("createDate:<=",new Date())
-     *.set("email:in",new String[]{"123@vonchange.com","345@vonchange.com"}))
-     * 查询用户名左模糊于vonchange,创建时间小于当前,邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
-     *findListByMap(new HaloMap().set("userName:like","vonchange").set("(createDate:<=",new Date())
-     * .set("|email:in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
-     * 查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
+	 * 动态生成的hql查询. 一般不会查询值为null值或者为空值的条件. 比如:findListByMap(new
+	 * HaloMap().set("userName"
+	 * ,"vonchange").set("password","123").set("email",null)).
+	 * 查询用户名为vonchange和password为123的结果集. 若要查询email为null
+	 * 则为set("email:=:in",null). 比如:findListByMap(new
+	 * HaloMap().set("userName:like","vonchange").set("createDate:<=",new
+	 * Date()) .set("email:in",new
+	 * String[]{"123@vonchange.com","345@vonchange.com"}))
+	 * 查询用户名左模糊于vonchange,创建时间小于当前
+	 * ,邮箱在"123@vonchange.com","345@vonchange.com"中的结果集 findListByMap(new
+	 * HaloMap().set("userName:like","vonchange").set("(createDate:<=",new
+	 * Date()) .set("|email:in)",new
+	 * String[]{"123@vonchange.com","345@vonchange.com"}))
+	 * 查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在
+	 * "123@vonchange.com","345@vonchange.com"中的结果集
+	 * 
 	 * @param parameter
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByMap(Map<String,?> parameter) {
+	public <X> List<X> findListByMap(Map<String, ?> parameter) {
 		return createMyQuery(parameter).list();
 	}
 
 	/**
 	 * 根据实体值查询.
+	 * 
 	 * @param entity
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByEntity(T entity) {
-		Map<String,Object> haloMap = EntityUtils.toHaloMap(entity);
+		Map<String, Object> haloMap = EntityUtils.toHaloMap(entity);
 		return createMyQuery(haloMap).list();
 	}
 
 	/**
 	 * 查询从某条到某条的记录
+	 * 
 	 * @param parameter
 	 * @param begin
 	 * @param end
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByMap(Map<String,?> parameter, int begin, int end) {
+	public <X> List<X> findListByMap(Map<String, ?> parameter, int begin, int end) {
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(begin);
 		query.setMaxResults(end - begin);
@@ -673,21 +683,23 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 查询前num条数据记录
+	 * 
 	 * @param parameters
 	 * @param num
 	 * @return List
 	 */
-	public <X> List<X> findListByMap(Map<String,?> parameter, int num) {
+	public <X> List<X> findListByMap(Map<String, ?> parameter, int num) {
 		return findListByMap(parameter, 0, num);
 	}
 
 	/**
 	 * 查询第一条记录
+	 * 
 	 * @param parameter
 	 * @return entity
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public T findFirstByMap(Map<String,?> parameter) {
+	public T findFirstByMap(Map<String, ?> parameter) {
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -696,16 +708,18 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 查询唯一记录
+	 * 
 	 * @param parameter
 	 * @return entity
 	 */
 	@SuppressWarnings("unchecked")
-	public T findUnique(Map<String,?> parameter) {
+	public T findUnique(Map<String, ?> parameter) {
 		return (T) createMyQuery(parameter).uniqueResult();
 	}
 
 	/**
 	 * 生成计算总条数的hql
+	 * 
 	 * @param hql
 	 * @return String
 	 */
@@ -717,6 +731,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * hql转sql
+	 * 
 	 * @param hql
 	 * @return sql语句
 	 */
@@ -731,11 +746,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 计算总条数
+	 * 
 	 * @param hql
 	 * @param parameter
 	 * @return 总条数
 	 */
-	protected long countMyHqlResult(String hql, Map<String,?> parameter) {
+	protected long countMyHqlResult(String hql, Map<String, ?> parameter) {
 		String countHql = generateMyCountHql(hql);
 		if (countHql.indexOf("group by") != -1) {
 			String tempSQL = hqlToSql(countHql);
@@ -750,16 +766,17 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 分页查询(支持groupBy).
+	 * 
 	 * @param page
 	 * @param parameter
 	 * @return Page
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<T> findPageByMap(Page<T> page, Map<String,?> parameter) {
+	public Page<T> findPageByMap(Page<T> page, Map<String, ?> parameter) {
 		notNull(page, "page");
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
 		String hql = hqlWithParameter.getHql();
-		Map<String,Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		if (hqlWithParameter.getAddColumn()) {
 			query.setResultTransformer(new ColumnToBean(this.entityType));// Transformers.aliasToBean(this.entityType));
@@ -776,6 +793,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成SQLQuery
+	 * 
 	 * @param sql
 	 * @param 可变参数
 	 * @return SQLQuery
@@ -790,14 +808,14 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return q;
 	}
 
-
 	/**
-	 *  生成SQLQuery
+	 * 生成SQLQuery
+	 * 
 	 * @param sql
 	 * @param Map
 	 * @return SQLQuery
 	 */
-	private SQLQuery createSQLQuery(String sql, Map<String,?> parameter) {
+	private SQLQuery createSQLQuery(String sql, Map<String, ?> parameter) {
 		SQLQuery q = getSession().createSQLQuery(sql);
 		q.setProperties(parameter);
 		return q;
@@ -805,11 +823,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成存储过程的SQLQuery.
+	 * 
 	 * @param 存储过程名及参数占位符
 	 * @param parameter
 	 * @return SQLQuery
 	 */
-	public SQLQuery createProcQuery(String procedure, Map<String,?> parameter) {
+	public SQLQuery createProcQuery(String procedure, Map<String, ?> parameter) {
 		if (null == parameter) {
 			parameter = new HaloMap();
 		}
@@ -820,23 +839,25 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成的存储过程结果集可以映射到实体上.
+	 * 
 	 * @param procedureName
 	 * @param parameter
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByProc(String procedureName, Map<String,?> parameter) {
+	public <X> List<X> findListByProc(String procedureName, Map<String, ?> parameter) {
 		SQLQuery query = createProcQuery(procedureName, parameter);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		return query.list();
 	}
 
 	/**
-	  * 根据HaloMap删除
+	 * 根据HaloMap删除
+	 * 
 	 * @param parameter
 	 * @return 返回行数 失败返回-1
 	 */
-	public int deleteByMap(Map<String,Object> parameter) {
+	public int deleteByMap(Map<String, Object> parameter) {
 		if (null == parameter || parameter.isEmpty()) {
 			return -1;
 		}
@@ -850,15 +871,15 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
 			return -1;
 		}
-		Map<String,Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		return query.executeUpdate();
 	}
 
 	/**
 	 * 
-	 *  updateWithNotNull
-	 * 更新不为null的字段
+	 * updateWithNotNull 更新不为null的字段
+	 * 
 	 * @param entity
 	 */
 	public void updateWithNotNull(T entity) {
@@ -867,7 +888,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 *  根据Upadter 更新实体
+	 * 根据Upadter 更新实体
+	 * 
 	 * @param updater
 	 * @return
 	 */
@@ -883,7 +905,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 *  将更新对象拷贝至实体对象
+	 * 将更新对象拷贝至实体对象
+	 * 
 	 * @param updater
 	 * @param po
 	 * @param cm
@@ -912,11 +935,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 获得更新hql
+	 * 
 	 * @param entity
 	 * @param parameter
 	 * @return String
 	 */
-	private String getUpdateHql(T entity, Map<String,Object> parameter) {
+	private String getUpdateHql(T entity, Map<String, Object> parameter) {
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String[] propNames = cm.getPropertyNames();
 		String identifierName = cm.getIdentifierPropertyName();
@@ -946,13 +970,14 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 *  根据haloMap更新不为null的实体 
+	 * 根据haloMap更新不为null的实体
+	 * 
 	 * @param entity
 	 * @param parameter
-	 * @return  更新条数
+	 * @return 更新条数
 	 */
-	public int updateWithNotNullByHql(T entity, Map<String,?> parameter) {
-		Map<String,Object> newParameter = new HaloMap();
+	public int updateWithNotNullByHql(T entity, Map<String, ?> parameter) {
+		Map<String, Object> newParameter = new HaloMap();
 		String updateHql = getUpdateHql(entity, newParameter);
 		if (null == updateHql) {
 			return -1;
@@ -965,30 +990,32 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
 			return -1;
 		}
-		Map<String,Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		return query.executeUpdate();
 	}
 
 	/**
 	 * 自定义hql方式更新实体
+	 * 
 	 * @param entity
-	 * @return  更新条数
+	 * @return 更新条数
 	 */
 	public int updateWithNotNullByHql(T entity) {
 		return updateWithNotNullByHql(entity, new HaloMap());
 	}
 
-	private String getViewSql(String viewName,Map<String,Object> tplMap) {
+	private String getViewSql(String viewName, Map<String, Object> tplMap) {
 		String packStr = "";
 		if (viewName.indexOf(".") != -1) {
 			packStr = "." + StringUtils.substringBeforeLast(viewName, ".");
 			viewName = StringUtils.substringAfterLast(viewName, ".");
 		}
-		FreemarkerUtils freemarkerUtils= new FreemarkerUtils();
+		FreemarkerUtils freemarkerUtils = new FreemarkerUtils();
 		File viewPath = FileUtils.getClassPath(HALOPACH + ".view" + packStr, "");
 		return freemarkerUtils.generateString(tplMap, viewPath, viewName + ".halo");
 	}
+
 	private String getViewSql(String viewName) {
 		String packStr = "";
 		if (viewName.indexOf(".") != -1) {
@@ -1000,25 +1027,26 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 *  直接获得文件中的sql语句的SQLQuery,不支持动态拼接.
+	 * 直接获得文件中的sql语句的SQLQuery,不支持动态拼接.
+	 * 
 	 * @param haloview文件名
-	 * @param parameter 
+	 * @param parameter
 	 * @return SQLQuery
 	 */
-	public SQLQuery CreateSqlQueryByHaloView(String viewName, Map<String,?> parameter) {
+	public SQLQuery CreateSqlQueryByHaloView(String viewName, Map<String, ?> parameter) {
 		return createSQLQuery(getViewSql(viewName), parameter);
 	}
 
 	/**
-	 *  根据haloview文件结果集查询获得SQLQuery和参数.
-	 *  方式代码基本与createMyQuery相同,未重用
+	 * 根据haloview文件结果集查询获得SQLQuery和参数. 方式代码基本与createMyQuery相同,未重用
+	 * 
 	 * @param viewName
 	 * @param parameter
 	 * @return SqlWithParameter
 	 */
-	public SqlWithParameter createMySqlQuery(String viewName, Map<String,?> parameter) {
-	
-		String viewAs="temp";
+	public SqlWithParameter createMySqlQuery(String viewName, Map<String, ?> parameter) {
+
+		String viewAs = "temp";
 		SqlWithParameter sqlWithParamter = new SqlWithParameter();
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sqlSelect = new StringBuffer();
@@ -1026,8 +1054,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		StringBuffer group = new StringBuffer();
 		StringBuffer column = new StringBuffer();
 		boolean queryByBlankFlag = false;
-		Map<String,Object> sqlPrmMap = new HaloMap();// ....
-		Map<String,Object> tplMap= new HaloMap();
+		Map<String, Object> sqlPrmMap = new HaloMap();// ....
+		Map<String, Object> tplMap = new HaloMap();
 		if (null == parameter) {
 			parameter = new HaloMap();
 		}
@@ -1051,7 +1079,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				continue;
 			}
 			if (key.startsWith(ADDHQL)) {
-				sql.append(String.format(" and (%s) ",TableUtil.toTable(value.toString())));
+				sql.append(String.format(" and (%s) ", TableUtil.toTable(value.toString())));
 				continue;// 灵活但不安全接口:sql查询片段
 			}
 
@@ -1059,10 +1087,10 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			String type = columnWithCondition.getType();
 			if (null == type) {
 				try {
-				type = getHibernateType(columnWithCondition.getColumnName(), cm, sessionFactory).getName();
-				}catch (Exception e) {
+					type = getHibernateType(columnWithCondition.getColumnName(), cm, sessionFactory).getName();
+				} catch (Exception e) {
 					logger.warn("could not resolve property(无法得到字段类型)");
-					type=null;
+					type = null;
 				}
 				columnWithCondition.setType(type);
 			}
@@ -1070,15 +1098,15 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				continue;// 条件为"ex"时排除该参数
 			}
 			if (columnWithCondition.getCondition().equals(PRM)) {
-				if(null!=type){
-				value = convert(columnWithCondition);
+				if (null != type) {
+					value = convert(columnWithCondition);
 				}
 				sqlPrmMap.put(columnWithCondition.getColumnName(), value);
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
-				if(value instanceof String){
-					value=TableUtil.toTable(String.valueOf(value));
+				if (value instanceof String) {
+					value = TableUtil.toTable(String.valueOf(value));
 				}
 				tplMap.put(columnWithCondition.getColumnName(), value);
 				continue;// 添加参数
@@ -1105,8 +1133,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 					continue;
 				}
 				if (!StringUtils.isBlank(String.valueOf(value)) || queryByBlankFlag) {
-					if(null!=type){
-					value = convert(columnWithCondition);
+					if (null != type) {
+						value = convert(columnWithCondition);
 					}
 					sql.append(String.format(" %s %s %s %s :%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toTable(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 					sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
@@ -1114,11 +1142,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 		}// for
 		String columnStr = TableUtil.toTable(column.toString());
-		String viewSql = getViewSql(viewName,tplMap);
+		String viewSql = getViewSql(viewName, tplMap);
 		if (!"".equals(columnStr)) {
 			String entityIdName = TableUtil.toTable(cm.getIdentifierPropertyName());
 			sqlSelect = new StringBuffer(String.format("select %s as %s ,%s from (%s) %s where 1=1 ", entityIdName, entityIdName, columnStr.substring(0, columnStr.length() - 1), viewSql, viewAs));
-		}else{
+		} else {
 			sqlSelect.append(String.format("select *  from (%s) %s  where 1=1 ", viewSql, viewAs));
 		}
 		String groupStr = TableUtil.toTable(group.toString());
@@ -1142,38 +1170,46 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 根据haloview文件结果集查询获得SQLQuery.
+	 * 
 	 * @param viewName
 	 * @param parameter
 	 * @return SQLQuery
 	 */
-	public SQLQuery CreateMySqlQueryByHaloView(String viewName, Map<String,?> parameter) {
+	public SQLQuery CreateMySqlQueryByHaloView(String viewName, Map<String, ?> parameter) {
 		SqlWithParameter sqlWithParameter = createMySqlQuery(viewName, parameter);
 		String sql = sqlWithParameter.getSql();
-		Map<String,Object> hqlPrmMap = sqlWithParameter.getParamterMap();
+		Map<String, Object> hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		return query;
 	}
 
 	/**
-	 * 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role ${email} ${groupBy}
-     * 调用findListByHaloView("ViewTest",new HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
-     * .set("email:data"," and email=:eamil ").set("email:prm","123@ww.com").set("userName:like","von")
-     *.addColumn("userName","password").addOrder("createDate","role");
-     *为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
-     *并只查询出用户名及密码字段并封装到实体中
-	 * @param viewName:haloView的sql文件名,可以加入包名:test.ViewTest(全:halo.view.test.ViewTest.halo)
+	 * 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role
+	 * ${email} ${groupBy} 调用findListByHaloView("ViewTest",new
+	 * HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
+	 * .set("email:data"
+	 * ," and email=:eamil ").set("email:prm","123@ww.com").set(
+	 * "userName:like","von")
+	 * .addColumn("userName","password").addOrder("createDate","role");
+	 * 为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
+	 * 并只查询出用户名及密码字段并封装到实体中
+	 * 
+	 * @param viewName
+	 *            :haloView的sql文件名,可以加入包名:test.ViewTest(全:halo.view.test.
+	 *            ViewTest.halo)
 	 * @param parameter
 	 * @return {@link List}
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByHaloView(String viewName, Map<String,?> parameter) {
+	public <X> List<X> findListByHaloView(String viewName, Map<String, ?> parameter) {
 		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
 		return query.list();
 	}
 
 	/**
 	 * 生成总条数的sql语句.
+	 * 
 	 * @param sql
 	 * @return sql语句
 	 */
@@ -1187,11 +1223,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 获得查询总条数.
+	 * 
 	 * @param sql
 	 * @param parameter
 	 * @return 总条数
 	 */
-	protected long countMySqlResult(String sql, Map<String,?> parameter) {
+	protected long countMySqlResult(String sql, Map<String, ?> parameter) {
 		String countSql = generateMyCountSql(sql);
 		Query query = this.createSQLQuery(countSql, parameter);
 		return ((Number) query.uniqueResult()).longValue();
@@ -1199,17 +1236,18 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * haloView的分页查询
+	 * 
 	 * @param viewName
 	 * @param page
 	 * @param parameter
 	 * @return Page
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<T> findPageByHaloView(String viewName, Page<T> page, Map<String,?> parameter) {
+	public Page<T> findPageByHaloView(String viewName, Page<T> page, Map<String, ?> parameter) {
 		notNull(page, "page");
 		SqlWithParameter sqlWithParameter = createMySqlQuery(viewName, parameter);
 		String sql = sqlWithParameter.getSql();
-		Map<String,Object> hqlPrmMap = sqlWithParameter.getParamterMap();
+		Map<String, Object> hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		long totalCount = countMySqlResult(sql, hqlPrmMap);
