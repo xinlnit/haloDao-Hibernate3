@@ -98,7 +98,6 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	 * @return
 	 */
 	public HaloMap addParameter(String key ,Object value){
-
 		this.set(key+":prm", value);
 		return this;
 	}
@@ -107,67 +106,8 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		return this;
 	}
 
-	public HaloMap setColumn(String columnName){
-		tempStr.append(columnName);
-		return this;
-	}
-	public HaloMap leftBracket(){
-		tempStr.append("(");
-		return this;
-	}
-	public HaloMap rightBracket(){
-		tempStr.append(")");
-		return this;
-	}
-	public HaloMap or(){
-		tempStr.append("|");
-		return this;
-	}
-	public HaloMap in(){
-		tempStr.append(":in");
-		return this;
-	}
-	public HaloMap neq(){
-		tempStr.append(":!=");
-		return this;
-	}
-	public HaloMap gt(){
-		tempStr.append(":>");
-		return this;
-	}
-	public HaloMap ge(){
-		tempStr.append(":>=");
-		return this;
-	}
-	public HaloMap lt(){
-		tempStr.append(":<");
-		return this;
-	}
-	public HaloMap le(){
-		tempStr.append(":<=");
-		return this;
-	}
-	public HaloMap likeAll(){
-		tempStr.append(":%like%");
-		return this;
-	}
-	public HaloMap likeLeft(){
-		tempStr.append(":%like");
-		return this;
-	}
-	public HaloMap like(){
-		tempStr.append(":like");
-		return this;
-	}
-	public HaloMap eq(){
-		tempStr.append(":=");
-		return this;
-	}
-	public HaloMap setValue(Object value){
-		this.set(tempStr.toString(), value);
-		tempStr=new StringBuffer();
-		return this;
-	}
+	
+
 	/**
 	 * @Title: put
 	 * @Description: TODO 给Map设置数组 变参数模式
