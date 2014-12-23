@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import jodd.props.Props;
+
+import org.hibernate.util.PropertiesHelper;
+
+import com.ht.halo.hibernate3.utils.file.FileUtils;
+
 public class PropertiesUtil {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public  static  Map<String,Object> loadProperties(File properties ){
@@ -26,12 +32,18 @@ public class PropertiesUtil {
 		}
 		return map;
 	}
-	public static void main(String[] args) {
-	/*	Map<String,Object> map =PropertiesUtil.loadProperties(new File(
-				FilePathUtil.getClassPath("com.ht.ourally.utils.codegen2.fcy", "htcode.properties")));
-	for(Entry<String, Object> entry:map.entrySet()){
-		System.out.println(entry.getKey()+":"+entry.getValue());
-	}*/
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		Props p = new Props();
+		p.load(FileUtils.getClassPath("halo.hql", "messages_zh_CN.properties"));
+
+		String story = p.getValue("cms.function.assistant");
+/*		Map<String,Object> map =
+				PropertiesUtil.loadProperties(FileUtils.getClassPath("halo.hql", "messages_zh_CN.properties"));
+	   for(Entry<String, Object> entry:map.entrySet()){
+		    System.out.println(entry.getKey()+":"+entry.getValue());
+	  }*/
+	
+	    System.out.println("ZZZZZ::::"+story);
 		
 	}
 }
