@@ -1185,6 +1185,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
+	 * 根据haloView查询.
 	 * 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role
 	 * ${email} ${groupBy} 调用findListByHaloView("ViewTest",new
 	 * HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
@@ -1194,7 +1195,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * .addColumn("userName","password").addOrder("createDate","role");
 	 * 为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
 	 * 并只查询出用户名及密码字段并封装到实体中
-	 * 
+	 * 拼接使用freemarker技术
 	 * @param viewName
 	 *            :haloView的sql文件名,可以加入包名:test.ViewTest(全:halo.view.test.
 	 *            ViewTest.halo)
