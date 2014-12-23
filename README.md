@@ -18,7 +18,8 @@ haloDao
      findListByMap(new HaloMap().set("userName:like","vonchange").set("(createDate:<=",new Date())
       .set("|email:in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
       查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
-###(可以理解空格为:号) 于是(userName:like==(userName like    |email:in== or email in
+###(可以理解空格为:号) 
+      比如(userName:like==(userName like    |email:in== or email in
 ##按haloMap删除
      deleteByMap(new haloMap().set("userName:like","von");
      删除用户名左模糊为von的结果
