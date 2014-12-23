@@ -39,7 +39,6 @@ import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.HqlWithParameter;
 import com.ht.halo.hibernate3.bean.SqlWithParameter;
 import com.ht.halo.hibernate3.feemarker.FreemarkerUtils;
-import com.ht.halo.hibernate3.map.HaloMap;
 
 /**
  * @ClassName: HaloDao

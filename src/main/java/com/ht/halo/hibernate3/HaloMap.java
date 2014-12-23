@@ -1,8 +1,8 @@
-package com.ht.halo.hibernate3.map;
+package com.ht.halo.hibernate3;
 
 import java.util.Map;
 
-import com.ht.halo.hibernate3.HaloDao;
+import com.ht.halo.hibernate3.map.LinkedHashMap;
 
 /**
  * @ClassName: HtMapObject

@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.ht.halo.hibernate3.map.HaloMap;
+import com.ht.halo.hibernate3.HaloMap;
 
 
 public class EntityUtils {
