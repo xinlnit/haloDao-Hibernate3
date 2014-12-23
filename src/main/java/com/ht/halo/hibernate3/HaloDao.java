@@ -203,7 +203,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	/**
 	 * 扩展日期条件.
 	 * 1.daylike,monthlike 当天,当月
-	 * 2.dayge dayle 重某天到某天
+	 * 2.dayge dayle 从某天到某天
 	 * @param extCondtion
 	 * @param like
 	 * @param addOne
@@ -272,10 +272,9 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: analyzeKey
-	 * @Description: TODO 分析key值
+	 * TODO 分析key值.
 	 * @param key
-	 * @return
+	 * @return ColumnWithCondition
 	 */
 	private ColumnWithCondition analyzeKey(String key, Object value) {
 		ColumnWithCondition columnWithCondition = new ColumnWithCondition();
@@ -375,12 +374,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * @Title: getHibernateType
-	 * @Description: TODO 取自锐道hibernateUtil类 获取类型 包含关联的
+	 *TODO 取自锐道hibernateUtil类 获取类型 包含关联的
 	 * @param property
 	 * @param classMetadata
 	 * @param sessionFactory
-	 * @return
+	 * @return Type
 	 */
 	private Type getHibernateType(String property, ClassMetadata classMetadata, SessionFactory sessionFactory) {
 		String[] tokens = StringUtils.split(property, '.');
