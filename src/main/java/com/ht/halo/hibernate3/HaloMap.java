@@ -19,12 +19,16 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
     private int addOrder=0;
     private int addGroup=0;
     private int addHql=0;
+	public static final String ADDNNH = "addNNQ";//添加not null hql
+//	private static final String SPACE = "\u0020";
 	public HaloMap() {
 	}
 	public HaloMap(Map<String, Object> map) {
 		super(map);
 	}
-	
+/*	private String removeAllSpace(String value) {
+		return value.replaceAll(SPACE, "");
+	}*/
 	public HaloMap  set(String key, Object value) {
 		if(key.startsWith(HaloDao.ADDORDER)){
 			addOrder++;
@@ -37,6 +41,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 			super.put(HaloDao.ADDHQL+addHql, value);
 			return this;	
 		}
+	
 		if(key.startsWith(HaloDao.ADDCOLUMN)){
 			addColumn++;
 			super.put(HaloDao.ADDCOLUMN+addColumn, value);
