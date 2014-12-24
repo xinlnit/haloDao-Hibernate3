@@ -42,7 +42,7 @@ haloDao
 ##可使用ge,gt等作为条件
         可以: new HaloMap().set(createDate:month>=,'2012-11').set(createDate:month<=,'2014-14').
         也可以:new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthle,'2014-14').
-##只查询某些字段并封装到实体
+##只查询某些字段并封装到实体:addColumn
           findListByMap(new HaloMap().set("userName:like","vonchange").addColumn("userName","passWord")
           .addColumn("email");
           查询是实体中用户,密码,邮箱字段并封装到实体中(不支持懒加载)
