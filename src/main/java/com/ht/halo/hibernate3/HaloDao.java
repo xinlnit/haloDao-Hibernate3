@@ -1087,7 +1087,6 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 直接获得文件中的sql语句的SQLQuery,不支持动态拼接.
-	 * 
 	 * @param haloview文件名
 	 * @param parameter
 	 * @return SQLQuery
@@ -1162,6 +1161,15 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 					value = convert(columnWithCondition);
 				}
 				sqlPrmMap.put(columnWithCondition.getColumnName(), value);
+				continue;// 添加参数
+			}
+			if (columnWithCondition.getCondition().equals(HQL)) {
+				String hqlKey=columnWithCondition.getColumnName();
+				String hqlValue=getHqlSnippet(hqlKey);
+			     HaloMap map =	getHqlSnippetMap(hqlValue, value);
+			     sqlPrmMap.putAll(map);
+			     hqlValue=TableUtil.toTable(hqlValue);
+				  sql.append(String.format(" and (%s) ", hqlValue));
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
@@ -1302,7 +1310,6 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * haloView的分页查询
-	 * 
 	 * @param viewName
 	 * @param page
 	 * @param parameter

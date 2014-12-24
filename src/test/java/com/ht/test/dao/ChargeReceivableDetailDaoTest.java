@@ -49,6 +49,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 		.set("houseOwnerId", "4028813a47f2772c0147f278059605f3")
 		.addGroup("feeItemId")
 		.addGroup("houseOwnerId")
+		.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
 		.set("feeItemName:like", "水")
 		);
 		System.out.println(HtGson.getGsonIn("entities").toJson(page));
@@ -132,13 +133,13 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	   List<ChargeReceivableDetail> chargeReceivableDetails =   chargeReceivableDetailDao.findListByHaloView("ViewChargeReceivableDetail",
 			   new HaloMap()
 	  // .addParameter("houseId", "4028813a47f2772c0147f2780578056a")
-	   .set("houseId:data", "4028813a47f2772c0147f2780578056a")
+	   .set("houseId:data", "fcy.data.houseId")
 	   .set("houseOwnerName:in", new String[]{"李树平","李树平"})
 	   .set("createDate:<=", "2014-12-12")
 	   
 	   //.addHql("houseOwnerName =:aa")
-	   .addHql("fcy.charge.chargeReceivableDetail.ab")
-	   .set("aa:prm", "李树平")
+	   .sets("fcy.charge.chargeReceivableDetail.ac:hql","李树平")
+	   //.set("aa:prm", "李树平")
 	  // .set("houseOwnerName:in", new String[]{"33","44"})
 	 //  .addSql("house_owner_name in (:aa)")
 	  // .addParameter("aa:prm#string", new String[]{"李树平","李树平"})
