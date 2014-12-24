@@ -68,6 +68,9 @@ public class PropertiesUtil {
 	public    String  getHql(String key){
 		return " "+getValue(key,"hallo")+" ";
 	}
+	public    String  getData(String key){
+		return getValue(key,"hallo");
+	}
 	public static void main(String[] args) throws FileNotFoundException, IOException {
           PropertiesUtil propertiesUtil= new PropertiesUtil(
         		  FileUtils.getClassPath("halo.hql", "fcy.properties"));

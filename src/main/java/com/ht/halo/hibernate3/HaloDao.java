@@ -487,7 +487,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		   String fileName=StringUtils.substringBefore(value, ".");
 		   String property=StringUtils.substringAfter(value, ".");
 	    	PropertiesUtil propertiesUtil =new PropertiesUtil(FileUtils.getClassPath("halo.data", fileName+".properties"));
-			return propertiesUtil.getHql(property);
+			return propertiesUtil.getData(property);
 	    }
    private static HaloMap getHqlSnippetMap(String hqlSnippet,Object value){
 	   Object[] newValue=null;
@@ -994,8 +994,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 获得更新hql
-	 * 
+	 * 获得更新hql 
 	 * @param entity
 	 * @param parameter
 	 * @return String
@@ -1031,7 +1030,6 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 根据haloMap更新不为null的实体
-	 * 
 	 * @param entity
 	 * @param parameter
 	 * @return 更新条数
@@ -1056,7 +1054,6 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 自定义hql方式更新实体
-	 * 
 	 * @param entity
 	 * @return 更新条数
 	 */
@@ -1174,12 +1171,13 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
 				boolean flag=false;
-				if(String.valueOf(value).startsWith("data.")){
+				System.out.println(String.valueOf(value));
+				if(StringUtils.indexOf(String.valueOf(value), ".data.")!=-1){
 					flag=true;
 				}//前缀为data的不转换
 				value = getDataSnippet(String.valueOf(value));
 				if (!flag) {
-					value = TableUtil.toTable(String.valueOf(value));
+					value =SPACE+ TableUtil.toTable(String.valueOf(value))+SPACE;
 				}
 				tplMap.put(columnWithCondition.getColumnName(), value);
 				continue;// 添加参数

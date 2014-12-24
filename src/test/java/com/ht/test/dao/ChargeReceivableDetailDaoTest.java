@@ -136,7 +136,6 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	   .set("houseId:data", "fcy.data.houseId")
 	   .set("houseOwnerName:in", new String[]{"李树平","李树平"})
 	   .set("createDate:<=", "2014-12-12")
-	   
 	   //.addHql("houseOwnerName =:aa")
 	   .sets("fcy.charge.chargeReceivableDetail.ac:hql","李树平")
 	   //.set("aa:prm", "李树平")
