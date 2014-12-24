@@ -33,8 +33,7 @@ haloDao
      而userName:5like为右模糊查询 userName:5like5 为全模糊查询
 ##扩展和日期相关条件查询
      查询2014年12月份:new HaloMap().set(createDate:monthlike,'2014-12').
-     查询从2012年11月到2014年12月 new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthle,'2014-14').
-     
+     查询从2012年11月到2014年12月 new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthle,'2014-14').  
      其中前缀为:day(dd) 天 mounth(MM)月 year(yyyy)年 hour(HH) 小时  minute(mm) 分 second(ss) 秒
 ##查询第一条数据
         findFirstByMap(new HaloMap().set("userName","vonchange")).
@@ -74,7 +73,7 @@ haloDao
        addOrder("createdate")==set("addOrder","createdate")
        addGroup("role")==set("addGroup","role") 
        用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
- ##无特殊字符化
+ ##可完全无特殊字符,用数字表示
        5==% 比如全模糊5like5==%like% (键盘对应)
        9==( 0==) (键盘对应)
        3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
