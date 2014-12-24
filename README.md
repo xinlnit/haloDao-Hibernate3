@@ -48,12 +48,13 @@ haloDao
           查询是实体中用户,密码,邮箱字段并封装到实体中(不支持懒加载)
 ##分页支持groupBy
          findPageByMap(new HaloMap().set("userName:like","vonchange").addGroup("role"));
-##hql其他
 ###order by
           findPageByMap(new HaloMap().set("userName:like","vonchange").addGroup("role").addOrderDesc("createDate")
           .addOrder("userName"));
-###灵活单不安全接口 addHql
-           findPageByMap(new HaloMap().addHql(" and userName like :userName").set("userName:prm":"von"+"%");
+###灵活安全实现hql拼接
+           findPageByMap(new HaloMap().sets("fcy.user.BaseUser.aa:hql","von"+"%","123@ww.com").set("userName:prm":"von"+"%");
+           在 halo.hql中 fcy.properties中 编写user.BaseUser.aa=userName like :userName and email =:email
+           默认拼接and (%s) 中%s的 hql,key为文件名+属性key名,推荐 模块名+实体名+aa到zz (注:起个名很费脑啊!所以简单暴力下)
 ###日期可传字符
         new HaloMap().set(createDate:ge,'2012-11').set(createDate:ge,'2012年11月12日'))
         对于不支持格式可以set(createDate:ge?yy年11月,'12年11月')
@@ -65,19 +66,19 @@ haloDao
         为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
         并只查询出用户名及密码字段并封装到实体中
         其中拼接文件中拼接字符串使用了freemarker
-#其他说明
-##无特殊字符化
-     5==% 比如全模糊5like5==%like% (键盘对应)
-     9==( 0==) (键盘对应)
-     3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
-     6==:    1==|(形象一) 8==.
-      注:生成的条件包含QWRTYUIOP对应键盘上方数字
-##基于sql实现的haloView 中addHql及haloView传的sql片段无数据库字段
-      比如:addHql(" and userName =:userName") set("aa:data","and userName =:userName")
+##基于sql实现的haloView 中hql拼接  防hql 骆驼命名法_后转为大写 
+          sets("fcy.user.BaseUser.aa:hql","von"+"%","123@ww.com").set("userName:prm":"von"+"%");
+          在 halo.hql中 fcy.properties中一样 为user.BaseUser.aa=userName like :userName and email =:email
 ##实现原理全部基于字符串,可值前台传map并便于修改
-      addColumn("userName")==set("addColumn","userName") 
-      addOrder("createdate")==set("addOrder","createdate")
-      addGroup("role")==set("addGroup","role") 
-      用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
+       addColumn("userName")==set("addColumn","userName") 
+       addOrder("createdate")==set("addOrder","createdate")
+       addGroup("role")==set("addGroup","role") 
+       用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
+ ##无特殊字符化
+       5==% 比如全模糊5like5==%like% (键盘对应)
+       9==( 0==) (键盘对应)
+       3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
+       6==:    1==|(形象一) 8==.
+       注:生成的条件包含QWRTYUIOP对应键盘上方数字
  ##基于haloView的视图对应实体
-     需要加入@Entity和@Id注解,其他不需
+       需要加入@Entity和@Id注解,其他不需
