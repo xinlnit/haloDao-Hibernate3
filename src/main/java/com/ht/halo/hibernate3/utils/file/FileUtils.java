@@ -15,53 +15,57 @@ import org.apache.commons.lang.StringUtils;
  * @date 2014-4-26 上午11:08:42
  */
 public class FileUtils extends org.apache.commons.io.FileUtils {
-   private static final String ENCODING="UTF-8";
-   
-   private static String getFilePath(String packageName, String name) {
+	private static final String ENCODING = "UTF-8";
+
+	private static String getFilePath(String packageName, String name) {
 		String path = packageName.replaceAll("\\.", "/");
-		return "/" + path + "/" + name;
+		return  path + "/" + name;//"/" +
 	}
-   public static File getClassPath(String packageName,String name){
-	   String path= FileUtils.class.getClassLoader().getResource("").getPath();
-	   path= path+getFilePath(packageName,name);
-	   return new File(path);
-   }
-   public static String writeToString(File file){
-	   String str=null;
-	   try {
-		   str= readFileToString(file,ENCODING);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+
+	public static File getClassPath(String packageName, String name) {
+		
+		String path =Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		File file = new File(path+getFilePath(packageName, name));
+		return file;
 	}
-	   return str;
+   public static void main(String[] args) {
+	 String path=  Thread.currentThread().getContextClassLoader().getResource("").getPath();
+	   System.out.println(path);
    }
-	 /**
+	public static String writeToString(File file) {
+		String str = null;
+		try {
+			str = readFileToString(file, ENCODING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return str;
+	}
+
+	/**
 	 * @Title: filterOutFile
 	 * @Description: TODO 过滤输出文件:如果没有路径文件夹 创建之
 	 * @param outFile
 	 * @return
 	 */
-	public  static  File newOutFile(File outFile) {	 
-		 return createFolder(outFile);
-	 }
-	 public  static File newOutFile(String outfilePath) {	 
-		 return createFolder(new File(outfilePath));
-	 }
-	
-	public  static  File  createFolder(File targetFile){
-		String path=targetFile.getAbsolutePath();
-		String folder=	 StringUtils.substringBefore(path, targetFile.getName());
-		File folderFile=new File(folder);
-			if (!folderFile.exists()) {
-				folderFile.mkdirs();
-			}
-			return targetFile;
+	public static File newOutFile(File outFile) {
+		return createFolder(outFile);
 	}
-	
 
-	
-	
+	public static File newOutFile(String outfilePath) {
+		return createFolder(new File(outfilePath));
+	}
+
+	public static File createFolder(File targetFile) {
+		String path = targetFile.getAbsolutePath();
+		String folder = StringUtils.substringBefore(path, targetFile.getName());
+		File folderFile = new File(folder);
+		if (!folderFile.exists()) {
+			folderFile.mkdirs();
+		}
+		return targetFile;
+	}
 
 	/**
 	 * 创建文件夹
@@ -100,13 +104,10 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		return folder.getAbsolutePath();
 	}
 
-
-
-
-
 	/**
 	 * @description 读取文本文件的内容
-	 * @param curfile 文本文件路径
+	 * @param curfile
+	 *            文本文件路径
 	 * @return 返回文件内容
 	 */
 	public static String readFile(String curfile) {
@@ -135,7 +136,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * @description 取指定文件的扩展名
-	 * @param filePathName 文件路径
+	 * @param filePathName
+	 *            文件路径
 	 * @return 扩展名
 	 */
 	public static String getFileExt(String filePathName) {
@@ -149,7 +151,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
 	/**
 	 * @description 读取文件大小
-	 * @param filename 指定文件路径
+	 * @param filename
+	 *            指定文件路径
 	 * @return 文件大小
 	 */
 	public static int getFileSize(String filename) {
@@ -161,8 +164,6 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 			return 0;
 		}
 	}
-
-
 
 	/**
 	 * @Description:生成新的文件名
@@ -182,9 +183,6 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		return StringUtils.remove(UUID.randomUUID().toString(), '-') + extName;// e
 	}
 
-	
-
-
 	/**
 	 * @Description:判断文件是否存在
 	 * @param @param fileName 文件名
@@ -200,7 +198,5 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		else
 			return false;
 	}
-
-	
 
 }

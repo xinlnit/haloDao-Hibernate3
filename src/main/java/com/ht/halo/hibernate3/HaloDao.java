@@ -31,6 +31,7 @@ import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.DateUtils;
 import com.ht.halo.hibernate3.base.EntityUtils;
 import com.ht.halo.hibernate3.base.MyBeanUtils;
+import com.ht.halo.hibernate3.base.MyUUID;
 import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.base.TableUtil;
 import com.ht.halo.hibernate3.base.Updater;
@@ -50,12 +51,11 @@ import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
  */
 public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Serializable> {
 	private static final Log logger = LogFactory.getLog(HaloDao.class);
-	private static final String ADDSELECT = "addSelect";// 查询表
-
 	public static final String ADDCOLUMN = "addColumn";// 添加查询字段,默认查询出主键
 	public static final String ADDORDER = "addOrder";// 添加排序
 	public static final String ADDGROUP = "addGroup";// 添加排序
 	public static final String ADDHQL = "addHql";// 添加查询hql片段的key值,比如fcy.user.baseUser.a(最前是文件名,放到halo.hql中)
+	public static final String HQL = "hql";
 	private static final String PRM = "prm";// 添加查询hql中的参数标识
 	private static final String DATA = "data";// haloView中的模板数据
 	private static final String SPACE = "\u0020";
@@ -70,7 +70,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private static final String[] NUMS = new String[] { "1", "3", "5", "6", "7", "8", "9", "0" };
 	private static final String[] NUMREPLACE = new String[] { "|", "#", "%", ":", "?", ".", "(", ")" };
 	private static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
-
+	
 	private SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
@@ -476,21 +476,65 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	    * 从属性文件或得hql片段
 	   * @param value
 	   * @return   hql语句片段
-	    */
-	
+	    */	
 	private String getHqlSnippet(String value){
 		   String fileName=StringUtils.substringBefore(value, ".");
 		   String property=StringUtils.substringAfter(value, ".");
 	    	PropertiesUtil propertiesUtil =new PropertiesUtil(FileUtils.getClassPath("halo.hql", fileName+".properties"));
 			return propertiesUtil.getHql(property);
 	    }
+	private String getDataSnippet(String value){
+		   String fileName=StringUtils.substringBefore(value, ".");
+		   String property=StringUtils.substringAfter(value, ".");
+	    	PropertiesUtil propertiesUtil =new PropertiesUtil(FileUtils.getClassPath("halo.data", fileName+".properties"));
+			return propertiesUtil.getHql(property);
+	    }
+   private static HaloMap getHqlSnippetMap(String hqlSnippet,Object value){
+	   Object[] newValue=null;
+	   if(value instanceof Object[]){
+		   newValue=(Object[]) value;
+	   }else{
+		   newValue= new Object[]{value};
+	   }
+	    HaloMap map = new HaloMap();
+	    StringBuffer sb =  new StringBuffer();
+	    boolean flag=false;
+	    int j=0;
+		for (int i = 0; i < hqlSnippet.length(); i++) {
+			char cur = hqlSnippet.charAt(i);
+			if(!Character.isLetter(cur)){
+				if(flag){
+					map.put(sb.toString(), newValue[j]);
+					sb =  new StringBuffer();
+					j++;
+				}
+				flag=false;
+			}
+			if(flag){
+				sb.append(cur);
+			}
+			if(cur==':'){
+				flag = true;
+			}
+			if(cur=='?'){
+				map.put(MyUUID.create(), newValue[j]);
+				sb =  new StringBuffer();
+				j++;
+			}
+		}
+	    return map;
+	  
+   }
+
+	public HqlWithParameter createQueryHql(Map<String, ?> parameter) {
+		return createQueryHql(parameter, null);
+	}
 	/**
 	 * 生成动态hql及其参数Map.
-	 * 
 	 * @param parameter
 	 * @return HqlWithParameter
 	 */
-	public HqlWithParameter createQueryHql(Map<String, ?> parameter) {
+	private HqlWithParameter createQueryHql(Map<String, ?> parameter,String addSelect) {
 		HqlWithParameter hqlWithParameter = new HqlWithParameter();
 		StringBuffer hql = new StringBuffer();
 		StringBuffer hqlSelect = new StringBuffer();
@@ -502,9 +546,16 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 
-		if (null == parameter || null == parameter.get(ADDSELECT)) {
+		if (null == parameter || null == addSelect) {
 			hqlSelect.append(String.format(" from %s where 1=1 ", entityName));
+		}else{
+			if (addSelect.indexOf("where") == -1) {
+				hqlSelect.append(String.format(" %s where 1=1 ", addSelect));
+			} else {
+				hqlSelect.append(String.format(" %s ", addSelect));
+			}
 		}
+		
 		if (null != parameter) {
 			for (Entry<String, ?> entry : parameter.entrySet()) {
 				String key = filterValue(entry.getKey());
@@ -515,14 +566,6 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				}
 				if (key.startsWith(ADDCOLUMN)) {
 					column = getColumn(column, value);
-					continue;
-				}
-				if (ADDSELECT.equals(key)) {
-					if (String.valueOf(value).indexOf("where") == -1) {
-						hqlSelect.append(String.format(" %s where 1=1 ", value));
-					} else {
-						hqlSelect.append(String.format(" %s ", value));
-					}
 					continue;
 				}
 				if (key.startsWith(ADDORDER)) {
@@ -558,6 +601,14 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 						value = convert(columnWithCondition);
 					}
 					hqlPrmMap.put(columnWithCondition.getColumnName(), value);
+					continue;// 添加参数
+				}
+				if (columnWithCondition.getCondition().equals(HQL)) {
+					String hqlKey=columnWithCondition.getColumnName();
+					String hqlValue=getHqlSnippet(hqlKey);
+					hql.append(String.format(" and (%s) ", hqlValue));
+				     HaloMap map =	getHqlSnippetMap(hqlValue, value);
+				     hqlPrmMap.putAll(map);
 					continue;// 添加参数
 				}
 				if (null != columnWithCondition.getIfQuery()) {
@@ -874,8 +925,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 		String selectHql = String.format("delete %s ", entityName);
-		parameter.put(ADDSELECT, selectHql);
-		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
+		HqlWithParameter hqlWithParameter = createQueryHql(parameter,selectHql);
 		String hql = hqlWithParameter.getHql();
 		String tempHql = StringUtils.substringAfter(hql, "where 1=1");
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
@@ -992,9 +1042,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		if (null == updateHql) {
 			return -1;
 		}
-		newParameter.put(ADDSELECT, updateHql);
 		newParameter.putAll(parameter);
-		HqlWithParameter hqlWithParameter = createQueryHql(newParameter);
+		HqlWithParameter hqlWithParameter = createQueryHql(newParameter,updateHql);
 		String hql = hqlWithParameter.getHql();
 		String tempHql = StringUtils.substringAfter(hql, "where 1=1");
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
@@ -1116,7 +1165,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
-				if (value instanceof String) {
+				boolean flag=false;
+				if(String.valueOf(value).startsWith("data.")){
+					flag=true;
+				}//前缀为data的不转换
+				value = getDataSnippet(String.valueOf(value));
+				if (!flag) {
 					value = TableUtil.toTable(String.valueOf(value));
 				}
 				tplMap.put(columnWithCondition.getColumnName(), value);

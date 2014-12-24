@@ -24,8 +24,9 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
         long a= System.currentTimeMillis();
 		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
 		.set("houseId", "4028813a47f2772c0147f2780578056a")
-		.addHql("fcy.charge.chargeReceivableDetail.aa")
-		.set("houseOwnerName:prm", "李树")
+		//.addHql("fcy.charge.chargeReceivableDetail.aa")
+		//.set("houseOwnerName:prm", "李树")
+		.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
 		 //  .set("houseOwnerName:in", new String[]{"33","44"})
 		//.addColumn("houseOwnerName")
 		); 
@@ -128,11 +129,13 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
    }
    @Test
    public void testFindListWithHaloView(){
-	   List<ChargeReceivableDetail> chargeReceivableDetails =   chargeReceivableDetailDao.findListByHaloView("ViewChargeReceivableDetail",new HaloMap()
+	   List<ChargeReceivableDetail> chargeReceivableDetails =   chargeReceivableDetailDao.findListByHaloView("ViewChargeReceivableDetail",
+			   new HaloMap()
 	  // .addParameter("houseId", "4028813a47f2772c0147f2780578056a")
 	   .set("houseId:data", "4028813a47f2772c0147f2780578056a")
 	   .set("houseOwnerName:in", new String[]{"李树平","李树平"})
 	   .set("createDate:<=", "2014-12-12")
+	   
 	   //.addHql("houseOwnerName =:aa")
 	   .addHql("fcy.charge.chargeReceivableDetail.ab")
 	   .set("aa:prm", "李树平")
@@ -152,6 +155,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	   Page<ChargeReceivableDetail> page= new Page<ChargeReceivableDetail>(7, 1);
 		page=chargeReceivableDetailDao.findPageByHaloView("test.ViewTest",page, new HaloMap()
 		//.set("houseOwnerId", "4028813a47f2772c0147f278059605f3")
+		.addData("houseId", "fcy.test")
 		.addParameter("houseId", "4028813a47f2772c0147f2780578056a")
 		  .set("createDate:<=", "2014-12-12")
 		  .addOrderDesc("createDate")
