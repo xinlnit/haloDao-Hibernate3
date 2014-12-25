@@ -22,15 +22,16 @@ haloDao
      
      一般我们不会查询值为null值或者为空值的条件.
      比如:findListByMap(new HaloMap().set("userName","vonchange").set("password","123").set("email",null)).
-     查询用户名为vonchange和password为123的结果集.若要查询email为null 则为set("email:=:in",null).
+     查询用户名为vonchange和password为123的结果集.若要查询email为null 则为set("email:eq:in",null).
      
-     比如:findListByMap(new HaloMap().set("userName:like","vonchange").set("createDate:<=",new Date())
+     比如:findListByMap(new HaloMap().set("userName:like","vonchange").set("createDate:le",new Date())
      .set("email:in",new String[]{"123@vonchange.com","345@vonchange.com"}))
      查询用户名左模糊于vonchange,创建时间小于当前,邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
      
-     findListByMap(new HaloMap().set("userName:like","vonchange").set("(createDate:<=",new Date())
+     findListByMap(new HaloMap().set("userName:like","vonchange").set("(createDate:le",new Date())
       .set("|email:in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
       查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
+    
 ###(可以理解空格为:号) 
       比如(userName:like==(userName like    |email:in)== or email in)
 ##按haloMap删除
