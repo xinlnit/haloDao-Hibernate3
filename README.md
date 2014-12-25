@@ -19,7 +19,7 @@ haloDao
       .set("|email:in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
       查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
 ###(可以理解空格为:号) 
-      比如(userName:like==(userName like    |email:in== or email in
+      比如(userName:like==(userName like    |email:in)== or email in)
 ##按haloMap删除
      deleteByMap(new haloMap().set("userName:like","von");
      删除用户名左模糊为von的结果
@@ -59,9 +59,11 @@ haloDao
         对于不支持格式可以set(createDate:ge?yy年11月,'12年11月')
 ##基于sql的haloView可变参数视图实现
         首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role ${email} ${groupBy}
-        调用findListByHaloView("ViewTest",new HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
-        .set("email:data"," and email=:eamil ").set("email:prm","123@ww.com").set("userName:like","von")
+        调用findListByHaloView("ViewTest",new HaloMap().set("role:prm",1).set("groupBy:data","fcy.user.BaseUser.aa")
+        .set("email:data","fcy.user.BaseUser.bb").set("email:prm","123@ww.com").set("userName:like","von")
         .addColumn("userName","password").addOrder("createDate","role");
+        //halo.data文件夹内fcy.properties 中 user.BaseUser.aa=group by role user.BaseUser.ab=and email=:email
+        @@如果要传非sql数据要:前加data:比如data.user.BaseUser.aa
         为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
         并只查询出用户名及密码字段并封装到实体中
         其中拼接文件中拼接字符串使用了freemarker
