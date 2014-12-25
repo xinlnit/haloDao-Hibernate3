@@ -70,7 +70,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private static final String[] NUMS = new String[] { "1", "3", "5", "6", "7", "8", "9", "0" };
 	private static final String[] NUMREPLACE = new String[] { "|", "#", "%", ":", "?", ".", "(", ")" };
 	private static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
-	
+
 	private SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
@@ -272,6 +272,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 分析key值.
+	 * 
 	 * @param key
 	 * @return ColumnWithCondition
 	 */
@@ -463,6 +464,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 转换成当前字段类型 如果值是String类型但字段类型不为String
+	 * 
 	 * @param column
 	 * @param value
 	 * @return
@@ -472,69 +474,75 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		String proType = cm.getPropertyType(column).getName();
 		return convert(new ColumnWithCondition().setType(proType).setValue(value));
 	}
-	   /**
-	    * 从属性文件或得hql片段
-	   * @param value
-	   * @return   hql语句片段
-	    */	
-	private String getHqlSnippet(String value){
-		   String fileName=StringUtils.substringBefore(value, ".");
-		   String property=StringUtils.substringAfter(value, ".");
-	    	PropertiesUtil propertiesUtil =new PropertiesUtil(FileUtils.getClassPath("halo.hql", fileName+".properties"));
-			return propertiesUtil.getHql(property);
-	    }
-	private String getDataSnippet(String value){
-		   String fileName=StringUtils.substringBefore(value, ".");
-		   String property=StringUtils.substringAfter(value, ".");
-	    	PropertiesUtil propertiesUtil =new PropertiesUtil(FileUtils.getClassPath("halo.data", fileName+".properties"));
-			return propertiesUtil.getData(property);
-	    }
-   private static HaloMap getHqlSnippetMap(String hqlSnippet,Object value){
-	   Object[] newValue=null;
-	   if(value instanceof Object[]){
-		   newValue=(Object[]) value;
-	   }else{
-		   newValue= new Object[]{value};
-	   }
-	    HaloMap map = new HaloMap();
-	    StringBuffer sb =  new StringBuffer();
-	    boolean flag=false;
-	    int j=0;
+
+	/**
+	 * 从属性文件或得hql片段
+	 * 
+	 * @param value
+	 * @return hql语句片段
+	 */
+	private String getHqlSnippet(String value) {
+		String fileName = StringUtils.substringBefore(value, ".");
+		String property = StringUtils.substringAfter(value, ".");
+		PropertiesUtil propertiesUtil = new PropertiesUtil(FileUtils.getClassPath("halo.hql", fileName + ".properties"));
+		return propertiesUtil.getHql(property);
+	}
+
+	private String getDataSnippet(String value) {
+		String fileName = StringUtils.substringBefore(value, ".");
+		String property = StringUtils.substringAfter(value, ".");
+		PropertiesUtil propertiesUtil = new PropertiesUtil(FileUtils.getClassPath("halo.data", fileName + ".properties"));
+		return propertiesUtil.getData(property);
+	}
+
+	private static HaloMap getHqlSnippetMap(String hqlSnippet, Object value) {
+		Object[] newValue = null;
+		if (value instanceof Object[]) {
+			newValue = (Object[]) value;
+		} else {
+			newValue = new Object[] { value };
+		}
+		HaloMap map = new HaloMap();
+		StringBuffer sb = new StringBuffer();
+		boolean flag = false;
+		int j = 0;
 		for (int i = 0; i < hqlSnippet.length(); i++) {
 			char cur = hqlSnippet.charAt(i);
-			if(!Character.isLetter(cur)){
-				if(flag){
+			if (!Character.isLetter(cur)) {
+				if (flag) {
 					map.put(sb.toString(), newValue[j]);
-					sb =  new StringBuffer();
+					sb = new StringBuffer();
 					j++;
 				}
-				flag=false;
+				flag = false;
 			}
-			if(flag){
+			if (flag) {
 				sb.append(cur);
 			}
-			if(cur==':'){
+			if (cur == ':') {
 				flag = true;
 			}
-			if(cur=='?'){
+			if (cur == '?') {
 				map.put(MyUUID.create(), newValue[j]);
-				sb =  new StringBuffer();
+				sb = new StringBuffer();
 				j++;
 			}
 		}
-	    return map;
-	  
-   }
+		return map;
+
+	}
 
 	public HqlWithParameter createQueryHql(Map<String, ?> parameter) {
 		return createQueryHql(parameter, null);
 	}
+
 	/**
 	 * 生成动态hql及其参数Map.
+	 * 
 	 * @param parameter
 	 * @return HqlWithParameter
 	 */
-	private HqlWithParameter createQueryHql(Map<String, ?> parameter,String addSelect) {
+	private HqlWithParameter createQueryHql(Map<String, ?> parameter, String addSelect) {
 		HqlWithParameter hqlWithParameter = new HqlWithParameter();
 		StringBuffer hql = new StringBuffer();
 		StringBuffer hqlSelect = new StringBuffer();
@@ -548,14 +556,14 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 		if (null == parameter || null == addSelect) {
 			hqlSelect.append(String.format(" from %s where 1=1 ", entityName));
-		}else{
+		} else {
 			if (addSelect.indexOf("where") == -1) {
 				hqlSelect.append(String.format(" %s where 1=1 ", addSelect));
 			} else {
 				hqlSelect.append(String.format(" %s ", addSelect));
 			}
 		}
-		
+
 		if (null != parameter) {
 			for (Entry<String, ?> entry : parameter.entrySet()) {
 				String key = filterValue(entry.getKey());
@@ -577,7 +585,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 					continue;
 				}
 				if (key.startsWith(ADDHQL)) {
-					value=getHqlSnippet(value.toString());
+					value = getHqlSnippet(value.toString());
 					hql.append(String.format(" and (%s) ", value));
 					continue;// 灵活安全实现接口:根据属性key值 获得hql片段
 				}
@@ -604,11 +612,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 					continue;// 添加参数
 				}
 				if (columnWithCondition.getCondition().equals(HQL)) {
-					String hqlKey=columnWithCondition.getColumnName();
-					String hqlValue=getHqlSnippet(hqlKey);
+					String hqlKey = columnWithCondition.getColumnName();
+					String hqlValue = getHqlSnippet(hqlKey);
 					hql.append(String.format(" and (%s) ", hqlValue));
-				     HaloMap map =	getHqlSnippetMap(hqlValue, value);
-				     hqlPrmMap.putAll(map);
+					HaloMap map = getHqlSnippetMap(hqlValue, value);
+					hqlPrmMap.putAll(map);
 					continue;// 添加参数
 				}
 				if (null != columnWithCondition.getIfQuery()) {
@@ -853,7 +861,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 生成SQLQuery
+	 * 生成SQLQuery.
 	 * 
 	 * @param sql
 	 * @param 可变参数
@@ -925,7 +933,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 		String selectHql = String.format("delete %s ", entityName);
-		HqlWithParameter hqlWithParameter = createQueryHql(parameter,selectHql);
+		HqlWithParameter hqlWithParameter = createQueryHql(parameter, selectHql);
 		String hql = hqlWithParameter.getHql();
 		String tempHql = StringUtils.substringAfter(hql, "where 1=1");
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
@@ -994,7 +1002,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 获得更新hql 
+	 * 获得更新hql
+	 * 
 	 * @param entity
 	 * @param parameter
 	 * @return String
@@ -1030,6 +1039,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 根据haloMap更新不为null的实体
+	 * 
 	 * @param entity
 	 * @param parameter
 	 * @return 更新条数
@@ -1041,7 +1051,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			return -1;
 		}
 		newParameter.putAll(parameter);
-		HqlWithParameter hqlWithParameter = createQueryHql(newParameter,updateHql);
+		HqlWithParameter hqlWithParameter = createQueryHql(newParameter, updateHql);
 		String hql = hqlWithParameter.getHql();
 		String tempHql = StringUtils.substringAfter(hql, "where 1=1");
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
@@ -1054,6 +1064,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 自定义hql方式更新实体
+	 * 
 	 * @param entity
 	 * @return 更新条数
 	 */
@@ -1084,6 +1095,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 直接获得文件中的sql语句的SQLQuery,不支持动态拼接.
+	 * 
 	 * @param haloview文件名
 	 * @param parameter
 	 * @return SQLQuery
@@ -1134,7 +1146,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				continue;
 			}
 			if (key.startsWith(ADDHQL)) {
-				value=getHqlSnippet(value.toString());
+				value = getHqlSnippet(value.toString());
 				sql.append(String.format(" and (%s) ", TableUtil.toTable(value.toString())));
 				continue;// 灵活但不安全接口:sql查询片段
 			}
@@ -1161,25 +1173,29 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(HQL)) {
-				String hqlKey=columnWithCondition.getColumnName();
-				String hqlValue=getHqlSnippet(hqlKey);
-			     HaloMap map =	getHqlSnippetMap(hqlValue, value);
-			     sqlPrmMap.putAll(map);
-			     hqlValue=TableUtil.toTable(hqlValue);
-				  sql.append(String.format(" and (%s) ", hqlValue));
+				String hqlKey = columnWithCondition.getColumnName();
+				String hqlValue = getHqlSnippet(hqlKey);
+				HaloMap map = getHqlSnippetMap(hqlValue, value);
+				sqlPrmMap.putAll(map);
+				hqlValue = TableUtil.toTable(hqlValue);
+				sql.append(String.format(" and (%s) ", hqlValue));
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
-				boolean flag=false;
-				System.out.println(String.valueOf(value));
-				if(StringUtils.indexOf(String.valueOf(value), ".data.")!=-1){
-					flag=true;
-				}//前缀为data的不转换
-				value = getDataSnippet(String.valueOf(value));
-				if (!flag) {
-					value =SPACE+ TableUtil.toTable(String.valueOf(value))+SPACE;
+				boolean flag = false;
+				if (value instanceof String) {
+					String valueStr = String.valueOf(value);
+					if (StringUtils.indexOf(valueStr, ".data.") != -1) {
+						flag = true;
+					}// 前缀为data的不转换
+					value = getDataSnippet(valueStr);
+					if (!flag) {
+						value = SPACE + TableUtil.toTable(String.valueOf(value)) + SPACE;
+					}
+					tplMap.put(columnWithCondition.getColumnName(), value);
+				} else {
+					tplMap.put(columnWithCondition.getColumnName(), value);
 				}
-				tplMap.put(columnWithCondition.getColumnName(), value);
 				continue;// 添加参数
 			}
 			if (null != columnWithCondition.getIfQuery()) {
@@ -1256,17 +1272,16 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * 根据haloView查询.
-	 * 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role
-	 * ${email} ${groupBy} 调用findListByHaloView("ViewTest",new
+	 * 根据haloView查询. 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user
+	 * where role=:role ${email} ${groupBy} 调用findListByHaloView("ViewTest",new
 	 * HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
 	 * .set("email:data"
 	 * ," and email=:eamil ").set("email:prm","123@ww.com").set(
 	 * "userName:like","von")
 	 * .addColumn("userName","password").addOrder("createDate","role");
 	 * 为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
-	 * 并只查询出用户名及密码字段并封装到实体中
-	 * 拼接使用freemarker技术
+	 * 并只查询出用户名及密码字段并封装到实体中 拼接使用freemarker技术
+	 * 
 	 * @param viewName
 	 *            :haloView的sql文件名,可以加入包名:test.ViewTest(全:halo.view.test.
 	 *            ViewTest.halo)
@@ -1308,6 +1323,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * haloView的分页查询
+	 * 
 	 * @param viewName
 	 * @param page
 	 * @param parameter

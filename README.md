@@ -1,12 +1,25 @@
 haloDao
 =======
 
-基于hibernate的通用Dao实现
+基于hibernate的通用Dao组件实现
 --------
-该通用dao层基于hql和sql实现,很容易扩展基于其他orm或者jdbc,并容易在前台直接该变查询条件
+#该通用dao层基于hql和sql语句实现,很容易扩展成基于其他orm或者jdbc的Dao层,并容易在前台直接改变查询条件,
+  并有良好的安全性及灵活性
 -------
-##主要实现了:
-##动态hql的实现
+#简述
+         1.前台容易修改查询条件.该通用dao主要是像(Criteria Query)一样实现了动态条件查询,不过不同处在于,查询字段条件等全部在
+         一个HaloMap的Map对象的key值中,value值为字段值,于是在前台传json对象封装到Map对象类便可查询.
+         修改前台json便可更改查询条件.
+         2.免掉了判断字段是否为空的大量代码.因为为空不会查询,要查询也可直接修改key值实现
+         3.批量更新,删除实现.直接生成执行的hql语句,灵活度增加,并可以根据查询条件删除修改
+         4.查询第一条记录.
+         5.扩展了查询条件,以适应一些常用需求.比如从某月到某月查询的实现.修改key值就可以了!
+         6.基于sql的haloView可变参数视图实现.虽然体系不太完善,但注意应付一些特殊需求.
+         比如使用数据库视图想要部分sql片段可以根据需求存在与否(这种在hibernate中可以用存储过程,但太麻烦,直接拼接sql,
+         维护性不好,尤其sql过多时)
+#主要功能:
+##动态条件查询的实现
+     
      一般我们不会查询值为null值或者为空值的条件.
      比如:findListByMap(new HaloMap().set("userName","vonchange").set("password","123").set("email",null)).
      查询用户名为vonchange和password为123的结果集.若要查询email为null 则为set("email:=:in",null).
@@ -41,7 +54,7 @@ haloDao
 ##可使用ge,gt等作为条件
         可以: new HaloMap().set(createDate:month>=,'2012-11').set(createDate:month<=,'2014-14').
         也可以:new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthle,'2014-14').
-##只查询某些字段并封装到实体:addColumn
+##只查询某些字段并封装到实体:addColumn(hibernate中不建议使用,haloView中可以使用)
           findListByMap(new HaloMap().set("userName:like","vonchange").addColumn("userName","passWord")
           .addColumn("email");
           查询是实体中用户,密码,邮箱字段并封装到实体中(不支持懒加载)
@@ -57,7 +70,8 @@ haloDao
 ###日期可传字符
         new HaloMap().set(createDate:ge,'2012-11').set(createDate:ge,'2012年11月12日'))
         对于不支持格式可以set(createDate:ge?yy年11月,'12年11月')
-##基于sql的haloView可变参数视图实现
+##基于sql的haloView可变参数视图实现(暂不完善,但足以应付一些特殊需求)
+        在hibernate中优先是视图创建,特别需要动态sql拼接中才可使用
         首先在halo.view包中在ViewTest编写好sql语句:select * from base_user where role=:role ${email} ${groupBy}
         调用findListByHaloView("ViewTest",new HaloMap().set("role:prm",1).set("groupBy:data","fcy.user.BaseUser.aa")
         .set("email:data","fcy.user.BaseUser.bb").set("email:prm","123@ww.com").set("userName:like","von")
@@ -67,19 +81,23 @@ haloDao
         为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
         并只查询出用户名及密码字段并封装到实体中
         其中拼接文件中拼接字符串使用了freemarker
-##基于sql实现的haloView 中hql拼接  防hql 骆驼命名法_后转为大写 
+##基于sql实现的haloView 中sql拼接为山寨版hql  基于骆驼命名法 遇到大写转为_小写
           sets("fcy.user.BaseUser.aa:hql","von"+"%","123@ww.com").set("userName:prm":"von"+"%");
           在 halo.hql中 fcy.properties中一样 为user.BaseUser.aa=userName like :userName and email =:email
-##实现原理全部基于字符串,可值前台传map并便于修改
-       addColumn("userName")==set("addColumn","userName") 
-       addOrder("createdate")==set("addOrder","createdate")
-       addGroup("role")==set("addGroup","role") 
-       用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
-##可完全无特殊字符,用数字表示
+##实现原理基于hql或sql语句字符串,可直接前台传json对象构建查询语句并有良好的安全性
+         addColumn("userName")==set("addColumn","userName") 
+         addOrder("createdate")==set("addOrder","createdate")
+         addGroup("role")==set("addGroup","role") 
+         用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
+##可以完全无特殊字符,用数字表示
           5==% 比如全模糊5like5==%like% (键盘对应)
           9==( 0==) (键盘对应)
           3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
           6==:    1==|(形象一) 8==.
           注:生成的条件包含QWRTYUIOP对应键盘上方数字
+          因而数据库字段不可以含数字
 ##基于haloView的视图对应实体
           需要加入@Entity和@Id注解,其他不需
+##完全防止sql注入
+         完全防止sql注入,所以在拼接hql和sql中追加sql片断时需要写入属性文件,虽然麻烦一步,
+         但在程序上已完全杜绝用户sql注入的可能.
