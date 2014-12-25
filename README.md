@@ -78,7 +78,7 @@ haloDao
         .set("email:data","fcy.user.BaseUser.bb").set("email:prm","123@ww.com").set("userName:like","von")
         .addColumn("userName","password").addOrder("createDate","role");
         //halo.data文件夹内fcy.properties 中 user.BaseUser.aa=group by role user.BaseUser.ab=and email=:email
-        @@如果要传非sql数据要:前加data:比如data.user.BaseUser.aa
+        @@如果要传非sql数据要:前加data:比如data.user.BaseUser.aa 如果是要传非String类型,可直接设置
         为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
         并只查询出用户名及密码字段并封装到实体中
         其中拼接文件中拼接字符串使用了freemarker
