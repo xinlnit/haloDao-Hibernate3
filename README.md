@@ -73,11 +73,11 @@ haloDao
        addOrder("createdate")==set("addOrder","createdate")
        addGroup("role")==set("addGroup","role") 
        用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
- ##可完全无特殊字符,用数字表示
+##可完全无特殊字符,用数字表示
           5==% 比如全模糊5like5==%like% (键盘对应)
           9==( 0==) (键盘对应)
           3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
           6==:    1==|(形象一) 8==.
           注:生成的条件包含QWRTYUIOP对应键盘上方数字
- ##基于haloView的视图对应实体
+##基于haloView的视图对应实体
           需要加入@Entity和@Id注解,其他不需
