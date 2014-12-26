@@ -46,7 +46,7 @@ haloDao
      比如:findListByMap(new HaloMap().set("userName:like","vonchange") 默认为左模糊查询.
      而userName:5like为右模糊查询 userName:5like5 为全模糊查询
 ##扩展和日期相关条件查询
-     查询2014年12月份:new HaloMap().set(createDate:monthlike,'2014-12').
+     查询2014年12月份数据:new HaloMap().set(createDate:monthlike,'2014-12').
      查询从2012年11月到2014年12月 new HaloMap().set(createDate:monthge,'2012-11').set(createDate:monthle,'2014-14').  
      其中前缀为:day(dd) 天 mounth(MM)月 year(yyyy)年 hour(HH) 小时  minute(mm) 分 second(ss) 秒
 ##查询第一条数据
@@ -95,10 +95,11 @@ haloDao
           9==( 0==) (键盘对应)
           3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
           6==:    1==|(形象一) 8==.
+          如果key的变量起始是数字,可以在前加入_防止命名规范问题(前台json)
           注:生成的条件包含QWRTYUIOP对应键盘上方数字
           因而数据库字段不可以含数字
 ##基于haloView的视图对应实体
-          需要加入@Entity和@Id注解,其他不需
+          需要加入@Entity和@Id注解,其他不需,且可以和hibernate映射字段类型不同,会强制转换(apache BeanUtil功能)
 ##完全防止sql注入
          完全防止sql注入,所以在拼接hql和sql中追加sql片断时需要写入属性文件,虽然麻烦一步,
          但在程序上已完全杜绝用户sql注入的可能.

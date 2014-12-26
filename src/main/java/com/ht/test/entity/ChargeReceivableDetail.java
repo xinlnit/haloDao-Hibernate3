@@ -59,7 +59,7 @@ public class ChargeReceivableDetail implements java.io.Serializable {
 	private Date paymentDeadline;
 	private String operatorId;
 	private String operator;
-	private Integer state;
+	private boolean state;
 	private String companyId;
 	private String treeCode;
 	private Date updateDate;
@@ -378,15 +378,23 @@ public class ChargeReceivableDetail implements java.io.Serializable {
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
-
 	@Column(name = "state")
-	public Integer getState() {
+	public boolean isState() {
+		return state;
+	}
+
+	public void setState(boolean state) {
+		this.state = state;
+	}
+
+	//@Column(name = "state")
+/*	public Integer getState() {
 		return this.state;
 	}
 
 	public void setState(Integer state) {
 		this.state = state;
-	}
+	}*/
 
 	@Column(name = "company_id", length = 32)
 	public String getCompanyId() {

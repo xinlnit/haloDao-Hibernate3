@@ -1,0 +1,2 @@
+select crd.receivable_detail_id,crd.house_name,true as flag,true as money
+  from charge_receivable_detail crd

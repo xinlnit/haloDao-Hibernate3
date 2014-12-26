@@ -5,11 +5,11 @@ import org.apache.commons.lang.StringUtils;
 import com.ht.halo.hibernate3.exception.NotAllowTableColumnException;
 
 public class TableUtil {
-	public static String toEntity(String tableColName) {
+	public static String toEntity(String tableName) {
 		StringBuffer sb = new StringBuffer();
 		boolean flag=false;
-		for (int i = 0; i < tableColName.length(); i++) {
-			char cur = tableColName.charAt(i);
+		for (int i = 0; i < tableName.length(); i++) {
+			char cur = tableName.charAt(i);
 			if (cur=='_') {
 				flag=true;
 				
@@ -24,6 +24,26 @@ public class TableUtil {
 			}
 		}
 		return StringUtils.capitalize(sb.toString());
+	}
+	public static String toFiled(String colName) {
+		StringBuffer sb = new StringBuffer();
+		boolean flag=false;
+		for (int i = 0; i < colName.length(); i++) {
+			char cur = colName.charAt(i);
+			if (cur=='_') {
+				flag=true;
+				
+			} else {
+				if(flag){
+					sb.append(Character.toUpperCase(cur));
+					flag=false;
+				}else{
+					sb.append(Character.toLowerCase(cur));
+				}
+				
+			}
+		}
+		return sb.toString();
 	}
 	public static String toTable(String entityColName) {
 		StringBuffer sb = new StringBuffer();
@@ -54,5 +74,6 @@ public class TableUtil {
 	}
 	public static void main(String[] args) {
 		System.out.println(TableUtil.toTable(" userIdName =:userName and tableId=:UUUU"));
+		System.out.println(TableUtil.toFiled("receivable_detail_id"));
 	}
 }

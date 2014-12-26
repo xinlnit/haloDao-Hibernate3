@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,6 +81,9 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	private String removeAllSpace(String value) {
+		if (value.startsWith("_")) {
+			value = value.substring(1, value.length());
+		}
 		return value.replaceAll(SPACE, "");
 	}
 
@@ -404,8 +408,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	}
 
 	/**
-	 * convert 转换成当前字段类型 如果值是String类型但字段类型不为String 其他类型转换(请扩展)
-	 * 
+	 * convert 转换成当前字段类型 如果值类型不匹配
 	 * @param proType
 	 * @param value
 	 * @return
@@ -413,50 +416,53 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private Object convert(ColumnWithCondition columnWithCondition) {
 		Object value = columnWithCondition.getValue();
 		String type = columnWithCondition.getType();
-		if (value instanceof String) {
-			if (!"string".equalsIgnoreCase(type)) {
-				if ("integer".equalsIgnoreCase(type)) {
-					value = Integer.parseInt(String.valueOf(value));
-					return value;
+		logger.info("Type::"+value.getClass().getName());
+		logger.info(type);
+		String valueType = StringUtils.substringAfterLast(value.getClass().getName(), ".");
+		if (!valueType.equalsIgnoreCase(type)) {
+			if ("integer".equalsIgnoreCase(type)) {
+				value=ConvertUtils.convert(value,Double.class);
+				value = ConvertUtils.convert(value, Integer.class);
+				return value;
+			}
+			if ("long".equalsIgnoreCase(type)) {
+				value=ConvertUtils.convert(value,Double.class);
+				value = ConvertUtils.convert(value, Long.class);
+				return value;
+			}
+			if ("boolean".equalsIgnoreCase(type)) {
+				value = ConvertUtils.convert(value, Boolean.class);
+				return value;
+			}
+			if ("double".equalsIgnoreCase(type)) {
+				value = ConvertUtils.convert(value, Double.class);
+				return value;
+			}
+			if ("float".equalsIgnoreCase(type)) {
+				value = ConvertUtils.convert(value, Float.class);
+				return value;
+			}
+			if ("short".equalsIgnoreCase(type)) {
+				value=ConvertUtils.convert(value,Double.class);
+				value = ConvertUtils.convert(value, Short.class);
+				return value;
+			}
+			if ("byte".equalsIgnoreCase(type)) {
+				value = ConvertUtils.convert(value, Byte.class);
+				return value;
+			}
+			if ("timestamp".equalsIgnoreCase(type) || "datetime".equalsIgnoreCase(type) || "date".equalsIgnoreCase(type)) {
+				if(value instanceof String){
+				value = getDate(columnWithCondition);
 				}
-				if ("long".equalsIgnoreCase(type)) {
-					value = Long.parseLong(String.valueOf(value));
-					return value;
+				return value;
+			}
+			if ("big_decimal".equalsIgnoreCase(type) || "bigDecimal".equalsIgnoreCase(type)) {
+				if(!(value instanceof BigDecimal)){
+					value = ConvertUtils.convert(value, BigDecimal.class);
 				}
-				if ("boolean".equalsIgnoreCase(type)) {
-					if ("1".equals(String.valueOf(value))) {
-						value = "true";
-					}// 为1时也可以
-
-					value = Boolean.parseBoolean(String.valueOf(value));
-					return value;
-				}
-				if ("double".equalsIgnoreCase(type)) {
-					value = Double.parseDouble(String.valueOf(value));
-					return value;
-				}
-				if ("float".equalsIgnoreCase(type)) {
-					value = Float.parseFloat(String.valueOf(value));
-					return value;
-				}
-				if ("short".equalsIgnoreCase(type)) {
-					value = Short.parseShort(String.valueOf(value));
-					return value;
-				}
-				if ("byte".equalsIgnoreCase(type)) {
-					value = Byte.parseByte(String.valueOf(value));
-					return value;
-				}
-				if ("timestamp".equalsIgnoreCase(type) || "datetime".equalsIgnoreCase(type) || "date".equalsIgnoreCase(type)) {
-					value = getDate(columnWithCondition);
-					return value;
-				}
-				if ("big_decimal".equalsIgnoreCase(type) || "bigDecimal".equalsIgnoreCase(type)) {
-					value = new BigDecimal(String.valueOf(value));
-					return value;
-				}
-
-			}// 不为string类型
+				return value;
+			}
 		}
 
 		return value;

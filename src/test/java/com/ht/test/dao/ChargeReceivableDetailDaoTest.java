@@ -24,9 +24,11 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
         long a= System.currentTimeMillis();
 		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
 		.set("houseId", "4028813a47f2772c0147f2780578056a")
+		.set("ratio", 1.0)
+		.set("state", "1")
 		//.addHql("fcy.charge.chargeReceivableDetail.aa")
 		//.set("houseOwnerName:prm", "李树")
-		.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
+		//.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
 		 //  .set("houseOwnerName:in", new String[]{"33","44"})
 		//.addColumn("houseOwnerName")
 		); 
@@ -35,6 +37,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	    long b= System.currentTimeMillis();
 	    System.out.println(b-a);
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
+			System.out.println(chargeReceivableDetail.isState());
 			logger.info(chargeReceivableDetail.getHouseOwnerId());
 			logger.info(chargeReceivableDetail.getHouseOwnerName());
 			//logger.info(chargeReceivableDetail.getFeeItemName());
@@ -121,7 +124,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	}
    @Test
 	public void testCreateProcQuery(){
-		List<ChargeReceivableDetail> chargeReceivableDetails =  chargeReceivableDetailDao.findListByProc("pro_test", new HaloMap()
+		List<ChargeReceivableDetail> chargeReceivableDetails =  chargeReceivableDetailDao.findListByProc("pro_test(:first,:last)", new HaloMap()
 		.set("first", 1).set("last", 4));
 		System.out.println(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
@@ -136,11 +139,9 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	   .set("houseId:data", "fcy.data.houseId")
 	   .set("houseOwnerName:in", new String[]{"李树平","李树平"})
 	   .set("createDate:<=", "2014-12-12")
-	   //.addHql("houseOwnerName =:aa")
 	   .sets("fcy.charge.chargeReceivableDetail.ac:hql","李树平")
 	   //.set("aa:prm", "李树平")
 	  // .set("houseOwnerName:in", new String[]{"33","44"})
-	 //  .addSql("house_owner_name in (:aa)")
 	  // .addParameter("aa:prm#string", new String[]{"李树平","李树平"})
 	   //.addColumn("houseOwnerName")
 	   .addOrderDesc("createDate")
