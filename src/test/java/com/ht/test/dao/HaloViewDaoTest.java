@@ -1,6 +1,5 @@
 package com.ht.test.dao;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -20,7 +19,6 @@ public class HaloViewDaoTest extends BaseDaoTestCase{
 		/*		Double a=111111111.03;
 		System.out.println(a);
 	  System.out.println(new Gson().toJson(a));*/
-	int a=1;
 	Object value="11.001";
 	value=ConvertUtils.convert(value,Double.class);
 	  System.out.println(ConvertUtils.convert(value,int.class));
