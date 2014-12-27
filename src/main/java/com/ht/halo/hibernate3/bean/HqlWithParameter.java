@@ -1,10 +1,10 @@
 package com.ht.halo.hibernate3.bean;
 
-import java.util.Map;
+import com.ht.halo.hibernate3.HaloMap;
 
 public class HqlWithParameter {
 	private String hql;
-	private Map<String,Object> paramterMap;
+	private HaloMap paramterMap;
 	private Boolean addColumn=false;
 	private Boolean addCache=false;
 
@@ -32,13 +32,15 @@ public class HqlWithParameter {
 		this.hql = hql;
 	}
 
-	public Map<String, Object> getParamterMap() {
+	public HaloMap getParamterMap() {
 		return paramterMap;
 	}
 
-	public void setParamterMap(Map<String, Object> paramterMap) {
+	public void setParamterMap(HaloMap paramterMap) {
 		this.paramterMap = paramterMap;
 	}
+
+
 
 
 

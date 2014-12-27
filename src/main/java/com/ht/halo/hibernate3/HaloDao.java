@@ -538,7 +538,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	}
 
-	public HqlWithParameter createQueryHql(Map<String, ?> parameter) {
+	public HqlWithParameter createQueryHql(HaloMap parameter) {
 		return createQueryHql(parameter, null);
 	}
 
@@ -548,7 +548,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return HqlWithParameter
 	 */
-	private HqlWithParameter createQueryHql(Map<String, ?> parameter, String addSelect) {
+	private HqlWithParameter createQueryHql(HaloMap parameter, String addSelect) {
 		HqlWithParameter hqlWithParameter = new HqlWithParameter();
 		StringBuffer hql = new StringBuffer();
 		StringBuffer hqlSelect = new StringBuffer();
@@ -556,7 +556,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		StringBuffer group = new StringBuffer();
 		StringBuffer column = new StringBuffer();
 		boolean queryByBlankFlag = false;
-		Map<String, Object> hqlPrmMap = new HaloMap();// ....
+		HaloMap hqlPrmMap = new HaloMap();// ....
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 
@@ -687,11 +687,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return Query
 	 */
-	public Query createMyQuery(Map<String, ?> parameter) {
+	public Query createMyQuery(HaloMap parameter) {
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
 		String hql = hqlWithParameter.getHql();
 
-		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		if (hqlWithParameter.getAddColumn()) {
 			query.setResultTransformer(new ColumnToBean(this.entityType));
@@ -724,7 +724,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByMap(Map<String, ?> parameter) {
+	public <X> List<X> findListByMap(HaloMap parameter) {
 		return createMyQuery(parameter).list();
 	}
 
@@ -736,7 +736,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByEntity(T entity) {
-		Map<String, Object> haloMap = EntityUtils.toHaloMap(entity);
+		HaloMap haloMap = EntityUtils.toHaloMap(entity);
 		return createMyQuery(haloMap).list();
 	}
 
@@ -749,7 +749,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByMap(Map<String, ?> parameter, int begin, int end) {
+	public <X> List<X> findListByMap(HaloMap parameter, int begin, int end) {
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(begin);
 		query.setMaxResults(end - begin);
@@ -763,7 +763,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param num
 	 * @return List
 	 */
-	public <X> List<X> findListByMap(Map<String, ?> parameter, int num) {
+	public <X> List<X> findListByMap(HaloMap  parameter, int num) {
 		return findListByMap(parameter, 0, num);
 	}
 
@@ -774,7 +774,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return entity
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public T findFirstByMap(Map<String, ?> parameter) {
+	public T findFirstByMap(HaloMap parameter) {
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -788,7 +788,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return entity
 	 */
 	@SuppressWarnings("unchecked")
-	public T findUnique(Map<String, ?> parameter) {
+	public T findUnique(HaloMap parameter) {
 		return (T) createMyQuery(parameter).uniqueResult();
 	}
 
@@ -826,7 +826,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return 总条数
 	 */
-	protected long countMyHqlResult(String hql, Map<String, ?> parameter) {
+	protected long countMyHqlResult(String hql, HaloMap parameter) {
 		String countHql = generateMyCountHql(hql);
 		if (countHql.indexOf("group by") != -1) {
 			String tempSQL = hqlToSql(countHql);
@@ -847,11 +847,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return Page
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<T> findPageByMap(Page<T> page, Map<String, ?> parameter) {
+	public Page<T> findPageByMap(Page<T> page, HaloMap parameter) {
 		notNull(page, "page");
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
 		String hql = hqlWithParameter.getHql();
-		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		if (hqlWithParameter.getAddColumn()) {
 			query.setResultTransformer(new ColumnToBean(this.entityType));// Transformers.aliasToBean(this.entityType));
@@ -932,7 +932,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return 返回行数 失败返回-1
 	 */
-	public int deleteByMap(Map<String, Object> parameter) {
+	public int deleteByMap(HaloMap parameter) {
 		if (null == parameter || parameter.isEmpty()) {
 			return -1;
 		}
@@ -945,7 +945,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
 			return -1;
 		}
-		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		return query.executeUpdate();
 	}
@@ -1014,7 +1014,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return String
 	 */
-	private String getUpdateHql(T entity, Map<String, Object> parameter) {
+	private String getUpdateHql(T entity, HaloMap parameter) {
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String[] propNames = cm.getPropertyNames();
 		String identifierName = cm.getIdentifierPropertyName();
@@ -1050,8 +1050,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return 更新条数
 	 */
-	public int updateWithNotNullByHql(T entity, Map<String, ?> parameter) {
-		Map<String, Object> newParameter = new HaloMap();
+	public int updateWithNotNullByHql(T entity, HaloMap parameter) {
+		HaloMap newParameter = new HaloMap();
 		String updateHql = getUpdateHql(entity, newParameter);
 		if (null == updateHql) {
 			return -1;
@@ -1063,7 +1063,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
 			return -1;
 		}
-		Map<String, Object> hqlPrmMap = hqlWithParameter.getParamterMap();
+		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = super.createQuery(hql, hqlPrmMap);
 		return query.executeUpdate();
 	}
@@ -1078,7 +1078,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		return updateWithNotNullByHql(entity, new HaloMap());
 	}
 
-	private String getViewSql(String viewName, Map<String, Object> tplMap) {
+	private String getViewSql(String viewName, HaloMap tplMap) {
 		String packStr = "";
 		if (viewName.indexOf(".") != -1) {
 			packStr = "." + StringUtils.substringBeforeLast(viewName, ".");
@@ -1106,7 +1106,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return SQLQuery
 	 */
-	public SQLQuery CreateSqlQueryByHaloView(String viewName, Map<String, ?> parameter) {
+	public SQLQuery CreateSqlQueryByHaloView(String viewName, HaloMap parameter) {
 		return createSQLQuery(getViewSql(viewName), parameter);
 	}
 
@@ -1117,7 +1117,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return SqlWithParameter
 	 */
-	public SqlWithParameter createMySqlQuery(String viewName, Map<String, ?> parameter) {
+	public SqlWithParameter createMySqlQuery(String viewName, HaloMap parameter) {
 
 		String viewAs = "temp";
 		SqlWithParameter sqlWithParamter = new SqlWithParameter();
@@ -1127,8 +1127,8 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		StringBuffer group = new StringBuffer();
 		StringBuffer column = new StringBuffer();
 		boolean queryByBlankFlag = false;
-		Map<String, Object> sqlPrmMap = new HaloMap();// ....
-		Map<String, Object> tplMap = new HaloMap();
+		HaloMap sqlPrmMap = new HaloMap();// ....
+		HaloMap tplMap = new HaloMap();
 		if (null == parameter) {
 			parameter = new HaloMap();
 		}
@@ -1268,10 +1268,10 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return SQLQuery
 	 */
-	public SQLQuery CreateMySqlQueryByHaloView(String viewName, Map<String, ?> parameter) {
+	public SQLQuery CreateMySqlQueryByHaloView(String viewName, HaloMap parameter) {
 		SqlWithParameter sqlWithParameter = createMySqlQuery(viewName, parameter);
 		String sql = sqlWithParameter.getSql();
-		Map<String, Object> hqlPrmMap = sqlWithParameter.getParamterMap();
+		HaloMap hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		return query;
@@ -1295,7 +1295,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return {@link List}
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByHaloView(String viewName, Map<String, ?> parameter) {
+	public <X> List<X> findListByHaloView(String viewName, HaloMap parameter) {
 		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
 		return query.list();
 	}
@@ -1321,7 +1321,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param parameter
 	 * @return 总条数
 	 */
-	protected long countMySqlResult(String sql, Map<String, ?> parameter) {
+	protected long countMySqlResult(String sql, HaloMap parameter) {
 		String countSql = generateMyCountSql(sql);
 		Query query = this.createSQLQuery(countSql, parameter);
 		return ((Number) query.uniqueResult()).longValue();
@@ -1336,11 +1336,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @return Page
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<T> findPageByHaloView(String viewName, Page<T> page, Map<String, ?> parameter) {
+	public Page<T> findPageByHaloView(String viewName, Page<T> page, HaloMap parameter) {
 		notNull(page, "page");
 		SqlWithParameter sqlWithParameter = createMySqlQuery(viewName, parameter);
 		String sql = sqlWithParameter.getSql();
-		Map<String, Object> hqlPrmMap = sqlWithParameter.getParamterMap();
+		HaloMap hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		long totalCount = countMySqlResult(sql, hqlPrmMap);
