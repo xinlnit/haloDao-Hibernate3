@@ -21,19 +21,12 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	private int addHql = 0;
 	public static final String ADDNNH = "addNNQ";// 添加not null hql
 
-	// private static final String SPACE = "\u0020";
-
 	public HaloMap() {
 	}
 
 	public HaloMap(Map<String, Object> map) {
 		super(map);
 	}
-
-	/*
-	 * private String removeAllSpace(String value) { return
-	 * value.replaceAll(SPACE, ""); }
-	 */
 
 	/**
 	 * 设置数组
