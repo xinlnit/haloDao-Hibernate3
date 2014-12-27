@@ -898,7 +898,6 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成存储过程的SQLQuery.
-	 * 
 	 * @param 存储过程名及参数占位符
 	 * @param parameter
 	 * @return SQLQuery
