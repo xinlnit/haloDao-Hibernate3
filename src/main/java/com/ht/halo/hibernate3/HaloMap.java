@@ -19,7 +19,6 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	private int addOrder = 0;
 	private int addGroup = 0;
 	private int addHql = 0;
-	public static final String ADDNNH = "addNNQ";// 添加not null hql
 
 	public HaloMap() {
 	}

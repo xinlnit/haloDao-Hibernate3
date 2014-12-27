@@ -1308,7 +1308,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	private String generateMyCountSql(String sql) {
 		sql = StringUtils.substringAfter(sql, " from ");
-		sql = StringUtils.substringBefore(sql, "order by");
+		//sql = StringUtils.substringBefore(sql, "order by");
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityIdName = TableUtil.toTable(cm.getIdentifierPropertyName());
 		return String.format("select count(%s) from (select %s from %s)temp ", entityIdName, entityIdName, sql);
