@@ -118,17 +118,10 @@
 		</dependency>
 
 		<!-- -->
-		<dependency>
-			<groupId>org.jodd</groupId>
-			<artifactId>jodd-core</artifactId>
-			<version>3.6.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jodd</groupId>
-			<artifactId>jodd-bean</artifactId>
-			<version>3.6.3</version>
-		</dependency>
-
+	
+		
+		       
+ 
 
 	</dependencies>
 </project>
