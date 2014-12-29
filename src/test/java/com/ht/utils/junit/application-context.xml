@@ -13,17 +13,16 @@
 	http://www.springframework.org/schema/aop/spring-aop.xsd
 	http://www.springframework.org/schema/context 
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<context:property-placeholder location="com/ht/utils/junit/jdbc.properties" ignore-unresolvable="true"  />  
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://localhost:3306/halo?useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=round" />
-		<property name="username" value="haitao_mysql" />
-		<property name="password" value="haitao123*" />
-		<property name="minIdle" value="10" />
-		<property name="maxActive" value="30" />
-		
+			<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />	
 		<property name="maxWait" value="1000" />
 		<property name="removeAbandonedTimeout" value="60" />
 		<property name="removeAbandoned" value="true" />
@@ -35,16 +34,14 @@
 		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.format_sql">true</prop>
-
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.showSql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.formatSql}</prop>
 			</props>
 		</property>
 		<property name="packagesToScan">
 			<list>
-				<value>com.ht.*.entity</value>
+				<value>com.ht.*</value>
 			</list>
 		</property>
 	</bean>
