@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.base;
+package com.ht.codegen.utils;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -75,5 +75,6 @@ public class TableUtil {
 	public static void main(String[] args) {
 		System.out.println(TableUtil.toHql(" userIdName =:userName and tableId=:UUUU"));
 		System.out.println(TableUtil.toFiled("receivable_detail_id"));
+		System.out.println(TableUtil.toEntity("receivable_detail_id"));
 	}
 }

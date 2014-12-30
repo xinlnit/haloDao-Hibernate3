@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class ViewTable {
-	
+	@Id
 	private String tableId;
 	private String tableName;
 	private String dbName;
@@ -15,7 +15,7 @@ public class ViewTable {
 	private String tableType;
 	private Date createTime;
 	private Date updateTime;
-	@Id
+
 	public String getTableId() {
 		return tableId;
 	}

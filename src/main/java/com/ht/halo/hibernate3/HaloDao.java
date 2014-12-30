@@ -1152,7 +1152,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 			if (key.startsWith(ADDHQL)) {
 				value = getHqlSnippet(value.toString());
-				sql.append(String.format(" and (%s) ", TableUtil.toTable(value.toString())));
+				sql.append(String.format(" and (%s) ", TableUtil.toHql(value.toString())));
 				continue;// 灵活但不安全接口:sql查询片段
 			}
 
@@ -1182,7 +1182,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				String hqlValue = getHqlSnippet(hqlKey);
 				HaloMap map = getHqlSnippetMap(hqlValue, value);
 				sqlPrmMap.putAll(map);
-				hqlValue = TableUtil.toTable(hqlValue);
+				hqlValue = TableUtil.toHql(hqlValue);
 				sql.append(String.format(" and (%s) ", hqlValue));
 				continue;// 添加参数
 			}
@@ -1195,7 +1195,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 					}// 前缀为data的不转换
 					value = getDataSnippet(valueStr);
 					if (!flag) {
-						value = SPACE + TableUtil.toTable(String.valueOf(value)) + SPACE;
+						value = SPACE + TableUtil.toHql(String.valueOf(value)) + SPACE;
 					}
 					tplMap.put(columnWithCondition.getColumnName(), value);
 				} else {
@@ -1209,7 +1209,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				}
 				if (IN.equals(columnWithCondition.getIfQuery())) {// 始终查询该字段
 					if (null == value || "null".equalsIgnoreCase(String.valueOf(entry.getValue()).trim())) {
-						sql.append(String.format(" %s %s %s %s null %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toTable(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
+						sql.append(String.format(" %s %s %s %s null %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toHql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
 					} else {
 						queryByBlankFlag = true;
 					}
@@ -1221,31 +1221,31 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 			if (null != value) {
 				if (null != columnWithCondition.getDirectValue()) {
-					sql.append(String.format(" %s %s %s %s %s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toTable(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
+					sql.append(String.format(" %s %s %s %s %s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toHql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
 					continue;
 				}
 				if (!StringUtils.isBlank(String.valueOf(value)) || queryByBlankFlag) {
 					if (null != type) {
 						value = convert(columnWithCondition);
 					}
-					sql.append(String.format(" %s %s %s %s :%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toTable(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
+					sql.append(String.format(" %s %s %s %s :%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toHql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 					sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
 				}
 			}
 		}// for
-		String columnStr = TableUtil.toTable(column.toString());
+		String columnStr = TableUtil.toHql(column.toString());
 		String viewSql = getViewSql(viewName, tplMap);
 		if (!"".equals(columnStr)) {
-			String entityIdName = TableUtil.toTable(cm.getIdentifierPropertyName());
+			String entityIdName = TableUtil.toHql(cm.getIdentifierPropertyName());
 			sqlSelect = new StringBuffer(String.format("select %s as %s ,%s from (%s) %s where 1=1 ", entityIdName, entityIdName, columnStr.substring(0, columnStr.length() - 1), viewSql, viewAs));
 		} else {
 			sqlSelect.append(String.format("select *  from (%s) %s  where 1=1 ", viewSql, viewAs));
 		}
-		String groupStr = TableUtil.toTable(group.toString());
+		String groupStr = TableUtil.toHql(group.toString());
 		if (!"".equals(groupStr)) {
 			sql.append(String.format(" group by %s ", groupStr.substring(0, groupStr.length() - 1)));
 		}
-		String orderStr = TableUtil.toTable(order.toString());
+		String orderStr = TableUtil.toHql(order.toString());
 		if (!"".equals(orderStr)) {
 			sql.append(String.format(" order by %s ", orderStr.substring(0, orderStr.length() - 1)));
 		}
@@ -1309,7 +1309,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		sql = StringUtils.substringAfter(sql, " from ");
 		//sql = StringUtils.substringBefore(sql, "order by");
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
-		String entityIdName = TableUtil.toTable(cm.getIdentifierPropertyName());
+		String entityIdName = TableUtil.toHql(cm.getIdentifierPropertyName());
 		return String.format("select count(%s) from (select %s from %s)temp ", entityIdName, entityIdName, sql);
 	}
 

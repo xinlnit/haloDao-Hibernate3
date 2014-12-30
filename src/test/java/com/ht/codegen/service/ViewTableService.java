@@ -17,13 +17,14 @@ public class ViewTableService {
 	@Resource
     private  ViewTableDao viewTableDao;
 	
-	public ViewTable findViewTableByName(String tableName){
-	List<ViewTable> viewTables =	viewTableDao.findListByHaloView("codegen.ViewTable", new HaloMap()
-		.set("tableName", tableName));
+	public ViewTable findViewTable(HaloMap parameter){
+	List<ViewTable> viewTables =	viewTableDao.findListByHaloView("codegen.ViewTable", 
+			parameter);
 	  if(viewTables.size()>0){
 		return viewTables.get(0);
 	  }
 	  return null;
 	}
+
     
 }
