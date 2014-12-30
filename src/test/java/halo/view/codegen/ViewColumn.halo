@@ -1,5 +1,6 @@
 SELECT
 	 MD5(CONCAT(col.TABLE_NAME,col.COLUMN_NAME)) AS `column_id`,
+	 MD5(CONCAT(col.TABLE_NAME)) AS `table_id`,
 	`col`.`TABLE_SCHEMA` AS DB_NAME,
 	`col`.`TABLE_NAME` AS `TABLE_NAME`,
 	`col`.`COLUMN_NAME` AS `COLUMN_NAME`,

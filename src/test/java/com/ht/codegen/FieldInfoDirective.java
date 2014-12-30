@@ -3,8 +3,8 @@ package com.ht.codegen;
 import java.io.IOException;
 import java.util.Map;
 
-import com.ht.codegen.annotations.FieldInfo;
 import com.ht.codegen.utils.freemarker.DirectiveUtils;
+import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
 
 import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;

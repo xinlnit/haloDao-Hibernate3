@@ -7,8 +7,10 @@ import javax.annotation.Resource;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.ht.codegen.entity.MyEntity;
 import com.ht.codegen.entity.ViewColumn;
 import com.ht.codegen.entity.ViewTable;
+import com.ht.codegen.service.GenEntityService;
 import com.ht.codegen.service.ViewColumnService;
 import com.ht.codegen.service.ViewTableService;
 import com.ht.halo.hibernate3.HaloMap;
@@ -19,6 +21,8 @@ public class Codegen extends BaseServiceTestCase {
 	private ViewTableService viewTableService;
 	@Resource
 	private ViewColumnService viewColumnService;
+	@Resource
+	private GenEntityService genEntityService;
 
 	@Test
 	public void testFindViewTableByName() {
@@ -28,10 +32,22 @@ public class Codegen extends BaseServiceTestCase {
 	}
 
 	@Test
-	public void testFindViewColumnList() {
+	public void testFindViewColumnList() {  
 		List<ViewColumn> viewColumns = viewColumnService.findViewColumnList(new HaloMap()
 		.set("tableName", "base_company"));
 		System.out.println(new Gson().toJson(viewColumns));
 	}
+	@Test
+	public void testGetMyEntity() {
+	   MyEntity myEntity=	genEntityService.getMyEntity(new HaloMap()
+		.set("tableName", "base_company"));
+	   System.out.println(new Gson().toJson(myEntity));
+	}
+	@Test
+	public void testGenEntity() {
+		   genEntityService.genEntity(new HaloMap()
+			.set("tableName", "base_company"));
+		
+		}
 
 }

@@ -349,12 +349,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				}
 			}
 			if (!flag) {
-				if ("!=".equals(condition) || "neq".equals(condition)) {
-					columnWithCondition.setCondition("!=");
+				if ("<>".equals(condition)||"!=".equals(condition) || "neq".equals(condition)) {
+					columnWithCondition.setCondition("<>");
 					flag = true;
 				}
 			}
-			if (!flag) {
+			if (!flag) { 
 				if (condition.indexOf("like") != -1 || condition.indexOf("Like") != -1) {
 					columnWithCondition.setCondition("like");
 					condition = condition.replaceFirst("like|Like", "");
@@ -362,6 +362,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 					if (columnWithCondition.getTempFlag()) {
 						columnWithCondition = extDateCondition(condition, "%", false, columnWithCondition);
 					}
+					flag = true;
+				}
+			}
+			if (!flag) {
+				if (condition.equals("notIn")) {
+					columnWithCondition.setCondition("not in");
 					flag = true;
 				}
 			}

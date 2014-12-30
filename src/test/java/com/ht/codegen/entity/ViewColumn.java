@@ -7,6 +7,7 @@ import javax.persistence.Id;
 public class ViewColumn {
 	@Id
     private String columnId;
+	 private String tableId;
     private String dbName;
     private String tableName;
     private String columnName;
@@ -19,13 +20,20 @@ public class ViewColumn {
     private Integer precision;
     private Integer scale;
     private String columnType;
-    private String columnkey;
+    private String columnKey;
     private String columnComment;
 	public String getColumnId() {
 		return columnId;
 	}
 	public void setColumnId(String columnId) {
 		this.columnId = columnId;
+	}
+	
+	public String getTableId() {
+		return tableId;
+	}
+	public void setTableId(String tableId) {
+		this.tableId = tableId;
 	}
 	public String getDbName() {
 		return dbName;
@@ -99,11 +107,12 @@ public class ViewColumn {
 	public void setColumnType(String columnType) {
 		this.columnType = columnType;
 	}
-	public String getColumnkey() {
-		return columnkey;
+
+	public String getColumnKey() {
+		return columnKey;
 	}
-	public void setColumnkey(String columnkey) {
-		this.columnkey = columnkey;
+	public void setColumnKey(String columnKey) {
+		this.columnKey = columnKey;
 	}
 	public String getColumnComment() {
 		return columnComment;
