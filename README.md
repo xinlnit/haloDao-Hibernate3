@@ -3,21 +3,26 @@ haloDao
 
 基于hibernate的通用Dao组件实现
 --------
-#该通用dao层基于hql和sql语句实现,很容易扩展成基于其他orm或者jdbc的Dao层,并容易在前台直接改变查询条件,
+#该通用dao层基于hql和sql语句实现动态条件查询,很容易扩展成基于其他orm或者jdbc的Dao层,并容易在前台直接改变查询条件,
   并有良好的安全性及灵活性,基本可以除去Dao层的编写,将只专注业务层业务逻辑!
 -------
 #简述
          1.前台容易修改查询条件.该通用dao主要是像(Criteria Query)一样实现了动态条件查询,不过不同处在于,查询字段条件等全部在
          一个HaloMap的Map对象的key值中,value值为字段值,于是在前台传json对象封装到Map对象类便可查询.
+         并且相比较MyBatis的动态SQL方式更容易编写和使用.
          修改前台json便可更改查询条件.
          2.免掉了判断字段是否为空的大量代码.因为为空不会查询,要查询也可直接修改key值实现
          3.批量更新,删除实现.直接生成执行的hql语句,灵活度增加,并可以根据查询条件删除修改
          4.查询第一条记录.
          5.扩展了查询条件,以适应一些常用需求.比如从某月到某月查询的实现.修改key值就可以了!
-         6.基于sql的haloView可变参数视图实现.虽然体系不太完善,但注意应付一些特殊需求.
-         比如使用数据库视图想要部分sql片段可以根据需求存在与否(这种在hibernate中可以用存储过程,但太麻烦,直接拼接sql,
-         维护性不好,尤其sql过多时)
+         6.基于sql的haloView可变参数视图及其在视图基础上的结果集中的动态查询实现(很拗口^_^).
+         这也是基于Mybatis思想,但实现及其使用比其要好许多.也是编写jdbc版本的基础.
+         虽然体系较新不太完善,但在hibernate中足以应付一些需求.
          7.结合代码生成技术,将极大减少代码编写量,并使其专注于业务逻辑
+#不足
+        1.还未编写基于jdbc版本的haloDao,不过这个好重构.但比较成熟orm,暂时会缺少缓存.懒加载等特性.自己写不是一时半会,
+        最好有人参与.
+        2.最初版本是公司内部实用,不过这版本是重构版本,代码大多不同,不能兼容,可能有部分bug未发现,需要实践.
 #主要功能:
 ##动态条件查询的实现
      
@@ -62,9 +67,9 @@ haloDao
           查询是实体中用户,密码,邮箱字段并封装到实体中(不支持懒加载)
 ##分页支持groupBy
          findPageByMap(new HaloMap().set("userName:like","vonchange").addGroup("role"));
-###order by
+###可追加的addOrder(addGroup addColumn也支持)
           findPageByMap(new HaloMap().set("userName:like","vonchange").addGroup("role").addOrderDesc("createDate")
-          .addOrder("userName"));
+          .addOrder("userName").addOrder("updatetime","id"));
 ###灵活安全实现hql拼接
            findPageByMap(new HaloMap().sets("fcy.user.BaseUser.aa:hql","von"+"%","123@ww.com").set("userName:prm":"von"+"%");
            在 halo.hql中 fcy.properties中 编写user.BaseUser.aa=userName like :userName and email =:email

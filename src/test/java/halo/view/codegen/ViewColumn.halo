@@ -19,5 +19,5 @@ FROM
 	`information_schema`.`columns` `col`
 WHERE
 	(
-		`col`.`TABLE_SCHEMA` = 'halo'
+		`col`.`TABLE_SCHEMA` = :dbName
 	)

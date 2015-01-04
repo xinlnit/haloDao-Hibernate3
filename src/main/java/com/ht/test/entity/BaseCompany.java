@@ -1,30 +1,23 @@
 package com.ht.test.entity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
+import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
+import com.ht.halo.hibernate3.gson.HtGson;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
-
-
 /**
- * @Description: TODO 物业企业
- * @author fcy
- * @date 2014-7-15 上午9:41:36
+ *  物业企业
+ * @author fengchangyi
+ * @date 2014年12月31日 09:17:37 
  */
 @Entity
 @Table(name = "base_company")
 public class  BaseCompany implements java.io.Serializable {
-     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	@Id
+	  private static final long serialVersionUID = 1L;
+     @Id
      @GeneratedValue(generator = "idGenerator")
      @GenericGenerator(name = "idGenerator", strategy = "uuid")
      @Column(name = "company_id", unique = true, nullable = false, length = 32)
@@ -98,11 +91,14 @@ public class  BaseCompany implements java.io.Serializable {
      @Column(name = "remark", length = 1000)
      @FieldInfo(desc="备注")
      private String  remark;
+      
+      
      public BaseCompany() {
      }
      public BaseCompany( String companyId) {
          this.companyId = companyId;
       }
+      
      public String  getCompanyId() {
          return this.companyId;
      }
@@ -229,5 +225,11 @@ public class  BaseCompany implements java.io.Serializable {
          this.remark = remark;
          return this;
       }
- 
+     @Override
+	 public String toString() {
+		 return HtGson.getGsonIn().toJson(this);
+	 }
+	 public String getJson(){
+		 return HtGson.getGsonIn().toJson(this);
+	 }
 }

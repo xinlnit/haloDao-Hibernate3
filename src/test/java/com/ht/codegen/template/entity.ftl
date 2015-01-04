@@ -1,17 +1,17 @@
-package com.ht.ourally.base.entity;
-
+package ${pro.entityPath!};
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
+import com.ht.halo.hibernate3.gson.HtGson;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * @Description: TODO ${bean.entityComment!}
- * @author fcy
- * @date 2014-7-15 上午9:41:36
+ *  ${bean.entityComment!}
+ * @author ${pro.author!}
+ * @date ${now!}
  */
 @Entity
 @Table(name = "${bean.viewTable.tableName!}")
@@ -42,5 +42,11 @@ public class  ${bean.entityName!} implements java.io.Serializable {
          return this;
       }
      [/#list]
- 
+     @Override
+	 public String toString() {
+		 return HtGson.getGsonIn().toJson(this);
+	 }
+	 public String getJson(){
+		 return HtGson.getGsonIn().toJson(this);
+	 }
 }
