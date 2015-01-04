@@ -1,13 +1,18 @@
 package ${pro.entityPath!};
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
 import com.ht.halo.hibernate3.gson.HtGson;
+[#if bean.bigDecimalFlag]
+import java.math.BigDecimal;[/#if]
+[#if bean.dateFlag]
+import java.util.Date;[/#if]
+[#if bean.entityType='base'&&bean.idType='String']
+import javax.persistence.GeneratedValue;
 import org.hibernate.annotations.GenericGenerator;
-
+[/#if]
 /**
  *  ${bean.entityComment!}
  * @author ${pro.author!}

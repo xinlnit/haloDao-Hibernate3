@@ -1,5 +1,6 @@
 package com.ht.test.service.base.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -32,11 +33,13 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	
 	@Override
 	public BaseCompany changeBaseCompanyNotNull(BaseCompany entity) {
+		entity.setUpdateTime(new Date());
 		baseCompanyDao.updateWithNotNull(entity);
 		return entity;
 	}
 	@Override
 	public int changeBaseCompanyByMap(BaseCompany entity, HaloMap parameter) {
+		entity.setUpdateTime(new Date());
 		return baseCompanyDao.updateWithNotNullByHql(entity, parameter);
 	}
 	@Override
@@ -46,6 +49,19 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	@Override
 	public int deleteBaseCompanyByMap(HaloMap parameter) {
 		return baseCompanyDao.deleteByMap(parameter);
+	}
+	@Override
+	public BaseCompany addBaseCompany(BaseCompany entity) {
+		entity.setCreateTime(new  Date());
+		entity.setUpdateTime(new  Date());
+		entity.setState(0);
+		baseCompanyDao.save(entity);
+		return entity;
+	}
+	@Override
+	public BaseCompany changeBaseCompany(BaseCompany entity) {
+		baseCompanyDao.update(entity);
+		return entity;
 	}
 
 }

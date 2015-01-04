@@ -48,6 +48,7 @@ public class TableUtil {
 	public static String toHql(String entityColName) {
 		StringBuffer sb = new StringBuffer();
 		boolean flag=false;
+		boolean isLetter=false;
 		for (int i = 0; i < entityColName.length(); i++) {
 			char cur = entityColName.charAt(i);
 			if (cur=='_') {
@@ -62,19 +63,24 @@ public class TableUtil {
 			if(flag){
 				sb.append(cur);
 				continue;
-			}
-			if (Character.isUpperCase(cur)) {
+			}	
+			if (Character.isUpperCase(cur)&&isLetter) {
 				sb.append("_");
 				sb.append(Character.toLowerCase(cur));
 			} else {
-				sb.append(cur);
+				sb.append(Character.toLowerCase(cur));
+			}
+			if (!Character.isLetter(cur)){
+				isLetter=false;
+			}else{
+				isLetter=true;
 			}
 		}
 		return sb.toString();
 	}
 	public static void main(String[] args) {
+		System.out.println(TableUtil.toHql("ViewTest"));
 		System.out.println(TableUtil.toHql(" userIdName =:userName and tableId=:UUUU"));
 		System.out.println(TableUtil.toFiled("receivable_detail_id"));
-		System.out.println(TableUtil.toEntity("receivable_detail_id"));
 	}
 }

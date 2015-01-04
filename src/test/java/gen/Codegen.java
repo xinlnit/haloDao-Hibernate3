@@ -13,7 +13,10 @@ public class Codegen extends BaseServiceTestCase {
 
 	@Test
 	public void testGen() {
-		   genService.gen();
+		   genService.gen(true);
 		}
+
+	
+	
 
 }

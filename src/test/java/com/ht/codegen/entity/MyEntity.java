@@ -11,6 +11,21 @@ public class MyEntity {
     private String idName;
     private ViewTable viewTable;
     private List<MyField> fields;
+    private Boolean dateFlag=false;
+    private Boolean bigDecimalFlag=false;
+    
+	public Boolean getDateFlag() {
+		return dateFlag;
+	}
+	public void setDateFlag(Boolean dateFlag) {
+		this.dateFlag = dateFlag;
+	}
+	public Boolean getBigDecimalFlag() {
+		return bigDecimalFlag;
+	}
+	public void setBigDecimalFlag(Boolean bigDecimalFlag) {
+		this.bigDecimalFlag = bigDecimalFlag;
+	}
 	public String getEntityId() {
 		return entityId;
 	}

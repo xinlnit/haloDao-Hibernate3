@@ -45,7 +45,18 @@ public interface IBaseCompanyBaseService {
 	 * @return 物业企业列表页
 	 */
 	public Page<BaseCompany> findBaseCompanyPageByMap(Page<BaseCompany> page, HaloMap parameter);
-
+	/**
+	 *  TODO 添加物业企业
+	 * @param 物业企业实体 
+	 * @return 物业企业实体 
+	 */
+	public BaseCompany addBaseCompany(BaseCompany entity);
+	/**
+	 *  TODO  修改物业企业
+	 * @param 物业企业实体 
+	 * @return 物业企业实体
+	 */
+	public BaseCompany changeBaseCompany(BaseCompany entity);
 	/**
 	 * TODO 修改物业企业(不为null的属性)
 	 * 

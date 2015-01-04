@@ -1,7 +1,5 @@
 package com.ht.test.service;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.junit.Test;

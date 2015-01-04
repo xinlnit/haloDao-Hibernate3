@@ -1,17 +1,18 @@
 package com.ht.test.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
 import com.ht.halo.hibernate3.gson.HtGson;
+import java.math.BigDecimal;
+import java.util.Date;
+import javax.persistence.GeneratedValue;
 import org.hibernate.annotations.GenericGenerator;
-
 /**
  *  物业企业
  * @author fengchangyi
- * @date 2014年12月31日 09:17:37 
+ * @date 2015年01月04日 15:57:10 
  */
 @Entity
 @Table(name = "base_company")
@@ -70,7 +71,7 @@ public class  BaseCompany implements java.io.Serializable {
 
      @Column(name = "decimal_digits", precision = 10)
      @FieldInfo(desc="保留几位小数")
-     private String  decimalDigits;
+     private Integer  decimalDigits;
 
      @Column(name = "national_tax", length = 32)
      @FieldInfo(desc="国税号")
@@ -91,6 +92,22 @@ public class  BaseCompany implements java.io.Serializable {
      @Column(name = "remark", length = 1000)
      @FieldInfo(desc="备注")
      private String  remark;
+
+     @Column(name = "money", precision = 9, scale = 2)
+     @FieldInfo(desc="钱")
+     private BigDecimal  money;
+
+     @Column(name = "create_time")
+     @FieldInfo(desc="创建时间")
+     private Date  createTime;
+
+     @Column(name = "update_time")
+     @FieldInfo(desc="更新时间")
+     private Date  updateTime;
+
+     @Column(name = "state", precision = 10)
+     @FieldInfo(desc="状态")
+     private Integer  state;
       
       
      public BaseCompany() {
@@ -183,10 +200,10 @@ public class  BaseCompany implements java.io.Serializable {
          this.email = email;
          return this;
       }
-     public String  getDecimalDigits() {
+     public Integer  getDecimalDigits() {
          return this.decimalDigits;
      }
-     public BaseCompany setDecimalDigits(String  decimalDigits) {
+     public BaseCompany setDecimalDigits(Integer  decimalDigits) {
          this.decimalDigits = decimalDigits;
          return this;
       }
@@ -223,6 +240,34 @@ public class  BaseCompany implements java.io.Serializable {
      }
      public BaseCompany setRemark(String  remark) {
          this.remark = remark;
+         return this;
+      }
+     public BigDecimal  getMoney() {
+         return this.money;
+     }
+     public BaseCompany setMoney(BigDecimal  money) {
+         this.money = money;
+         return this;
+      }
+     public Date  getCreateTime() {
+         return this.createTime;
+     }
+     public BaseCompany setCreateTime(Date  createTime) {
+         this.createTime = createTime;
+         return this;
+      }
+     public Date  getUpdateTime() {
+         return this.updateTime;
+     }
+     public BaseCompany setUpdateTime(Date  updateTime) {
+         this.updateTime = updateTime;
+         return this;
+      }
+     public Integer  getState() {
+         return this.state;
+     }
+     public BaseCompany setState(Integer  state) {
+         this.state = state;
          return this;
       }
      @Override

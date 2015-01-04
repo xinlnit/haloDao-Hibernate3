@@ -35,16 +35,22 @@ public class GenService {
 	private ViewColumnService viewColumnService;
 	@Resource
 	private ViewTableService viewTableService;
-
+	@Resource
+    private HaloViewCommentService haloViewCommentService;
 	private MyEntity toEntity(HaloMap parameter) {
 		ViewTable viewTable = viewTableService.findViewTable(parameter);
 		MyEntity myEntity = new MyEntity();
 		myEntity.setEntityId(viewTable.getTableId());
 		myEntity.setEntityName(TableUtil.toEntity(viewTable.getTableName()));
 		String entityComment = viewTable.getTableComment();
-		if (null == entityComment || StringUtils.isBlank(entityComment)) {
+		if (!viewTable.getTableType().equalsIgnoreCase("VIEW")&&(null == entityComment || StringUtils.isBlank(entityComment))) {
 			throw new RuntimeException(viewTable.getTableName() + "表请加入注释!");
 		}
+	   if (viewTable.getTableType().equalsIgnoreCase("VIEW")){
+			entityComment =haloViewCommentService.getViewCommentByName(viewTable.getTableName());
+	 }
+			
+		
 		if (entityComment.indexOf("_") != -1) {
 			entityComment = StringUtils.substringAfterLast(entityComment, "_");
 		}
@@ -78,9 +84,7 @@ public class GenService {
 			myField.setPrecision(viewColumn.getPrecision());
 			myField.setScale(viewColumn.getScale());
 			String fieldComment = viewColumn.getColumnComment();
-			if (null == fieldComment || StringUtils.isBlank(fieldComment)) {
-				throw new RuntimeException(viewColumn.getColumnName() + "字段请加入注释!");
-			}
+		
 			if (fieldComment.indexOf(":") != -1) {
 				fieldComment = StringUtils.substringBefore(fieldComment, ":").trim();
 			}
@@ -89,7 +93,7 @@ public class GenService {
 			}
 			myField.setFieldComment(fieldComment);
 			Boolean iskey = false;
-			if (myEntity.getEntityType().endsWith("view")) {
+			if (myEntity.getEntityType().equalsIgnoreCase("view")) {
 				if (viewColumn.getPosition() == 1) {
 					iskey = true;// 视图默认位置1为主键
 				}
@@ -105,7 +109,7 @@ public class GenService {
 			}
 			myField.setNullable(nullable);
 			String type = "String";
-			String typeInDb = viewColumn.getColumnType();
+			String typeInDb = viewColumn.getDataType();
 			if (typeInDb.equalsIgnoreCase("varchar") || typeInDb.equalsIgnoreCase("char")) {
 				type = "String";
 			}
@@ -115,14 +119,13 @@ public class GenService {
 			if (typeInDb.equalsIgnoreCase("float")) {
 				type = "Float";
 			}
-			if (typeInDb.equalsIgnoreCase("datetime")) {
-				type = "Date";
-			}
 			if (typeInDb.equalsIgnoreCase("datetime") || typeInDb.equalsIgnoreCase("date") || typeInDb.equalsIgnoreCase("time")) {
 				type = "Date";
+				myEntity.setDateFlag(true);
 			}
 			if (typeInDb.equalsIgnoreCase("decimal")) {
 				type = "BigDecimal";
+				myEntity.setBigDecimalFlag(true);
 			}
 			if (typeInDb.equalsIgnoreCase("bit")) {
 				type = "Boolean";
@@ -138,6 +141,16 @@ public class GenService {
 				myEntity.setIdType(type);
 				myEntity.setIdName(myField.getFieldName());
 			}
+			//
+			if (!myEntity.getEntityType().equalsIgnoreCase("view")&&(null == fieldComment || StringUtils.isBlank(fieldComment))) {
+				throw new RuntimeException(viewColumn.getColumnName() + "字段请加入注释!");
+			}
+			if(null == fieldComment || StringUtils.isBlank(fieldComment)){
+				fieldComment=	haloViewCommentService.getViewCommentByName(
+						TableUtil.toHql(myEntity.getEntityName())+"."+viewColumn.getColumnName());
+				  myField.setFieldComment(fieldComment);
+			}
+		
 			myField.setViewColumn(viewColumn);
 			myFileds.add(myField);
 		}
@@ -152,7 +165,11 @@ public class GenService {
 		return myEntity;
 	}
 
-	public void gen() {
+	/**
+	 *  TODO entityFlag true  实体将覆盖
+	 * @param falg
+	 */
+	public void gen(boolean entityFlag) {
 		// 获取配置
 		File properties = FileUtils.getClassPath("com.ht.utils.junit", "jdbc.properties");
 		PropertiesUtil propertiesUtil = new PropertiesUtil(properties);
@@ -176,7 +193,7 @@ public class GenService {
 		File templateFolder = FileUtils.getClassPath("com.ht.codegen.template", "");
 		File entityFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.entityPath"), myEntity.getEntityName() + ".java");
 		// 生成实体
-		if (!entityFile.exists()) {
+		if (!entityFile.exists()||entityFlag) {
 			freemarker.generateBytemplate(dataMap, templateFolder, "entity.ftl", entityFile);
 			logger.info(myEntity.getEntityName() + "生成成功!!");
 		} else {
@@ -191,6 +208,7 @@ public class GenService {
 			logger.warn(myEntity.getEntityName() + "Dao已存在!!");
 		}
 		//生成Service
-		File IServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "Service.java");
+		File IBaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "Service.java");
+		File BaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base", myEntity.getEntityName() + "ServiceImpl.java");
 	}
 }
