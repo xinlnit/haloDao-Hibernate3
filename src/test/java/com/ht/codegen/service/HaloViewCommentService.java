@@ -15,7 +15,7 @@ public class HaloViewCommentService {
 	 private HaloViewCommentDao haloViewCommentDao;
 	  public String getViewCommentByName(String name){
 	    //name=TableUtil.toHql(name);
-		HaloViewComment haloViewComment =  haloViewCommentDao.load(name);
+		HaloViewComment haloViewComment =  haloViewCommentDao.get(name);
 		return haloViewComment.getComment();
 		  
 	  }
