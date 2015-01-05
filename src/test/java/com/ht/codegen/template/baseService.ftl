@@ -33,7 +33,7 @@ public interface I${bean.entityName!}BaseService {
 	 * TODO 根据HaloMap查找${bean.entityComment!}列表
 	 * 
 	 * @param parameter
-	 * @return${bean.entityComment!}列表
+	 * @return ${bean.entityComment!}列表
 	 */
 	public List<${bean.entityName!}> find${bean.entityName!}ListByMap(HaloMap parameter);
 
@@ -44,7 +44,8 @@ public interface I${bean.entityName!}BaseService {
 	 * @param HaloMap
 	 * @return ${bean.entityComment!}列表页
 	 */
-	public Page<${bean.entityName!}> find${bean.entityName!}ByMap(Page<${bean.entityName!}> page, HaloMap parameter);
+	public Page<${bean.entityName!}> find${bean.entityName!}PageByMap(Page<${bean.entityName!}> page, HaloMap parameter);
+	[#if bean.entityType!="view"]
 	/**
 	 *  TODO 添加${bean.entityComment!}
 	 * @param ${bean.entityComment!}实体 
@@ -87,5 +88,5 @@ public interface I${bean.entityName!}BaseService {
 	 * @param HaloMap
 	 * @return 删除的行数
 	 */
-	public int delete${bean.entityName!}ByMap(HaloMap parameter);
+	public int delete${bean.entityName!}ByMap(HaloMap parameter);	[/#if]
 }

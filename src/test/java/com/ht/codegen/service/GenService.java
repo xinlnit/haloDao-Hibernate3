@@ -208,7 +208,14 @@ public class GenService {
 			logger.warn(myEntity.getEntityName() + "Dao已存在!!");
 		}
 		//生成Service
-		File IBaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "Service.java");
-		File BaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base", myEntity.getEntityName() + "ServiceImpl.java");
+		File IBaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "BaseService.java");
+		File BaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base.impl", myEntity.getEntityName() + "BaseServiceImpl.java");
+	//	if (!IBaseServiceFile.exists()) {
+			freemarker.generateBytemplate(dataMap, templateFolder, "baseService.ftl", IBaseServiceFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "baseServiceImpl.ftl", BaseServiceFile);
+			logger.info(myEntity.getEntityName() + "Service生成成功!!");
+	//	}else{
+		//	logger.warn(myEntity.getEntityName() + "Service已存在!!");
+	//	}
 	}
 }

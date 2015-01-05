@@ -9,8 +9,8 @@ import com.ht.test.entity.BaseCompany;
 /**
  * TODO 物业企业BaseService
  * 
- * @author fengchangyi@haitao-tech.com
- * @date 2014-12-31 下午2:17:33
+ * @author fengchangyi
+ * @date 2015年01月04日 17:07:12 
  */
 public interface IBaseCompanyBaseService {
 	/**
@@ -33,7 +33,7 @@ public interface IBaseCompanyBaseService {
 	 * TODO 根据HaloMap查找物业企业列表
 	 * 
 	 * @param parameter
-	 * @return 物业企业列表
+	 * @return物业企业列表
 	 */
 	public List<BaseCompany> findBaseCompanyListByMap(HaloMap parameter);
 
@@ -53,8 +53,8 @@ public interface IBaseCompanyBaseService {
 	public BaseCompany addBaseCompany(BaseCompany entity);
 	/**
 	 *  TODO  修改物业企业
-	 * @param 物业企业实体 
-	 * @return 物业企业实体
+	 * @param 物业物业企业 
+	 * @return 物业物业企业
 	 */
 	public BaseCompany changeBaseCompany(BaseCompany entity);
 	/**
@@ -87,5 +87,5 @@ public interface IBaseCompanyBaseService {
 	 * @param HaloMap
 	 * @return 删除的行数
 	 */
-	public int deleteBaseCompanyByMap(HaloMap parameter);
+	public int deleteBaseCompanyByMap(HaloMap parameter);	
 }

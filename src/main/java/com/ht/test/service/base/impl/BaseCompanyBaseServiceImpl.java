@@ -30,7 +30,6 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	public Page<BaseCompany> findBaseCompanyPageByMap(Page<BaseCompany> page,HaloMap parameter) {
 		return baseCompanyDao.findPageByMap(page, parameter);
 	}
-	
 	@Override
 	public BaseCompany changeBaseCompanyNotNull(BaseCompany entity) {
 		entity.setUpdateTime(new Date());
@@ -63,5 +62,4 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 		baseCompanyDao.update(entity);
 		return entity;
 	}
-
 }
