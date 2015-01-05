@@ -19,7 +19,7 @@ public interface IBaseCompanyBaseService {
 	 * @param id
 	 * @return 物业企业
 	 */
-	public BaseCompany findBaseCompanyById(String id);
+	public  BaseCompany findBaseCompanyById(String id);
 
 	/**
 	 * TODO 查找第一条物业企业记录

@@ -10,7 +10,7 @@ import com.ht.test.entity.ViewTest;
  * TODO 测试BaseService
  * 
  * @author fengchangyi
- * @date 2015年01月04日 17:07:53 
+ * @date 2015年01月05日 08:54:53 
  */
 public interface IViewTestBaseService {
 	/**

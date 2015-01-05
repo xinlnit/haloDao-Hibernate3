@@ -208,11 +208,15 @@ public class GenService {
 			logger.warn(myEntity.getEntityName() + "Dao已存在!!");
 		}
 		//生成Service
-		File IBaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "BaseService.java");
-		File BaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base.impl", myEntity.getEntityName() + "BaseServiceImpl.java");
+		File iBaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "BaseService.java");
+		File baseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base.impl", myEntity.getEntityName() + "BaseServiceImpl.java");
+		File iServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service","I"+ myEntity.getEntityName() + "Service.java");
+		File serviceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.impl", myEntity.getEntityName() + "ServiceImpl.java");
 	//	if (!IBaseServiceFile.exists()) {
-			freemarker.generateBytemplate(dataMap, templateFolder, "baseService.ftl", IBaseServiceFile);
-			freemarker.generateBytemplate(dataMap, templateFolder, "baseServiceImpl.ftl", BaseServiceFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "baseService.ftl", iBaseServiceFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "baseServiceImpl.ftl", baseServiceFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "service.ftl", iServiceFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "serviceImpl.ftl", serviceFile);
 			logger.info(myEntity.getEntityName() + "Service生成成功!!");
 	//	}else{
 		//	logger.warn(myEntity.getEntityName() + "Service已存在!!");

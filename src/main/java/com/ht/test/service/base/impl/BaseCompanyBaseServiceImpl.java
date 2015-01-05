@@ -15,7 +15,7 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
     @Resource
 	private BaseCompanyDao baseCompanyDao;
 	@Override
-	public BaseCompany findBaseCompanyById(String id) {
+	public  BaseCompany findBaseCompanyById(String id) {
 		return baseCompanyDao.load(id);
 	}
 	@Override

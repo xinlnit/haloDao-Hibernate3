@@ -1,6 +1,6 @@
 package ${pro.basePath}.service.base.impl;
-
-import java.util.Date;
+[#if bean.entityType!="view"]
+import java.util.Date;[/#if]
 import java.util.List;
 
 import javax.annotation.Resource;
