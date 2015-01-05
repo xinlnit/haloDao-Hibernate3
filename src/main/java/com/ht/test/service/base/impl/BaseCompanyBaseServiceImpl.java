@@ -53,7 +53,9 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	public BaseCompany addBaseCompany(BaseCompany entity) {
 		entity.setCreateTime(new  Date());
 		entity.setUpdateTime(new  Date());
+		if(null==entity.getState()){
 		entity.setState(0);
+		}
 		baseCompanyDao.save(entity);
 		return entity;
 	}

@@ -54,7 +54,9 @@ public  class ${bean.entityName!}BaseServiceImpl  implements I${bean.entityName!
 	public ${bean.entityName!} add${bean.entityName!}(${bean.entityName!} entity) {
 		entity.setCreateTime(new  Date());
 		entity.setUpdateTime(new  Date());
+		if(null==entity.getState()){
 		entity.setState(0);
+		}
 		${bean.entityName!?uncap_first}Dao.save(entity);
 		return entity;
 	}
