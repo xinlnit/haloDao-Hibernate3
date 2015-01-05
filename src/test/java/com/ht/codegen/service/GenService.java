@@ -212,14 +212,14 @@ public class GenService {
 		File baseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base.impl", myEntity.getEntityName() + "BaseServiceImpl.java");
 		File iServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service","I"+ myEntity.getEntityName() + "Service.java");
 		File serviceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.impl", myEntity.getEntityName() + "ServiceImpl.java");
-	//	if (!IBaseServiceFile.exists()) {
+		if (!iBaseServiceFile.exists()) {
 			freemarker.generateBytemplate(dataMap, templateFolder, "baseService.ftl", iBaseServiceFile);
 			freemarker.generateBytemplate(dataMap, templateFolder, "baseServiceImpl.ftl", baseServiceFile);
 			freemarker.generateBytemplate(dataMap, templateFolder, "service.ftl", iServiceFile);
 			freemarker.generateBytemplate(dataMap, templateFolder, "serviceImpl.ftl", serviceFile);
 			logger.info(myEntity.getEntityName() + "Service生成成功!!");
-	//	}else{
-		//	logger.warn(myEntity.getEntityName() + "Service已存在!!");
-	//	}
+		}else{
+			logger.warn(myEntity.getEntityName() + "Service已存在!!");
+		}
 	}
 }
