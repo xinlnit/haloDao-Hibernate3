@@ -15,8 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import com.ht.halo.hibernate3.HaloMap;
 
 
-public class EntityUtils {
-	private static final Log logger = LogFactory.getLog(EntityUtils.class);
+public class MyEntityUtils {
+	private static final Log logger = LogFactory.getLog(MyEntityUtils.class);
 	 /**
 	   * @Title: setEntity
 	   * @Description: TODO Action层  设置实体某字段值 map转entity

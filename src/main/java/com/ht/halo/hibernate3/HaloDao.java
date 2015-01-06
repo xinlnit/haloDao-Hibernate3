@@ -30,7 +30,7 @@ import org.hibernate.type.Type;
 import com.ht.halo.hibernate3.base.BaseHibernateDao;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.DateUtils;
-import com.ht.halo.hibernate3.base.EntityUtils;
+import com.ht.halo.hibernate3.base.MyEntityUtils;
 import com.ht.halo.hibernate3.base.MyBeanUtils;
 import com.ht.halo.hibernate3.base.MyUUID;
 import com.ht.halo.hibernate3.base.Page;
@@ -742,7 +742,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByEntity(T entity) {
-		HaloMap haloMap = EntityUtils.toHaloMap(entity);
+		HaloMap haloMap = MyEntityUtils.toHaloMap(entity);
 		return createMyQuery(haloMap).list();
 	}
 
