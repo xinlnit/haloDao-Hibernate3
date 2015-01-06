@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,7 +26,16 @@ public class EntityUtils {
 	 public  static  Object setEntity(Object entity,HaloMap parameter){
 		if(null!=parameter){
 			for (Entry<String, ?> entry : parameter.entrySet()) {
-				MyBeanUtils.setFieldValue(entity, entry.getKey(), entry.getValue());
+				try {
+					BeanUtils.setProperty(entity, entry.getKey(), entry.getValue());
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			//	MyBeanUtils.setFieldValue(entity, entry.getKey(), entry.getValue());
 			}
 		}
 		return entity;
