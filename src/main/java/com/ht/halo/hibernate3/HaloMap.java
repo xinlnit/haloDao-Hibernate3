@@ -19,12 +19,26 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	private int addOrder = 0;
 	private int addGroup = 0;
 	private int addHql = 0;
-
 	public HaloMap() {
 	}
 
 	public HaloMap(Map<String, Object> map) {
-		super(map);
+		if(null==map){
+			map= new HaloMap();
+		}
+		for (Entry<String, Object> entry:map.entrySet()) {
+			this.set(entry.getKey(), entry.getValue());
+		}
+		//super(map);
+	}
+	public HaloMap  setAll(Map<String, Object> map) {
+		if(null==map){
+			map= new HaloMap();
+		}
+		for (Entry<String, Object> entry:map.entrySet()) {
+			this.set(entry.getKey(), entry.getValue());
+		}
+		return this;
 	}
 
 	/**
