@@ -2,16 +2,16 @@ package com.ht.test.entity;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.ht.halo.hibernate3.utils.annotations.HaloView;
 
-@Entity
+@HaloView(position="test")
 public class ViewHalo {
 	private String receivableDetailId;
 	private String houseName;
 	private Boolean flag;
 	private BigDecimal money;
-	@Id
+
+	//@Id
 	public String getReceivableDetailId() {
 		return receivableDetailId;
 	}
@@ -36,6 +36,7 @@ public class ViewHalo {
 	public void setMoney(BigDecimal money) {
 		this.money = money;
 	}
+
 	
 
 }

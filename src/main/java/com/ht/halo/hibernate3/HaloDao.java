@@ -30,8 +30,8 @@ import org.hibernate.type.Type;
 import com.ht.halo.hibernate3.base.BaseHibernateDao;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.DateUtils;
-import com.ht.halo.hibernate3.base.MyEntityUtils;
 import com.ht.halo.hibernate3.base.MyBeanUtils;
+import com.ht.halo.hibernate3.base.MyEntityUtils;
 import com.ht.halo.hibernate3.base.MyUUID;
 import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.base.TableUtil;
@@ -67,7 +67,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private static final String EX = "ex";
 	private static final String IN = "in";
 	private static final String TOBEAN = "toBean";
-	private static final String HALOPACH = "halo";
+	public static final String HALOPACH = "halo";
 	private static final String[] NUMS = new String[] { "1", "3", "5", "6", "7", "8", "9", "0" };
 	private static final String[] NUMREPLACE = new String[] { "|", "#", "%", ":", "?", ".", "(", ")" };
 	public static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
@@ -426,6 +426,10 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		logger.info(type);
 		String valueType = StringUtils.substringAfterLast(value.getClass().getName(), ".");
 		if (!valueType.equalsIgnoreCase(type)) {
+			if ("string".equalsIgnoreCase(type)) {
+				value = ConvertUtils.convert(value, String.class);
+				return value;
+			}
 			if ("integer".equalsIgnoreCase(type)) {
 				value=ConvertUtils.convert(value,Double.class);
 				value = ConvertUtils.convert(value, Integer.class);
@@ -1278,9 +1282,18 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		String sql = sqlWithParameter.getSql();
 		HaloMap hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
+		return query;
+	}
+	public SQLQuery CreateMySqlQueryByHaloViewToBean(String viewName, HaloMap parameter) {
+		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		return query;
 	}
+	/*public SQLQuery CreateMySqlQueryByHaloViewToMap(String viewName, HaloMap parameter) {
+		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
+		query.setResultTransformer(new ColumnToMap());
+		return query;
+	}*/
 
 	/**
 	 * 根据haloView查询. 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user
@@ -1301,9 +1314,11 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByHaloView(String viewName, HaloMap parameter) {
-		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
+		SQLQuery query = CreateMySqlQueryByHaloViewToBean(viewName, parameter);
+	
 		return query.list();
 	}
+
 
 	/**
 	 * 生成总条数的sql语句.
@@ -1354,4 +1369,5 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		page.setEntities(query.list());
 		return page;
 	}
+
 }
