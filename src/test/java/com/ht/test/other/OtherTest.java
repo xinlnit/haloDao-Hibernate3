@@ -1,24 +1,31 @@
 package com.ht.test.other;
 
-import java.text.MessageFormat;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.junit.Test;
+
+import com.ht.halo.hibernate3.map.MyHashMap;
 
 public class OtherTest{
 
 	@Test
 	public void testConvert() {
-	    String str="我是{0},我来自{1},今年{2}岁";
-	       String[] arr={"中国人","北京","22"};
-	       System.out.println(fillStringByArgs(str, arr));
+	    String str="我是{test.HaloView},我来自{133},今年{2}岁";
+	    MyHashMap myHashMap = 
+	    		new MyHashMap().set("test.HaloView", "中国人").set("133", "北京")
+	    		;
+	       System.out.println(fillStringByMap(str, myHashMap));
 	}
-    private static String fillStringByArgs(String str,String[] arr){
-        Matcher m=Pattern.compile("\\{(\\d)\\}").matcher(str);
+    private static String fillStringByMap(String str,Map<String,Object> data){
+        Matcher m=Pattern.compile("\\{([\\w\\.]*)\\}").matcher(str);
         while(m.find()){
-            str=str.replace(m.group(),arr[Integer.parseInt(m.group(1))]);
+        	   System.out.println(m.group());
+        	   String group=m.group();
+        	   group= group.replaceAll("\\{|\\}", "");
+        	   System.out.println(group);
+            str=str.replace(m.group(),String.valueOf(data.get(group)));
         }
         return str;
     }

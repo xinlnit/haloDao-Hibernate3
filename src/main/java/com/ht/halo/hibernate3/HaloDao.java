@@ -109,11 +109,23 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	private StringBuffer getOrder(StringBuffer order, Object value) {
 		if (value instanceof String) {
-			order.append((filterValue((String) value)).replace(':', SPACECHAR)).append(",");
+			String orderValue = filterValue((String) value);
+			if (orderValue.endsWith(":" + HQL)) {
+				String hqlValue = getHqlSnippet(StringUtils.substringBefore(orderValue, ":" + HQL));
+				order.append(hqlValue);
+			} else {
+				order.append(orderValue.replace(':', SPACECHAR)).append(",");
+			}
 		}
 		if (value instanceof String[]) {
 			for (String str : (String[]) value) {
-				order.append((filterValue(str)).replace(':', SPACECHAR)).append(",");
+				String orderValue = filterValue(str);
+				if (orderValue.endsWith(":" + HQL)) {
+					String hqlValue = getHqlSnippet(StringUtils.substringBefore(orderValue, ":" + HQL));
+					order.append(hqlValue);
+				} else {
+					order.append(orderValue.replace(':', SPACECHAR)).append(",");
+				}
 			}
 		}
 		return order;
@@ -349,12 +361,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				}
 			}
 			if (!flag) {
-				if ("<>".equals(condition)||"!=".equals(condition) || "neq".equals(condition)) {
+				if ("<>".equals(condition) || "!=".equals(condition) || "neq".equals(condition)) {
 					columnWithCondition.setCondition("<>");
 					flag = true;
 				}
 			}
-			if (!flag) { 
+			if (!flag) {
 				if (condition.indexOf("like") != -1 || condition.indexOf("Like") != -1) {
 					columnWithCondition.setCondition("like");
 					condition = condition.replaceFirst("like|Like", "");
@@ -415,6 +427,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * convert 转换成当前字段类型 如果值类型不匹配
+	 * 
 	 * @param proType
 	 * @param value
 	 * @return
@@ -422,7 +435,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private Object convert(ColumnWithCondition columnWithCondition) {
 		Object value = columnWithCondition.getValue();
 		String type = columnWithCondition.getType();
-		logger.info("Type::"+value.getClass().getName());
+		logger.info("Type::" + value.getClass().getName());
 		logger.info(type);
 		String valueType = StringUtils.substringAfterLast(value.getClass().getName(), ".");
 		if (!valueType.equalsIgnoreCase(type)) {
@@ -431,12 +444,12 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				return value;
 			}
 			if ("integer".equalsIgnoreCase(type)) {
-				value=ConvertUtils.convert(value,Double.class);
+				value = ConvertUtils.convert(value, Double.class);
 				value = ConvertUtils.convert(value, Integer.class);
 				return value;
 			}
 			if ("long".equalsIgnoreCase(type)) {
-				value=ConvertUtils.convert(value,Double.class);
+				value = ConvertUtils.convert(value, Double.class);
 				value = ConvertUtils.convert(value, Long.class);
 				return value;
 			}
@@ -453,7 +466,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				return value;
 			}
 			if ("short".equalsIgnoreCase(type)) {
-				value=ConvertUtils.convert(value,Double.class);
+				value = ConvertUtils.convert(value, Double.class);
 				value = ConvertUtils.convert(value, Short.class);
 				return value;
 			}
@@ -462,13 +475,13 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 				return value;
 			}
 			if ("timestamp".equalsIgnoreCase(type) || "datetime".equalsIgnoreCase(type) || "date".equalsIgnoreCase(type)) {
-				if(value instanceof String){
-				value = getDate(columnWithCondition);
+				if (value instanceof String) {
+					value = getDate(columnWithCondition);
 				}
 				return value;
 			}
 			if ("big_decimal".equalsIgnoreCase(type) || "bigDecimal".equalsIgnoreCase(type)) {
-				if(!(value instanceof BigDecimal)){
+				if (!(value instanceof BigDecimal)) {
 					value = ConvertUtils.convert(value, BigDecimal.class);
 				}
 				return value;
@@ -773,7 +786,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 * @param num
 	 * @return List
 	 */
-	public <X> List<X> findListByMap(HaloMap  parameter, int num) {
+	public <X> List<X> findListByMap(HaloMap parameter, int num) {
 		return findListByMap(parameter, 0, num);
 	}
 
@@ -908,6 +921,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	/**
 	 * 生成存储过程的SQLQuery.
+	 * 
 	 * @param 存储过程名及参数占位符
 	 * @param parameter
 	 * @return SQLQuery
@@ -1284,16 +1298,19 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
 		return query;
 	}
+
 	public SQLQuery CreateMySqlQueryByHaloViewToBean(String viewName, HaloMap parameter) {
 		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		return query;
 	}
-	/*public SQLQuery CreateMySqlQueryByHaloViewToMap(String viewName, HaloMap parameter) {
-		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
-		query.setResultTransformer(new ColumnToMap());
-		return query;
-	}*/
+
+	/*
+	 * public SQLQuery CreateMySqlQueryByHaloViewToMap(String viewName, HaloMap
+	 * parameter) { SQLQuery query = CreateMySqlQueryByHaloView(viewName,
+	 * parameter); query.setResultTransformer(new ColumnToMap()); return query;
+	 * }
+	 */
 
 	/**
 	 * 根据haloView查询. 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user
@@ -1315,10 +1332,9 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByHaloView(String viewName, HaloMap parameter) {
 		SQLQuery query = CreateMySqlQueryByHaloViewToBean(viewName, parameter);
-	
+
 		return query.list();
 	}
-
 
 	/**
 	 * 生成总条数的sql语句.
@@ -1328,7 +1344,7 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	private String generateMyCountSql(String sql) {
 		sql = StringUtils.substringAfter(sql, " from ");
-		//sql = StringUtils.substringBefore(sql, "order by");
+		// sql = StringUtils.substringBefore(sql, "order by");
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityIdName = TableUtil.toHql(cm.getIdentifierPropertyName());
 		return String.format("select count(%s) from (select %s from %s)temp ", entityIdName, entityIdName, sql);
