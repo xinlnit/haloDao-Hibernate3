@@ -63,21 +63,9 @@ public class BaseHibernateDao<T, PK extends Serializable> {
 		ClassMetadata meta = getSessionFactory().getClassMetadata(entityType);
 		return meta.getIdentifierPropertyName();
 	}
-
-	public void save( T entity) {
-		getSession().save(entity);
-	}
 	public void delete( T entity) {
 		getSession().delete(entity);
 	}
-	public void update( T entity) {
-		// String entityName = this.getEntityName(entity);
-		getSession().update(entity);
-	}
-	public void saveOrUpdate(T entity){
-		getSession().saveOrUpdate(entity);
-	}
-
 	public void delete( PK id) {
 		delete(get(id));
 	}

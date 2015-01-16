@@ -79,7 +79,28 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private Session getSession() {
 		return getSessionFactory().getCurrentSession();
 	}
-
+	
+	/**
+	 *  保存
+	 * @param entity
+	 */
+	public void save( T entity) {
+		getSession().save(entity);
+	}
+	/**
+	 *  更新
+	 * @param entity
+	 */
+	public void update( T entity) {
+		getSession().update(entity);
+	}
+	/**
+	 *  保存或更新 
+	 * @param entity
+	 */
+	public void saveOrUpdate(T entity){
+		getSession().saveOrUpdate(entity);
+	}
 	private String removeAllSpace(String value) {
 		if (value.startsWith("_")) {
 			value = value.substring(1, value.length());
