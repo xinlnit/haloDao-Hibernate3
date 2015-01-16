@@ -31,7 +31,9 @@ public class PropertiesUtil {
 		    			new OnceProp().setLastModified(lastModifiedTime).setProp(prop));
 	    	  }
 	
-	    	}
+	    	}else{
+				throw new  RuntimeException("文件找不到!");
+			}
 	    
 	    	
 	    }
