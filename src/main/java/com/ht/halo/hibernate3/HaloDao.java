@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.EntityMode;
@@ -40,6 +39,7 @@ import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.HqlWithParameter;
 import com.ht.halo.hibernate3.bean.SqlWithParameter;
 import com.ht.halo.hibernate3.feemarker.FreemarkerUtils;
+import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
 
@@ -79,28 +79,34 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	private Session getSession() {
 		return getSessionFactory().getCurrentSession();
 	}
-	
+
 	/**
-	 *  保存
+	 * 保存
+	 * 
 	 * @param entity
 	 */
-	public void save( T entity) {
+	public void save(T entity) {
 		getSession().save(entity);
 	}
+
 	/**
-	 *  更新
+	 * 更新
+	 * 
 	 * @param entity
 	 */
-	public void update( T entity) {
+	public void update(T entity) {
 		getSession().update(entity);
 	}
+
 	/**
-	 *  保存或更新 
+	 * 保存或更新
+	 * 
 	 * @param entity
 	 */
-	public void saveOrUpdate(T entity){
+	public void saveOrUpdate(T entity) {
 		getSession().saveOrUpdate(entity);
 	}
+
 	private String removeAllSpace(String value) {
 		if (value.startsWith("_")) {
 			value = value.substring(1, value.length());
@@ -180,15 +186,17 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 
 	private Object getDate(ColumnWithCondition columnWithCondition) {
 		Object value = columnWithCondition.getValue();
-		try {
-			if (null != columnWithCondition.getFormate()) {
-				value = DateUtils.parse(columnWithCondition.getFormate(), String.valueOf(value));
-			} else {
-				value = DateUtils.parseDate(String.valueOf(value), PATTERN);
+		if(value instanceof String){
+			try {
+				if (null != columnWithCondition.getFormate()) {
+					value = DateUtils.parse(columnWithCondition.getFormate(), String.valueOf(value));
+				} else {
+					value = DateUtils.parseDate(String.valueOf(value), PATTERN);
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return value;
 
@@ -341,6 +349,15 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			key = keyWithType[0];
 		}
 		String[] keys = key.split(MYSPACE);
+		// 判断是否跳过
+		boolean queryFlag = true;
+		if (keys.length == 3 && keys[2].equals(IN)) {
+			queryFlag = true;
+		} else {
+			if (null == value || StringUtils.isBlank(String.valueOf(value))) {
+				queryFlag = false;
+			}
+		}
 		if (keys.length == 1) {
 			columnWithCondition.setCondition("=");
 			orgKey.append(":eq");
@@ -361,9 +378,13 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 			if (!flag) {
 				if (condition.indexOf(">=") != -1 || condition.indexOf("ge") != -1) {
+					if (queryFlag) {
 					condition = condition.replaceFirst("ge|\\>=", "");
 					columnWithCondition.setCondition(">=");
 					columnWithCondition = extDateCondition(condition, "", false, columnWithCondition);
+					} else {
+						columnWithCondition.setCondition(EX);
+					}
 					flag = true;
 				}
 			}
@@ -375,9 +396,13 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 			if (!flag) {
 				if (condition.indexOf("<=") != -1 || condition.indexOf("le") != -1) {
-					condition = condition.replaceFirst("le|\\<=", "");
-					columnWithCondition.setCondition("<=");
-					columnWithCondition = extDateCondition(condition, "", true, columnWithCondition);
+					if (queryFlag) {
+						condition = condition.replaceFirst("le|\\<=", "");
+						columnWithCondition.setCondition("<=");
+						columnWithCondition = extDateCondition(condition, "", true, columnWithCondition);
+					} else {
+						columnWithCondition.setCondition(EX);
+					}
 					flag = true;
 				}
 			}
@@ -389,13 +414,18 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 			}
 			if (!flag) {
 				if (condition.indexOf("like") != -1 || condition.indexOf("Like") != -1) {
-					columnWithCondition.setCondition("like");
-					condition = condition.replaceFirst("like|Like", "");
-					columnWithCondition = extLikeCondition(condition, value, columnWithCondition);
-					if (columnWithCondition.getTempFlag()) {
-						columnWithCondition = extDateCondition(condition, "%", false, columnWithCondition);
+					if (queryFlag) {
+						columnWithCondition.setCondition("like");
+						condition = condition.replaceFirst("like|Like", "");
+						columnWithCondition = extLikeCondition(condition, value, columnWithCondition);
+						if (columnWithCondition.getTempFlag()) {
+							columnWithCondition = extDateCondition(condition, "%", false, columnWithCondition);
+						}
+					} else {
+						columnWithCondition.setCondition(EX);
 					}
 					flag = true;
+
 				}
 			}
 			if (!flag) {
