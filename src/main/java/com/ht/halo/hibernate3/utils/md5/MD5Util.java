@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.md5;
+package com.ht.halo.hibernate3.utils.md5;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 

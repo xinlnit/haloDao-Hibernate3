@@ -33,6 +33,12 @@ import com.ht.halo.hibernate3.utils.annotations.HaloView;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
 
+/**
+ *  基于haloView视图sql的Dao层
+ * @author fengchangyi@haitao-tech.com
+ * @date 2015-1-21 下午8:04:14
+ * @param <T>
+ */
 public class HaloViewDao<T> {
 	private static final Log logger = LogFactory.getLog(HaloViewDao.class);
 	private static final String SPACE = "\u0020";
@@ -741,12 +747,26 @@ public class HaloViewDao<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByHaloView(String viewName, HaloMap parameter) {
+		Integer begin=0;
+		Integer end=null;
+		if(null!=parameter.get(HaloDao.ADDBEGIN)){
+			begin=(Integer) ConvertUtils.convert(parameter.get(HaloDao.ADDBEGIN),Integer.class);
+			parameter.remove(HaloDao.ADDBEGIN);
+		}
+        if(null!=parameter.get(HaloDao.ADDEND)){
+        	end=(Integer) ConvertUtils.convert(parameter.get(HaloDao.ADDEND),Integer.class);
+        	parameter.remove(HaloDao.ADDEND);
+		}
 		SQLQuery query = null;
 		if (this.entityType.getName().equals("com.ht.halo.hibernate3.HaloViewMap")) {
 			query = CreateMySqlQueryByHaloViewToMap(viewName, parameter);
 		} else {
 			query = CreateMySqlQueryByHaloViewToBean(viewName, parameter);
 		}
+	    if(null!=end){
+        	query.setFirstResult(begin);
+    		query.setMaxResults(end - begin);
+        }
 		return query.list();
 	}
 	private String getViewName(){

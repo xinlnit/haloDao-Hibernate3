@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.ht.halo.hibernate3.map.HashMap;
-import com.ht.halo.hibernate3.md5.MD5Util;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
+import com.ht.halo.hibernate3.utils.md5.MD5Util;
 
 public class PropertiesUtil {
      private Properties prop;

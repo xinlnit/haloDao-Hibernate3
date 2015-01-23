@@ -26,6 +26,7 @@ import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.EntityType;
 import org.hibernate.type.Type;
 
+import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.hibernate3.base.BaseHibernateDao;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.DateUtils;
@@ -50,12 +51,15 @@ import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
  * @date 2014-12-20 下午3:14:10
  * @version 3.0
  */
-public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Serializable> {
+public class HaloDao<T, PK extends Serializable>  extends BaseHibernateDao<T, Serializable> 
+      implements IHaloDao<T, PK>{
 	private static final Log logger = LogFactory.getLog(HaloDao.class);
 	public static final String ADDCOLUMN = "addColumn";// 添加查询字段,默认查询出主键
 	public static final String ADDORDER = "addOrder";// 添加排序
 	public static final String ADDGROUP = "addGroup";// 添加排序
 	public static final String ADDHQL = "addHql";// 添加查询hql片段的key值,比如fcy.user.baseUser.a(最前是文件名,放到halo.hql中)
+	public static final String ADDBEGIN = "addBegin";//开始条数
+	public static final String ADDEND = "addEnd";//结束条数
 	public static final String HQL = "hql";
 	private static final String PRM = "prm";// 添加查询hql中的参数标识
 	private static final String DATA = "data";// haloView中的模板数据
@@ -97,7 +101,22 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	public void update(T entity) {
 		getSession().update(entity);
 	}
+	public void deleteByEntity( T entity) {
+		getSession().delete(entity);
+	}
+	public void deleteById( PK id) {
+		delete(get(id));
+	}
+	@SuppressWarnings("unchecked")
+	public T checkById(PK id) {
+		return (T) getSession().get(entityType, id);
+	}
 
+	@SuppressWarnings("unchecked")
+	public T getById(PK id) {
+		return (T) getSession().load(entityType, id);
+	}
+	
 	/**
 	 * 保存或更新
 	 * 
@@ -799,7 +818,22 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByMap(HaloMap parameter) {
-		return createMyQuery(parameter).list();
+		Integer begin=0;
+		Integer end=null;
+		if(null!=parameter.get(ADDBEGIN)){
+			begin=(Integer) ConvertUtils.convert(parameter.get(ADDBEGIN),Integer.class);
+			parameter.remove(ADDBEGIN);
+		}
+        if(null!=parameter.get(ADDEND)){
+        	end=(Integer) ConvertUtils.convert(parameter.get(ADDEND),Integer.class);
+        	parameter.remove(ADDEND);
+		}
+		Query query =createMyQuery(parameter);
+        if(null!=end){
+        	query.setFirstResult(begin);
+    		query.setMaxResults(end - begin);
+        }
+		return query.list();
 	}
 
 	/**
@@ -1382,8 +1416,21 @@ public class HaloDao<T, PK extends Serializable> extends BaseHibernateDao<T, Ser
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByHaloView(String viewName, HaloMap parameter) {
+		Integer begin=0;
+		Integer end=null;
+		if(null!=parameter.get(ADDBEGIN)){
+			begin=(Integer) ConvertUtils.convert(parameter.get(ADDBEGIN),Integer.class);
+			parameter.remove(ADDBEGIN);
+		}
+        if(null!=parameter.get(ADDEND)){
+        	end=(Integer) ConvertUtils.convert(parameter.get(ADDEND),Integer.class);
+        	parameter.remove(ADDEND);
+		}
 		SQLQuery query = CreateMySqlQueryByHaloViewToBean(viewName, parameter);
-
+	    if(null!=end){
+        	query.setFirstResult(begin);
+    		query.setMaxResults(end - begin);
+        }
 		return query.list();
 	}
 

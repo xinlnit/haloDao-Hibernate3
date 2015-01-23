@@ -85,6 +85,11 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		return this.set(key, value);
 	}
 
+	/**
+	 *  TODO 添加排序(可追加)
+	 * @param orders
+	 * @return
+	 */
 	public HaloMap addOrder(String... orders) {
 		for (String order : orders) {
 			this.set(HaloDao.ADDORDER, order);
@@ -122,7 +127,24 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		}
 		return this;
 	}
-
+	/**
+	 *  TODO 添加开始条数
+	 * @param value
+	 * @return
+	 */
+	public HaloMap addBegin( Object value) {
+		this.set(HaloDao.ADDBEGIN, value);
+		return this;
+	}
+	/**
+	 *  TODO 添加结束条数
+	 * @param value
+	 * @return
+	 */
+	public HaloMap addEnd( Object value) {
+		this.set(HaloDao.ADDEND, value);
+		return this;
+	}
 	/**
 	 * @Title: addParameter
 	 * @Description: TODO key:prm
