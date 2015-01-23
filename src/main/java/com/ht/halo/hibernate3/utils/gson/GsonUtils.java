@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
  * @author fengchangyi
  * @date 2014-12-2 下午1:21:11
  */
-public class HtGson {
+public class GsonUtils {
 	/**
 	 * @Title: getGsonIn
 	 * @Description: TODO 默认查询普通属性,其他关联实体属性,请写上字段名fieldNames

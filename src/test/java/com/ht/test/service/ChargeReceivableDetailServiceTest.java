@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
-import com.ht.halo.hibernate3.utils.gson.HtGson;
+import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.ChargeReceivableDetail;
 import com.ht.utils.junit.BaseServiceTestCase;
 
@@ -53,7 +53,7 @@ public class ChargeReceivableDetailServiceTest extends BaseServiceTestCase{
 				System.out.println(chargeReceivableDetail.getHouseOwnerName());
 				System.out.println(chargeReceivableDetail.getFeeItemName());
 				System.out.println(chargeReceivableDetail.getCreateDate());
-				System.out.println(HtGson.getGsonIn().toJson(chargeReceivableDetail));
+				System.out.println(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 			}
 	}
 	@Test
@@ -69,7 +69,7 @@ public class ChargeReceivableDetailServiceTest extends BaseServiceTestCase{
 							System.out.println(chargeReceivableDetail.getHouseOwnerName());
 							System.out.println(chargeReceivableDetail.getFeeItemName());
 							System.out.println(chargeReceivableDetail.getCreateDate());
-							System.out.println(HtGson.getGsonIn().toJson(chargeReceivableDetail));
+							System.out.println(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 						}
 	}
 	@Test
@@ -80,7 +80,7 @@ public class ChargeReceivableDetailServiceTest extends BaseServiceTestCase{
 		.addGroup("feeItemId")
 		.set("feeItemName:like", "水")
 		);
-		System.out.println(HtGson.getGsonIn("entities").toJson(page));
+		System.out.println(GsonUtils.getGsonIn("entities").toJson(page));
 	}
 	@Test
 	public void testfindChargeReceivableDetail() {

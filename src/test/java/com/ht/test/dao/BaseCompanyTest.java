@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import com.ht.halo.hibernate3.HaloMap;
-import com.ht.halo.hibernate3.utils.gson.HtGson;
+import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.BaseCompany;
 import com.ht.utils.junit.BaseDaoTestCase;
 
@@ -21,6 +21,6 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 	public void testFindListByMap() {
 		List<BaseCompany> baseCompanies = baseCompanyDao.findListByMap(new HaloMap()
 		.set("companyId", "4028805e49abcb1d0149abd0585a0000"));
-		logger.info(HtGson.getGsonIn().toJson(baseCompanies));
+		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
 	}
 }

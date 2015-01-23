@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
-import com.ht.halo.hibernate3.utils.gson.HtGson;
+import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -273,9 +273,9 @@ public class  BaseCompany implements java.io.Serializable {
       }
      @Override
 	 public String toString() {
-		 return HtGson.getGsonIn().toJson(this);
+		 return GsonUtils.getGsonIn().toJson(this);
 	 }
 	 public String getJson(){
-		 return HtGson.getGsonIn().toJson(this);
+		 return GsonUtils.getGsonIn().toJson(this);
 	 }
 }

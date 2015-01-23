@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
-import com.ht.halo.hibernate3.utils.gson.HtGson;
+import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.ChargeReceivableDetail;
 import com.ht.utils.junit.BaseDaoTestCase;
 
@@ -42,7 +42,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 			logger.info(chargeReceivableDetail.getHouseOwnerName());
 			//logger.info(chargeReceivableDetail.getFeeItemName());
 			//logger.info(chargeReceivableDetail.getChargeFeeItem().getName());
-			logger.info(HtGson.getGsonIn().toJson(chargeReceivableDetail));
+			logger.info(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 		}
 	}
 	@Test       
@@ -55,7 +55,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 		.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
 		.set("feeItemName:like", "水")
 		);
-		System.out.println(HtGson.getGsonIn("entities").toJson(page));
+		System.out.println(GsonUtils.getGsonIn("entities").toJson(page));
 	}
 	@Test
 	public void testGet() {
@@ -107,7 +107,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 			logger.info(chargeReceivableDetail.getHouseOwnerName());
 			//logger.info(chargeReceivableDetail.getFeeItemName());
 			//logger.info(chargeReceivableDetail.getChargeFeeItem().getName());
-			logger.info(HtGson.getGsonIn().toJson(chargeReceivableDetail));
+			logger.info(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 		}
 	}
    @Test
@@ -128,7 +128,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 		.set("first", 1).set("last", 4));
 		System.out.println(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
-			logger.info(HtGson.getGsonIn().toJson(chargeReceivableDetail));
+			logger.info(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 		}
    }
    @Test
@@ -148,7 +148,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	   );
 		System.out.println(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
-			logger.info(HtGson.getGsonIn().toJson(chargeReceivableDetail));
+			logger.info(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 		}
    }
    @Test
@@ -164,7 +164,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 		//.addGroup("feeItemId")
 		//.set("feeItemName:like", "水")
 		);
-		System.out.println(HtGson.getGsonIn("entities").toJson(page));
+		System.out.println(GsonUtils.getGsonIn("entities").toJson(page));
    }
   
 

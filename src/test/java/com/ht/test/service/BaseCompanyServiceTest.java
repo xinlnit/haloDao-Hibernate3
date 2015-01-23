@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 
-import com.ht.halo.hibernate3.utils.gson.HtGson;
+import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.BaseCompany;
 import com.ht.utils.junit.BaseServiceTestCase;
 
@@ -22,7 +22,7 @@ public class BaseCompanyServiceTest extends BaseServiceTestCase{
 	public void testFindBaseCompanyById() {
 	  BaseCompany baseCompany= 	
 			  baseCompanyService.findBaseCompanyById("4028805e49abcb1d0149abd0585a0000");
-		  System.out.println(HtGson.getGsonIn().toJson(baseCompany));
+		  System.out.println(GsonUtils.getGsonIn().toJson(baseCompany));
 		
 	}
 
