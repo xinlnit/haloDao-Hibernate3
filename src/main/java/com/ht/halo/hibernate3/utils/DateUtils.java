@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.base;
+package com.ht.halo.hibernate3.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
