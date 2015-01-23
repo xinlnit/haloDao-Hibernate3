@@ -27,9 +27,9 @@ import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.base.TableUtil;
 import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.SqlWithParameter;
-import com.ht.halo.hibernate3.feemarker.FreemarkerUtils;
 import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.hibernate3.utils.annotations.HaloView;
+import com.ht.halo.hibernate3.utils.feemarker.FreemarkerUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
 

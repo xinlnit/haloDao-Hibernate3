@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.gson;
+package com.ht.halo.hibernate3.utils.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

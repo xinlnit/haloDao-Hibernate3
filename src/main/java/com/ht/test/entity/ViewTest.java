@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
-import com.ht.halo.hibernate3.gson.HtGson;
+import com.ht.halo.hibernate3.utils.gson.HtGson;
 
 
 /**

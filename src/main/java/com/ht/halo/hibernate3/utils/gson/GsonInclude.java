@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.gson;
+package com.ht.halo.hibernate3.utils.gson;
 
 import java.util.HashSet;
 import java.util.Set;
