@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import com.ht.codegen.utils.DateUtils;
 import com.ht.codegen.utils.PropertiesUtil;
 import com.ht.codegen.utils.freemarker.Freemarker;
-import com.ht.halo.hibernate3.utils.feemarker.UUIDDirective;
+import com.ht.halo.hibernate3.utils.tpl.freemarker.UUIDDirective;
 
 /**
  * 

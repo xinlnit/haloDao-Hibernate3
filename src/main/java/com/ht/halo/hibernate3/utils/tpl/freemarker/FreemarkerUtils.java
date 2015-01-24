@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.utils.feemarker;
+package com.ht.halo.hibernate3.utils.tpl.freemarker;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,8 +8,12 @@ import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.ht.halo.hibernate3.utils.tpl.ITplUtils;
 
 
 import freemarker.cache.StringTemplateLoader;
@@ -17,7 +21,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class FreemarkerUtils {
+public class FreemarkerUtils implements ITplUtils{
 	private String tplSuffix=".ftl";
 	private String toSuffix;
 	private String defaultCharacter = "UTF-8";
@@ -127,6 +131,19 @@ public class FreemarkerUtils {
 	        }  
 		  return result;
 	  }
+
+	@Override
+	public String tpl(Map<String, Object> data, String tplStr) {
+		 Matcher m=Pattern.compile("\\{([\\w\\.]*)\\}").matcher(tplStr);
+	        while(m.find()){
+	        	   System.out.println(m.group());
+	        	   String group=m.group();
+	        	   group= group.replaceAll("\\{|\\}", "");
+	        	   System.out.println(group);
+	        	   tplStr=tplStr.replace(m.group(),String.valueOf(data.get(group)));
+	        }
+	        return tplStr;
+	}
 
 
 }

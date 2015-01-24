@@ -27,7 +27,7 @@ public interface IHaloDao<T,PK extends Serializable> {
 		   public Page<T> findPageByMap(Page<T> page, HaloMap parameter);
 		   public SQLQuery createProcQuery(String procedure, Map<String, ?> parameter);
 		   public <X> List<X> findListByProc(String procedureName, Map<String, ?> parameter);
-		   public SQLQuery CreateSqlQueryByHaloView(String viewName, HaloMap parameter);
+		  // public SQLQuery CreateSqlQueryByHaloView(String viewName, HaloMap parameter);
 		   
 	}
 

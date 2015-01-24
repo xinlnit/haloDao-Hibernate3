@@ -40,9 +40,9 @@ import com.ht.halo.hibernate3.bean.SqlWithParameter;
 import com.ht.halo.hibernate3.utils.DateUtils;
 import com.ht.halo.hibernate3.utils.MyUUID;
 import com.ht.halo.hibernate3.utils.StringUtils;
-import com.ht.halo.hibernate3.utils.feemarker.FreemarkerUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
+import com.ht.halo.hibernate3.utils.tpl.freemarker.FreemarkerUtils;
 
 /**
  * @ClassName: HaloDao
@@ -260,7 +260,6 @@ public class HaloDao<T, PK extends Serializable>  extends BaseHibernateDao<T, Se
 			columnWithCondition.setTempFlag(false);
 			return columnWithCondition;
 		}
-
 		return columnWithCondition;
 	}
 

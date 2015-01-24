@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.utils.feemarker;
+package com.ht.halo.hibernate3.utils.tpl.freemarker;
 
 import java.io.IOException;
 import java.util.Map;
