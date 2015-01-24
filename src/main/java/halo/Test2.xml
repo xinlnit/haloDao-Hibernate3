@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<halo>
+	<hqls>
+		<hql id="findById">
+			UPDATE Blog
+			SET title = #{title},
+			author_id = #{author.id},
+			WHERE id = #{id};
+		</hql>
+		<hql id="aa">
+			houseId =:houseId
+		</hql>
+	</hqls>
+     <datas>
+        <data id="">
+        </data>
+     </datas>
+</halo>  

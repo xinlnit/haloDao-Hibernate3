@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<halo>
+	
+	<datas>
+		<data id="aa">
+		   wwww都是
+		</data>
+	</datas>
+	<hqls>
+		<hql id="findById">
+			UPDATE Blog
+			SET title = #{title},
+			author_id = #{author.id},
+			WHERE id = #{id};
+		</hql>
+		<hql id="aa">
+			houseId =:houseIdwww
+		</hql>
+	</hqls>
+</halo>  

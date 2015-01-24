@@ -74,9 +74,15 @@ public class PropertiesUtil {
 		return getValue(key,"hallo");
 	}
 	public static void main(String[] args) throws FileNotFoundException, IOException {
+		System.out.println(System.currentTimeMillis());
           PropertiesUtil propertiesUtil= new PropertiesUtil(
         		  FileUtils.getClassPath("halo.hql", "fcy.properties"));
 	    System.out.println("ZZZZZ::::"+propertiesUtil.getHql("charge.chargeReceivableDetail.ee"));
+		System.out.println(System.currentTimeMillis());
+		  PropertiesUtil propertiesUtil2= new PropertiesUtil(
+        		  FileUtils.getClassPath("halo.hql", "fcy2.properties"));
+	    System.out.println("ZZZZZ::::"+propertiesUtil2.getHql("charge.chargeReceivableDetail.ee"));
+		System.out.println(System.currentTimeMillis());
 	  
 	}
 }

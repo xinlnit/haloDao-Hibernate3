@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +31,11 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 	public static File getClassPath(String packageName, String name) {
 		
 		String path =Thread.currentThread().getContextClassLoader().getResource("").getPath();
+		try {
+			path=URLDecoder.decode(path,ENCODING);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 		File file = new File(path+getFilePath(packageName, name));
 		return file;
 	}
