@@ -23,7 +23,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	@Test
 	public void testFindListByMap() {
         long a= System.currentTimeMillis();
-		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.queryListByMap(new HaloMap()
+		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
 		.set("houseId_eq", "4028813a47f2772c0147f2780578056a")
 		.set("ratio_notin", "1.0")
 		.set("state_=", 1)
@@ -53,7 +53,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	@Test       
 	public void testFindPageByMap(){
 		Page<ChargeReceivableDetail> page= new Page<ChargeReceivableDetail>(7, 1);
-		page=chargeReceivableDetailDao.queryPageByMap(page, new HaloMap()
+		page=chargeReceivableDetailDao.findPageByMap(page, new HaloMap()
 		.set("houseOwnerId_eq", "4028813a47f2772c0147f278059605f3")
 		.addGroup("feeItemId")
 		.addGroup("houseOwnerId")
@@ -98,13 +98,13 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 
 	@Test
 	public void testFindFirstByMap(){
-		ChargeReceivableDetail entity=	chargeReceivableDetailDao.queryFirstByMap(new HaloMap()
+		ChargeReceivableDetail entity=	chargeReceivableDetailDao.findFirstByMap(new HaloMap()
 		.set("houseOwnerId", "4028813a47f2772c0147f278059605f3"));
 		logger.info(entity.getHouseOwnerName());
 	}
 	@Test
 	public void testFindListByMapNum(){
-		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.queryListByMap(new HaloMap()
+		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
 		.set("houseOwnerId", "4028813a47f2772c0147f278059605f3") ,3);
 		logger.info(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
@@ -130,7 +130,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
    @SuppressWarnings("unchecked")
    @Test
 	public void testCreateProcQuery(){
-		List<ChargeReceivableDetail> chargeReceivableDetails =  chargeReceivableDetailDao.queryListByProc("pro_test", new MyLinkedHashMap()
+		List<ChargeReceivableDetail> chargeReceivableDetails =  chargeReceivableDetailDao.findListByProc("pro_test", new MyLinkedHashMap()
 		.set("first", 1).set("last", 4),ChargeReceivableDetail.class);
 		System.out.println(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {

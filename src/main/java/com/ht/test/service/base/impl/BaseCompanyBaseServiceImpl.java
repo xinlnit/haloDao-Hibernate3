@@ -20,15 +20,15 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	}
 	@Override
 	public BaseCompany findBaseCompanyFirst(HaloMap parameter) {
-		return baseCompanyDao.queryFirstByMap(parameter);
+		return baseCompanyDao.findFirstByMap(parameter);
 	}
 	@Override
 	public List<BaseCompany> findBaseCompanyListByMap(HaloMap parameter) {
-		return baseCompanyDao.queryListByMap(parameter);
+		return baseCompanyDao.findListByMap(parameter);
 	}
 	@Override
 	public Page<BaseCompany> findBaseCompanyPageByMap(Page<BaseCompany> page,HaloMap parameter) {
-		return baseCompanyDao.queryPageByMap(page, parameter);
+		return baseCompanyDao.findPageByMap(page, parameter);
 	}
 	@Override
 	public BaseCompany changeBaseCompanyNotNull(BaseCompany entity) {

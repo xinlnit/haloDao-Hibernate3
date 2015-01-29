@@ -19,15 +19,15 @@ public class ChargeReceivableDetailServiceImpl implements IChargeReceivableDetai
 	private ChargeReceivableDetailDao chargeReceivableDetailDao;
 	@Override
 	public List<ChargeReceivableDetail> findChargeReceivableDetailList(HaloMap parameter) {
-		return chargeReceivableDetailDao.queryListByMap(parameter);
+		return chargeReceivableDetailDao.findListByMap(parameter);
 	}
 	@Override
 	public List<ChargeReceivableDetail> findChargeReceivableDetailList(ChargeReceivableDetail entity) {
-		return chargeReceivableDetailDao.queryListByEntity(entity);
+		return chargeReceivableDetailDao.findListByEntity(entity);
 	}
 	@Override
 	public Page<ChargeReceivableDetail> findChargeReceivableDetailPage(Page<ChargeReceivableDetail> page, HaloMap parameter) {
-		return chargeReceivableDetailDao.queryPageByMap(page, parameter);
+		return chargeReceivableDetailDao.findPageByMap(page, parameter);
 	}
 	@Override
 	public void updateChargeReceivableDetailNotNull(ChargeReceivableDetail entity) {

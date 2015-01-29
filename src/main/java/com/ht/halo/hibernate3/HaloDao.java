@@ -165,12 +165,12 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 
 	protected long countHqlResult(String hql, Object... parameters) {
 		String countHql = generateCountHql(hql);
-		return ((Number) queryUnique(countHql, parameters)).longValue();
+		return ((Number) findUnique(countHql, parameters)).longValue();
 	}
 
 	protected long countHqlResult(String hql, Map<String, ?> parameters) {
 		String countHql = generateCountHql(hql);
-		return ((Number) queryUnique(countHql, parameters)).longValue();
+		return ((Number) findUnique(countHql, parameters)).longValue();
 	}
 
 	private String generateCountHql(String hql) {
@@ -187,27 +187,27 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <X> X queryUnique(String hql, Object... parameters) {
+	public <X> X findUnique(String hql, Object... parameters) {
 		return (X) createQuery(hql, parameters).uniqueResult();
 	}
 
 	@SuppressWarnings("unchecked")
-	public <X> X queryUnique(String hql, Map<String, ?> parameters) {
+	public <X> X findUnique(String hql, Map<String, ?> parameters) {
 		return (X) createQuery(hql, parameters).uniqueResult();
 	}
 
 	@SuppressWarnings("unchecked")
-	public <X> List<X> query(String hql, Object... parameters) {
+	public <X> List<X> find(String hql, Object... parameters) {
 		return createQuery(hql, parameters).list();
 	}
 
 	@SuppressWarnings("unchecked")
-	public <X> List<X> query(String hql, Map<String, ?> parameters) {
+	public <X> List<X> find(String hql, Map<String, ?> parameters) {
 		return createQuery(hql, parameters).list();
 	}
 
 	@SuppressWarnings("unchecked")
-	public Page<T> query(Page<T> page, String hql, Object... parameters) {
+	public Page<T> find(Page<T> page, String hql, Object... parameters) {
 		notNull(page, "page");
 		Query q = createQuery(hql, parameters);
 		long totalCount = countHqlResult(hql, parameters);
@@ -218,7 +218,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Page<T> query(Page<T> page, String hql, Map<String, ?> parameters) {
+	public Page<T> find(Page<T> page, String hql, Map<String, ?> parameters) {
 		notNull(page, "page");
 		Query q = createQuery(hql, parameters);
 		long totalCount = countHqlResult(hql, parameters);
@@ -260,7 +260,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T queryById(PK id) {
+	public T findById(PK id) {
 		return (T) getSession().load(entityType, id);
 	}
 
@@ -924,7 +924,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 
 
 	@SuppressWarnings("unchecked")
-	public <X> List<X> queryListByMap(HaloMap parameter) {
+	public <X> List<X> findListByMap(HaloMap parameter) {
 		Integer begin = 0;
 		Integer end = null;
 		if (null != parameter.get(ADDBEGIN)) {
@@ -951,7 +951,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> queryListByEntity(T entity) {
+	public <X> List<X> findListByEntity(T entity) {
 		HaloMap haloMap = MyEntityUtils.toHaloMap(entity);
 		return createMyQuery(haloMap).list();
 	}
@@ -965,7 +965,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
-	public <X> List<X> queryListByMap(HaloMap parameter, int begin, int end) {
+	public <X> List<X> findListByMap(HaloMap parameter, int begin, int end) {
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(begin);
 		query.setMaxResults(end - begin);
@@ -979,8 +979,8 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @param num
 	 * @return List
 	 */
-	public <X> List<X> queryListByMap(HaloMap parameter, int num) {
-		return queryListByMap(parameter, 0, num);
+	public <X> List<X> findListByMap(HaloMap parameter, int num) {
+		return findListByMap(parameter, 0, num);
 	}
 
 	/**
@@ -990,7 +990,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @return entity
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public T queryFirstByMap(HaloMap parameter) {
+	public T findFirstByMap(HaloMap parameter) {
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -1004,7 +1004,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @return entity
 	 */
 	@SuppressWarnings("unchecked")
-	public T queryUnique(HaloMap parameter) {
+	public T findUnique(HaloMap parameter) {
 		return (T) createMyQuery(parameter).uniqueResult();
 	}
 
@@ -1050,7 +1050,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 			Query query = this.createSQLQuery(countSQL, parameter.values().toArray());
 			return ((Number) query.uniqueResult()).longValue();
 		} else {
-			return ((Number) queryUnique(countHql, parameter)).longValue();
+			return ((Number) findUnique(countHql, parameter)).longValue();
 		}
 
 	}
@@ -1063,7 +1063,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @return Page
 	 */
 	@SuppressWarnings("unchecked")
-	public Page<T> queryPageByMap(Page<T> page, HaloMap parameter) {
+	public Page<T> findPageByMap(Page<T> page, HaloMap parameter) {
 		notNull(page, "page");
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
 		String hql = hqlWithParameter.getHql();
@@ -1155,14 +1155,14 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 */
 
 	@SuppressWarnings("rawtypes")
-	public List queryListByProc(String procedureName, MyLinkedHashMap parameter, Class<?> resultClass) {
+	public List findListByProc(String procedureName, MyLinkedHashMap parameter, Class<?> resultClass) {
 		SQLQuery query = createProcQuery(procedureName, parameter);
 		query.setResultTransformer(new ColumnToBean(resultClass));
 		return query.list();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<HaloViewMap> queryListByProc(String procedureName, MyLinkedHashMap parameter) {
+	public List<HaloViewMap> findListByProc(String procedureName, MyLinkedHashMap parameter) {
 		SQLQuery query = createProcQuery(procedureName, parameter);
 		query.setResultTransformer(new ColumnToMap());
 		return query.list();
@@ -1359,7 +1359,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <X> List<X> queryByHql(String id, MyHashMap tplMap, MyHashMap parameter) {
+	public <X> List<X> findByHql(String id, MyHashMap tplMap, MyHashMap parameter) {
 		Integer begin = 0;
 		Integer end = null;
 		if (null != parameter.get(ADDBEGIN)) {
@@ -1378,12 +1378,12 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		return query.list();
 	}
 
-	public <X> List<X> queryByHql(String id, MyHashMap parameter) {
-		return queryByHql(id, null, parameter);
+	public <X> List<X> findByHql(String id, MyHashMap parameter) {
+		return findByHql(id, null, parameter);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Page<T> queryPageByHql(Page<T> page, String id, MyHashMap tplMap, MyHashMap parameter) {
+	public Page<T> findPageByHql(Page<T> page, String id, MyHashMap tplMap, MyHashMap parameter) {
 		notNull(page, "page");
 		String hql = getHql(id, tplMap);
 		Query q = createQuery(hql, parameter);
@@ -1394,8 +1394,8 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		return page;
 	}
 
-	public Page<T> queryPageByHql(Page<T> page, String id, MyHashMap parameter) {
-		return queryPageByHql(page, id, null, parameter);
+	public Page<T> findPageByHql(Page<T> page, String id, MyHashMap parameter) {
+		return findPageByHql(page, id, null, parameter);
 	}
 
 	// hql------------------------------------------------------
@@ -1429,7 +1429,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T      queryFirstBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+	public T      findFirstBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
 		SQLQuery query = createSQLQueryByXml(id, tplMap, parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -1437,13 +1437,13 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T queryUniqueBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+	public T findUniqueBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
 		SQLQuery query = createSQLQueryByXml(id, tplMap, parameter);
 		return (T) query.uniqueResult();
 	}
 
 	@SuppressWarnings("unchecked")
-	public <X> List<X> queryBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+	public <X> List<X> findBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
 		Integer begin = 0;
 		Integer end = null;
 		if (null != parameter.get(ADDBEGIN)) {
@@ -1462,12 +1462,12 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		return query.list();
 	}
 
-	public <X> List<X> queryBySql(String id, MyHashMap parameter) {
-		return queryBySql(id, null, parameter);
+	public <X> List<X> findBySql(String id, MyHashMap parameter) {
+		return findBySql(id, null, parameter);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Page<T> queryPageBySql(Page<T> page, String id, MyHashMap tplMap, MyHashMap parameter) {
+	public Page<T> findPageBySql(Page<T> page, String id, MyHashMap tplMap, MyHashMap parameter) {
 		notNull(page, "page");
 		String sql = getSql(id, tplMap);
 		SQLQuery q = createSQLQuery(sql, parameter);
@@ -1478,8 +1478,8 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		return page;
 	}
 
-	public Page<T> queryPageBySql(Page<T> page, String id, MyHashMap parameter) {
-		return queryPageBySql(page, id, null, parameter);
+	public Page<T> findPageBySql(Page<T> page, String id, MyHashMap parameter) {
+		return findPageBySql(page, id, null, parameter);
 	}
 
 	// sql-------------------------------------------------------

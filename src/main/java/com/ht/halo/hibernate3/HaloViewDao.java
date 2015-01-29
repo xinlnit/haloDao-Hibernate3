@@ -19,6 +19,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ht.halo.annotations.Halo;
+import com.ht.halo.dao.IHaloViewDao;
 import com.ht.halo.hibernate3.base.Assert;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.ColumnToMap;
@@ -41,7 +42,7 @@ import com.ht.halo.hibernate3.utils.xml.XmlUtils;
  * @date 2015-1-21 下午8:04:14
  * @param <T>
  */
-public class HaloViewDao<T> {
+public class HaloViewDao<T> implements IHaloViewDao<T>{
 	private static final Log logger = LogFactory.getLog(HaloViewDao.class);
 	private static final String SPACE = "\u0020";
 	private static final char SPACECHAR = '\u0020';
@@ -84,11 +85,14 @@ public class HaloViewDao<T> {
 		return resultType;
 	}
 
-	private String removeAllSpace(String value) {
+	private String CheckSpace(String value) {
+		if(value.indexOf(SPACE)!=-1){
+			throw new RuntimeException("不允许包含空格!");
+		}
 		if (value.startsWith("_")) {
 			value = value.substring(1, value.length());
 		}
-		return value.replaceAll(SPACE, "");
+		return value;
 	}
 
 	private String replaceNum(String value) {
@@ -96,7 +100,7 @@ public class HaloViewDao<T> {
 	}
 
 	private String filterValue(String value) {
-		return replaceNum(removeAllSpace(value));
+		return replaceNum(CheckSpace(value));
 	}
 
 	private StringBuffer getColumn(StringBuffer column, Object value) {
