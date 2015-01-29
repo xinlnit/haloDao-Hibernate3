@@ -2,6 +2,7 @@ package com.ht.halo.hibernate3.base;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Locale;
 
@@ -116,5 +117,31 @@ public class MyBeanUtils {
 	private static String getReadMethod(String name) {
 		return "get" + name.substring(0, 1).toUpperCase(Locale.ENGLISH)
 				+ name.substring(1);
+	}
+	public static Object invoke(Object bean, String methodName, Object args, Class<?> parameterType) {
+		Class<?> serviceClass = null;
+		Method businessMethod = null;
+		Object obj = null;
+		try {
+			serviceClass = bean.getClass();
+			businessMethod = serviceClass.getMethod(methodName, parameterType);
+			obj = businessMethod.invoke(bean, args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	public static Object invoke(Object bean, String methodName, Object[] args, Class<?>... parameterTypes) {
+		Class<?> serviceClass = null;
+		Method businessMethod = null;
+		Object obj = null;
+		try {
+			serviceClass = bean.getClass();
+			businessMethod = serviceClass.getMethod(methodName, parameterTypes);
+			obj = businessMethod.invoke(bean, args);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj;
 	}
 }

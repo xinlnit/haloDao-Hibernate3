@@ -1,9 +1,12 @@
 package com.ht.test.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.junit.Test;
 
+import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.BaseCompany;
 import com.ht.utils.junit.BaseServiceTestCase;
@@ -13,9 +16,11 @@ public class BaseCompanyServiceTest extends BaseServiceTestCase{
 	 private  IBaseCompanyService baseCompanyService;
 	@Test
 	public void testFindBaseCompanyListByMap() {
-	 /* List<BaseCompany> basweBaseCompanies= 	
-			  baseCompanyService.findBaseCompanyListByMap(null);
-		  System.out.println(HtGson.getGsonIn().toJson(basweBaseCompanies));*/
+		//BaseCompany entity =new BaseCompany();
+		//baseCompanyService.save(entity);
+	  List<BaseCompany> basweBaseCompanies= 	
+			  baseCompanyService.findListByMap(new HaloMap().addMethod("findListTest"));
+		  System.out.println(GsonUtils.getGsonIn().toJson(basweBaseCompanies));
 		
 	}
 	@Test
