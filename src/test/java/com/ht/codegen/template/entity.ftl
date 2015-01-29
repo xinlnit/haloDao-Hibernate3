@@ -54,9 +54,9 @@ public class  ${bean.entityName!} implements java.io.Serializable {
      [/#list]
      @Override
 	 public String toString() {
-		 return HtGson.getGsonIn().toJson(this);
+		 return GsonUtils.getGsonIn().toJson(this);
 	 }
 	 public String getJson(){
-		 return HtGson.getGsonIn().toJson(this);
+		 return GsonUtils.getGsonIn().toJson(this);
 	 }
 }

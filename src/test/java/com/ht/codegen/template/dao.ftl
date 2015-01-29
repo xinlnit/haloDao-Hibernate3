@@ -1,6 +1,6 @@
 package ${pro.basePath}.dao;
 import com.ht.halo.dao.IHaloDao;
-import com.ht.test.entity.BaseCompany;
+import com.ht.test.entity.${bean.entityName};
 /**
  * ${bean.entityComment!}Dao
  * @author ${pro.author!}
