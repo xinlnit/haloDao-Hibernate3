@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface FieldInfo {
-	public String desc();
+	public String info();
 	public boolean require() default true;
 
 }

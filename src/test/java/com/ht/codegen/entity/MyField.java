@@ -14,7 +14,7 @@ public class MyField {
 		private Integer scale;
 	    private Boolean iskey;
 	    private String fieldComment;
-	    private ViewColumn viewColumn;
+	    private HaloViewColumn viewColumn;
 		public String getFieldId() {
 			return fieldId;
 		}
@@ -89,10 +89,11 @@ public class MyField {
 		public void setFieldComment(String fieldComment) {
 			this.fieldComment = fieldComment;
 		}
-		public ViewColumn getViewColumn() {
+	
+		public HaloViewColumn getViewColumn() {
 			return viewColumn;
 		}
-		public void setViewColumn(ViewColumn viewColumn) {
+		public void setViewColumn(HaloViewColumn viewColumn) {
 			this.viewColumn = viewColumn;
 		}
 		public String getFieldNameCap() {

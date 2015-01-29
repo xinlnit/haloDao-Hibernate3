@@ -27,7 +27,7 @@ public class FieldInfoDirective implements TemplateDirectiveModel{
 			bean = Class.forName(entity);
 			FieldInfo fiedInfo=	bean.getDeclaredField(field).getAnnotation(FieldInfo.class);
 			if(null!=fiedInfo){
-				result=fiedInfo.desc();
+				result=fiedInfo.info();
 			}else{
 				result=field;
 			}

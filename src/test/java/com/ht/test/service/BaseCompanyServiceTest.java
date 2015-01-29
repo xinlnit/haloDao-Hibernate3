@@ -21,7 +21,7 @@ public class BaseCompanyServiceTest extends BaseServiceTestCase{
 	@Test
 	public void testFindBaseCompanyById() {
 	  BaseCompany baseCompany= 	
-			  baseCompanyService.findBaseCompanyById("4028805e49abcb1d0149abd0585a0000");
+			  baseCompanyService.findById("4028805e49abcb1d0149abd0585a0000");
 		  System.out.println(GsonUtils.getGsonIn().toJson(baseCompany));
 		
 	}

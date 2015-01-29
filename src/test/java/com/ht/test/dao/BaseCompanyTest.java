@@ -16,12 +16,12 @@ import com.ht.utils.junit.BaseDaoTestCase;
 public class BaseCompanyTest extends BaseDaoTestCase{
 	private static final Log logger = LogFactory.getLog(BaseCompanyTest.class);
 	@Resource
-	private BaseCompanyDao baseCompanyDao;
+	private IBaseCompanyDao baseCompanyDao;
 	@Test
 	public void testQueryListByMap() {
 	   System.out.println(System.currentTimeMillis());
 		List<BaseCompany> baseCompanies = baseCompanyDao.findListByMap(new HaloMap()
-		.set("companyId", "4028805e49abcb1d0149abd0585a0000"));
+		.set("companyId_eq", "4028805e49abcb1d0149abd0585a0000"));
 		 System.out.println(System.currentTimeMillis());
 		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
 	}

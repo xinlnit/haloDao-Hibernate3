@@ -19,79 +19,79 @@ public class  ViewTest implements java.io.Serializable {
 	  private static final long serialVersionUID = 1L;
      @Id
      @Column(name = "company_id", unique = true, nullable = false, length = 32)
-     @FieldInfo(desc="企业ID")
+     @FieldInfo(info="企业ID")
      private String  companyId;
 
      @Column(name = "code", length = 32)
-     @FieldInfo(desc="企业编号")
+     @FieldInfo(info="企业编号")
      private String  code;
 
      @Column(name = "brand", length = 32)
-     @FieldInfo(desc="企业品牌")
+     @FieldInfo(info="企业品牌")
      private String  brand;
 
      @Column(name = "full_name", length = 32)
-     @FieldInfo(desc="企业全称")
+     @FieldInfo(info="企业全称")
      private String  fullName;
 
      @Column(name = "short_name", length = 32)
-     @FieldInfo(desc="企业简称")
+     @FieldInfo(info="企业简称")
      private String  shortName;
 
      @Column(name = "type", length = 2)
-     @FieldInfo(desc="企业类型")
+     @FieldInfo(info="企业类型")
      private String  type;
 
      @Column(name = "addr", length = 100)
-     @FieldInfo(desc="地址")
+     @FieldInfo(info="地址")
      private String  addr;
 
      @Column(name = "zip", length = 32)
-     @FieldInfo(desc="邮政编码")
+     @FieldInfo(info="邮政编码")
      private String  zip;
 
      @Column(name = "tel", length = 32)
-     @FieldInfo(desc="电话")
+     @FieldInfo(info="电话")
      private String  tel;
 
      @Column(name = "fax", length = 32)
-     @FieldInfo(desc="传真")
+     @FieldInfo(info="传真")
      private String  fax;
 
      @Column(name = "url", length = 200)
-     @FieldInfo(desc="网站")
+     @FieldInfo(info="网站")
      private String  url;
 
      @Column(name = "email", length = 32)
-     @FieldInfo(desc="电子邮箱")
+     @FieldInfo(info="电子邮箱")
      private String  email;
 
      @Column(name = "decimal_digits", precision = 10)
-     @FieldInfo(desc="保留几位小数")
+     @FieldInfo(info="保留几位小数")
      private Integer  decimalDigits;
 
      @Column(name = "national_tax", length = 32)
-     @FieldInfo(desc="国税号")
+     @FieldInfo(info="国税号")
      private String  nationalTax;
 
      @Column(name = "land_tax", length = 32)
-     @FieldInfo(desc="地税号")
+     @FieldInfo(info="地税号")
      private String  landTax;
 
      @Column(name = "open_bank", length = 32)
-     @FieldInfo(desc="开户银行")
+     @FieldInfo(info="开户银行")
      private String  openBank;
 
      @Column(name = "bank_account", length = 32)
-     @FieldInfo(desc="银行账户")
+     @FieldInfo(info="银行账户")
      private String  bankAccount;
 
      @Column(name = "remark", length = 1000)
-     @FieldInfo(desc="备注")
+     @FieldInfo(info="备注")
      private String  remark;
 
      @Column(name = "flag", precision = 10)
-     @FieldInfo(desc="标志")
+     @FieldInfo(info="标志")
      private Integer  flag;
       
       

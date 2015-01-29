@@ -9,7 +9,7 @@ public class MyEntity {
     private String entityType;
     private String idType;
     private String idName;
-    private ViewTable viewTable;
+    private HaloViewTable viewTable;
     private List<MyField> fields;
     private Boolean dateFlag=false;
     private Boolean bigDecimalFlag=false;
@@ -44,10 +44,10 @@ public class MyEntity {
 	
 
 	
-	public ViewTable getViewTable() {
+	public HaloViewTable getViewTable() {
 		return viewTable;
 	}
-	public void setViewTable(ViewTable viewTable) {
+	public void setViewTable(HaloViewTable viewTable) {
 		this.viewTable = viewTable;
 	}
 	public void setEntityComment(String entityComment) {

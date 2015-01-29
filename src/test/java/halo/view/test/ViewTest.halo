@@ -1,2 +1,0 @@
-select crd.*  from charge_receivable_detail crd
-where ${houseId}

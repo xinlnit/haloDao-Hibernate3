@@ -44,7 +44,8 @@ public class OtherTest{
         }
         return str;
     }
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testXml() throws DocumentException{
     	  // 创建saxReader对象  
     	System.out.println(System.currentTimeMillis());

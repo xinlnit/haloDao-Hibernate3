@@ -2,12 +2,11 @@ package com.ht.codegen.entity;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.ht.halo.annotations.Halo;
 
-@Entity
-public class ViewTable {
-	@Id
+@Halo(position="codegen")
+public class HaloViewTable {
+
 	private String tableId;
 	private String tableName;
 	private String dbName;

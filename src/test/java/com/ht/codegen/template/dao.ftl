@@ -1,13 +1,11 @@
 package ${pro.basePath}.dao;
-import org.springframework.stereotype.Repository;
-import com.ht.halo.hibernate3.HaloDao;
-import ${pro.entityPath}.${bean.entityName};
+import com.ht.halo.dao.IHaloDao;
+import com.ht.test.entity.BaseCompany;
 /**
  * ${bean.entityComment!}Dao
  * @author ${pro.author!}
  * @date ${now!}
  */
-@Repository
-public class ${bean.entityName}Dao extends HaloDao<${bean.entityName}, ${bean.idType}>{
-       
+public interface I${bean.entityName}Dao extends IHaloDao<${bean.entityName}, ${bean.idType}>{
+ 
 }

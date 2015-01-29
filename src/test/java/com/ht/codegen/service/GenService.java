@@ -15,10 +15,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ht.codegen.entity.HaloViewColumn;
+import com.ht.codegen.entity.HaloViewTable;
 import com.ht.codegen.entity.MyEntity;
 import com.ht.codegen.entity.MyField;
-import com.ht.codegen.entity.ViewColumn;
-import com.ht.codegen.entity.ViewTable;
+
 import com.ht.codegen.utils.DateUtils;
 import com.ht.codegen.utils.FileUtils;
 import com.ht.codegen.utils.PropertiesUtil;
@@ -35,10 +36,10 @@ public class GenService {
 	private ViewColumnService viewColumnService;
 	@Resource
 	private ViewTableService viewTableService;
-	@Resource
-    private HaloViewCommentService haloViewCommentService;
+	/*@Resource
+    private HaloViewCommentService haloViewCommentService;*/
 	private MyEntity toEntity(HaloMap parameter) {
-		ViewTable viewTable = viewTableService.findViewTable(parameter);
+		HaloViewTable viewTable = viewTableService.findViewTable(parameter);
 		MyEntity myEntity = new MyEntity();
 		myEntity.setEntityId(viewTable.getTableId());
 		myEntity.setEntityName(TableUtil.toEntity(viewTable.getTableName()));
@@ -46,11 +47,10 @@ public class GenService {
 		if (!viewTable.getTableType().equalsIgnoreCase("VIEW")&&(null == entityComment || StringUtils.isBlank(entityComment))) {
 			throw new RuntimeException(viewTable.getTableName() + "表请加入注释!");
 		}
+		/*
 	   if (viewTable.getTableType().equalsIgnoreCase("VIEW")){
 			entityComment =haloViewCommentService.getViewCommentByName(viewTable.getTableName());
-	 }
-			
-		
+	  }*/
 		if (entityComment.indexOf("_") != -1) {
 			entityComment = StringUtils.substringAfterLast(entityComment, "_");
 		}
@@ -69,10 +69,10 @@ public class GenService {
 	}
 
 	private List<MyField> toFields(HaloMap parameter, MyEntity myEntity) {
-		List<ViewColumn> viewColumns = viewColumnService.findViewColumnList(parameter);
+		List<HaloViewColumn> viewColumns = viewColumnService.findViewColumnList(parameter);
 		List<MyField> myFileds = new ArrayList<MyField>();
 		MyField myField;
-		for (ViewColumn viewColumn : viewColumns) {
+		for (HaloViewColumn viewColumn : viewColumns) {
 			myField = new MyField();
 			myField.setFieldId(viewColumn.getColumnId());
 			myField.setEntityId(viewColumn.getTableId());
@@ -145,11 +145,11 @@ public class GenService {
 			if (!myEntity.getEntityType().equalsIgnoreCase("view")&&(null == fieldComment || StringUtils.isBlank(fieldComment))) {
 				throw new RuntimeException(viewColumn.getColumnName() + "字段请加入注释!");
 			}
-			if(null == fieldComment || StringUtils.isBlank(fieldComment)){
+			/*if(null == fieldComment || StringUtils.isBlank(fieldComment)){
 				fieldComment=	haloViewCommentService.getViewCommentByName(
 						TableUtil.toHql(myEntity.getEntityName())+"."+viewColumn.getColumnName());
 				  myField.setFieldComment(fieldComment);
-			}
+			}*/
 		
 			myField.setViewColumn(viewColumn);
 			myFileds.add(myField);
@@ -185,8 +185,12 @@ public class GenService {
 		if (jdbcURL.indexOf("?") != -1) {
 			dbName = StringUtils.substringAfterLast(StringUtils.substringBefore(jdbcURL, "?"), "/");
 		}// 获得数据库名
-		MyEntity myEntity = getMyEntity(new HaloMap().set("tableName", propertiesUtil.getValue("codegen.tableName")).set("dbName:prm", dbName));
-
+	
+		MyEntity myEntity = getMyEntity(new HaloMap().set("tableName_eq", propertiesUtil.getValue("codegen.tableName")).set("dbName_prm", dbName));
+    if (myEntity.getEntityType().equals("view")) {
+    	myEntity.setEntityComment( propertiesUtil.getValue("codegen.viewComment"));
+		
+	}   
 		Freemarker freemarker = new Freemarker();
 		String now = DateUtils.format("yyyy年MM月dd日 HH:mm:ss ", new Date());
 		HashMap<String, Object> dataMap = new HashMap<String, Object>().set("bean", myEntity).set("pro", proNew).set("now", now);
@@ -200,26 +204,25 @@ public class GenService {
 			logger.warn(myEntity.getEntityName() + "已存在!!");
 		}
 		// 生成Dao
-		File daoFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".dao", myEntity.getEntityName() + "Dao.java");
+		File iDaoFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".dao","I"+ myEntity.getEntityName() + "Dao.java");
+		File daoFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".dao.impl", myEntity.getEntityName() + "DaoImpl.java");
 		if (!daoFile.exists()) {
-			freemarker.generateBytemplate(dataMap, templateFolder, "dao.ftl", daoFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "dao.ftl", iDaoFile);
+			freemarker.generateBytemplate(dataMap, templateFolder, "daoImpl.ftl", daoFile);
 			logger.info(myEntity.getEntityName() + "Dao生成成功!!");
 		} else {
 			logger.warn(myEntity.getEntityName() + "Dao已存在!!");
 		}
 		//生成Service
-		File iBaseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base","I"+ myEntity.getEntityName() + "BaseService.java");
-		File baseServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.base.impl", myEntity.getEntityName() + "BaseServiceImpl.java");
 		File iServiceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service","I"+ myEntity.getEntityName() + "Service.java");
 		File serviceFile = FileUtils.getSrcPath(propertiesUtil.getValue("codegen.basePath") + ".service.impl", myEntity.getEntityName() + "ServiceImpl.java");
-		if (!iBaseServiceFile.exists()) {
-			freemarker.generateBytemplate(dataMap, templateFolder, "baseService.ftl", iBaseServiceFile);
-			freemarker.generateBytemplate(dataMap, templateFolder, "baseServiceImpl.ftl", baseServiceFile);
+		if (!iServiceFile.exists()) {
 			freemarker.generateBytemplate(dataMap, templateFolder, "service.ftl", iServiceFile);
 			freemarker.generateBytemplate(dataMap, templateFolder, "serviceImpl.ftl", serviceFile);
 			logger.info(myEntity.getEntityName() + "Service生成成功!!");
 		}else{
 			logger.warn(myEntity.getEntityName() + "Service已存在!!");
 		}
+	
 	}
 }
