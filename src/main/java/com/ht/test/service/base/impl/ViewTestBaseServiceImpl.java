@@ -19,14 +19,14 @@ public  class ViewTestBaseServiceImpl  implements IViewTestBaseService{
 	}
 	@Override
 	public ViewTest findViewTestFirst(HaloMap parameter) {
-		return viewTestDao.findFirstByMap(parameter);
+		return viewTestDao.queryFirstByMap(parameter);
 	}
 	@Override
 	public List<ViewTest> findViewTestListByMap(HaloMap parameter) {
-		return viewTestDao.findListByMap(parameter);
+		return viewTestDao.queryListByMap(parameter);
 	}
 	@Override
 	public Page<ViewTest> findViewTestPageByMap(Page<ViewTest> page,HaloMap parameter) {
-		return viewTestDao.findPageByMap(page, parameter);
+		return viewTestDao.queryPageByMap(page, parameter);
 	}
 }

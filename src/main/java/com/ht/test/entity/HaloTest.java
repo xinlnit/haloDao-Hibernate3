@@ -2,7 +2,7 @@ package com.ht.test.entity;
 
 import java.math.BigDecimal;
 
-public class ViewHalo {
+public class HaloTest {
 	private String receivableDetailId;
 	private String houseName;
 	private Boolean flag;

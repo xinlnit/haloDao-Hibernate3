@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.utils.annotations;
+package com.ht.halo.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({java.lang.annotation.ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface HaloView
+public @interface Halo
 {
   String position() default "";
 }

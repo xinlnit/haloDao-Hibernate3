@@ -10,7 +10,7 @@ public class ColumnWithCondition {
 	private Object value;//值
 	private String directValue;//值
 	private String type;
-	private String ifQuery;
+	private boolean ifQuery;
 	private String formate;
     private Boolean tempFlag=true;
 
@@ -119,11 +119,11 @@ public class ColumnWithCondition {
 		return this;
 	}
 
-	public String getIfQuery() {
+	public boolean getIfQuery() {
 		return ifQuery;
 	}
 
-	public ColumnWithCondition setIfQuery(String ifQuery) {
+	public ColumnWithCondition setIfQuery(boolean ifQuery) {
 		this.ifQuery = ifQuery;
 		return this;
 	}

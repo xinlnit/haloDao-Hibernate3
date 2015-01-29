@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
+import com.ht.halo.hibernate3.map.MyLinkedHashMap;
 import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.ChargeReceivableDetail;
 import com.ht.utils.junit.BaseDaoTestCase;
@@ -22,10 +23,14 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	@Test
 	public void testFindListByMap() {
         long a= System.currentTimeMillis();
-		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
-		.set("houseId", "4028813a47f2772c0147f2780578056a")
-		.set("ratio", 1.0)
-		.set("state", "1")
+		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.queryListByMap(new HaloMap()
+		.set("houseId_eq", "4028813a47f2772c0147f2780578056a")
+		.set("ratio_notin", "1.0")
+		.set("state_=", 1)
+		.set("houseName_5like5", "1")
+		.set("periodNum_eq_ck", 0) 
+		.addOrder("periodNum_desc")
+		//.set("periodNum", 3)
 		//.addHql("fcy.charge.chargeReceivableDetail.aa")
 		//.set("houseOwnerName:prm", "李树")
 		//.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
@@ -48,12 +53,12 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	@Test       
 	public void testFindPageByMap(){
 		Page<ChargeReceivableDetail> page= new Page<ChargeReceivableDetail>(7, 1);
-		page=chargeReceivableDetailDao.findPageByMap(page, new HaloMap()
-		.set("houseOwnerId", "4028813a47f2772c0147f278059605f3")
+		page=chargeReceivableDetailDao.queryPageByMap(page, new HaloMap()
+		.set("houseOwnerId_eq", "4028813a47f2772c0147f278059605f3")
 		.addGroup("feeItemId")
 		.addGroup("houseOwnerId")
-		.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
-		.set("feeItemName:like", "水")
+		//.sets("fcy.charge.chargeReceivableDetail.ab:hql", "李树平","4028813a47f2772c0147f2780578056a")
+		.set("feeItemName_like", "水")
 		);
 		System.out.println(GsonUtils.getGsonIn("entities").toJson(page));
 	}
@@ -93,13 +98,13 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 
 	@Test
 	public void testFindFirstByMap(){
-		ChargeReceivableDetail entity=	chargeReceivableDetailDao.findFirstByMap(new HaloMap()
+		ChargeReceivableDetail entity=	chargeReceivableDetailDao.queryFirstByMap(new HaloMap()
 		.set("houseOwnerId", "4028813a47f2772c0147f278059605f3"));
 		logger.info(entity.getHouseOwnerName());
 	}
 	@Test
 	public void testFindListByMapNum(){
-		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
+		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.queryListByMap(new HaloMap()
 		.set("houseOwnerId", "4028813a47f2772c0147f278059605f3") ,3);
 		logger.info(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
@@ -122,50 +127,17 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 	  	    int result2= chargeReceivableDetailDao.updateWithNotNullByHql(entity,new HaloMap().set("houseOwnerName:like", "111"));
 	    System.out.println(result2);
 	}
+   @SuppressWarnings("unchecked")
    @Test
 	public void testCreateProcQuery(){
-		List<ChargeReceivableDetail> chargeReceivableDetails =  chargeReceivableDetailDao.findListByProc("pro_test(:first,:last)", new HaloMap()
-		.set("first", 1).set("last", 4));
+		List<ChargeReceivableDetail> chargeReceivableDetails =  chargeReceivableDetailDao.queryListByProc("pro_test", new MyLinkedHashMap()
+		.set("first", 1).set("last", 4),ChargeReceivableDetail.class);
 		System.out.println(chargeReceivableDetails.size());
 		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
 			logger.info(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
 		}
    }
-   @Test
-   public void testFindListWithHaloView(){
-	   List<ChargeReceivableDetail> chargeReceivableDetails =   chargeReceivableDetailDao.findListByHaloView("ViewChargeReceivableDetail",
-			   new HaloMap()
-	  // .addParameter("houseId", "4028813a47f2772c0147f2780578056a")
-	   .set("houseId:data", "fcy.data.houseId")
-	   .set("houseOwnerName:in", new String[]{"李树平","李树平"})
-	   .set("createDate:<=", "2014-12-12")
-	   .sets("fcy.charge.chargeReceivableDetail.ac:hql","李树平")
-	   //.set("aa:prm", "李树平")
-	  // .set("houseOwnerName:in", new String[]{"33","44"})
-	  // .addParameter("aa:prm#string", new String[]{"李树平","李树平"})
-	   //.addColumn("houseOwnerName")
-	   .addOrderDesc("createDate")
-	   );
-		System.out.println(chargeReceivableDetails.size());
-		for (ChargeReceivableDetail chargeReceivableDetail : chargeReceivableDetails) {
-			logger.info(GsonUtils.getGsonIn().toJson(chargeReceivableDetail));
-		}
-   }
-   @Test
-   public void testFindPageByHaloView(){
-	   Page<ChargeReceivableDetail> page= new Page<ChargeReceivableDetail>(7, 1);
-		page=chargeReceivableDetailDao.findPageByHaloView("test.ViewTest",page, new HaloMap()
-		//.set("houseOwnerId", "4028813a47f2772c0147f278059605f3")
-		.addData("houseId", "fcy.test")
-		.addParameter("houseId", "4028813a47f2772c0147f2780578056a")
-		  .set("createDate:<=", "2014-12-12")
-		  .addOrderDesc("createDate")
-		   .addGroup("houseOwnerName")
-		//.addGroup("feeItemId")
-		//.set("feeItemName:like", "水")
-		);
-		System.out.println(GsonUtils.getGsonIn("entities").toJson(page));
-   }
+
   
 
 	

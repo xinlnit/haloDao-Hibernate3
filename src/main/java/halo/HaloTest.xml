@@ -2,16 +2,11 @@
 <halo>
     <views>
       <view>
-      eeeew
+      select crd.receivableDetailId,crd.houseName  from charge_receivable_detail crd
+        where crd.house_id='${houseId}'
       </view>
     </views>
 	<hqls>
-		<hql id="findById">
-			UPDATE Blog
-			SET title = #{title},
-			author_id = #{author.id},
-			WHERE id = #{id};
-		</hql>
 		<hql id="aa">
 			houseId =:houseId实收
 		</hql>
@@ -21,9 +16,4 @@
 		   wwww都是
 		</data>
 	</datas>
-	<sqls>
-	     <sql id="updateById">
-	        wwww
-	     </sql>
-	</sqls>
 </halo>  

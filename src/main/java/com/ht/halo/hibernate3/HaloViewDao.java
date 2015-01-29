@@ -18,6 +18,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ht.halo.annotations.Halo;
 import com.ht.halo.hibernate3.base.Assert;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.ColumnToMap;
@@ -25,13 +26,14 @@ import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.base.TableUtil;
 import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.SqlWithParameter;
+import com.ht.halo.hibernate3.map.MyHashMap;
 import com.ht.halo.hibernate3.utils.DateUtils;
 import com.ht.halo.hibernate3.utils.MyUUID;
 import com.ht.halo.hibernate3.utils.StringUtils;
-import com.ht.halo.hibernate3.utils.annotations.HaloView;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
-import com.ht.halo.hibernate3.utils.properties.PropertiesUtil;
+import com.ht.halo.hibernate3.utils.tpl.ITplUtils;
 import com.ht.halo.hibernate3.utils.tpl.freemarker.FreemarkerUtils;
+import com.ht.halo.hibernate3.utils.xml.XmlUtils;
 
 /**
  *  基于haloView视图sql的Dao层
@@ -43,16 +45,10 @@ public class HaloViewDao<T> {
 	private static final Log logger = LogFactory.getLog(HaloViewDao.class);
 	private static final String SPACE = "\u0020";
 	private static final char SPACECHAR = '\u0020';
-	private static final String FORMATESPT = "?";
-	private static final String MYSPACE = ":";
-	private static final String TAPESPT = "#";
-	private static final String EX = "ex";
-	private static final String IN = "in";
-	private static final String PRM = "prm";// 添加查询hql中的参数标识
 	private static final String DATA = "data";// haloView中的模板数据
-	private static final String[] NUMS = new String[] { "1", "3", "5", "6", "7", "8", "9", "0" };
-	private static final String[] NUMREPLACE = new String[] { "|", "#", "%", ":", "?", ".", "(", ")" };
-	public static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
+	public static final String VIEWID = "viewId";
+	private static final String HALO= "Halo";
+	
 	protected SessionFactory sessionFactory;
 
 	@Autowired(required = false)
@@ -75,7 +71,6 @@ public class HaloViewDao<T> {
 		Class cl = getClass();
 		Class<T> resultType = null;
 		java.lang.reflect.Type superType = cl.getGenericSuperclass();
-
 		if (superType instanceof ParameterizedType) {
 			java.lang.reflect.Type[] paramTypes = ((ParameterizedType) superType).getActualTypeArguments();
 			if (paramTypes.length > 0) {
@@ -97,7 +92,7 @@ public class HaloViewDao<T> {
 	}
 
 	private String replaceNum(String value) {
-		return StringUtils.replaceEach(value, NUMS, NUMREPLACE);
+		return StringUtils.replaceEach(value, HaloDao.NUMS, HaloDao.NUMREPLACE);
 	}
 
 	private String filterValue(String value) {
@@ -124,13 +119,26 @@ public class HaloViewDao<T> {
 	 * @param value
 	 * @return
 	 */
+
 	private StringBuffer getOrder(StringBuffer order, Object value) {
 		if (value instanceof String) {
-			order.append((filterValue((String) value)).replace(':', SPACECHAR)).append(",");
+			String orderValue = filterValue((String) value);
+			if (orderValue.endsWith(HaloDao.MYSPACE + HaloDao.HQL)) {
+				String hqlValue = getHqlSnippet(StringUtils.substringBefore(orderValue,HaloDao.MYSPACE + HaloDao.HQL));
+				order.append(hqlValue);
+			} else {
+				order.append(orderValue.replace(HaloDao.MYSPACECHAR, SPACECHAR)).append(",");
+			}
 		}
 		if (value instanceof String[]) {
 			for (String str : (String[]) value) {
-				order.append((filterValue(str)).replace(':', SPACECHAR)).append(",");
+				String orderValue = filterValue(str);
+				if (orderValue.endsWith(HaloDao.MYSPACE + HaloDao.HQL)) {
+					String hqlValue = getHqlSnippet(StringUtils.substringBefore(orderValue, HaloDao.MYSPACE + HaloDao.HQL));
+					order.append(hqlValue);
+				} else {
+					order.append(orderValue.replace(HaloDao.MYSPACECHAR, SPACECHAR)).append(",");
+				}
 			}
 		}
 		return order;
@@ -148,26 +156,27 @@ public class HaloViewDao<T> {
 		return group;
 	}
 
-	/**
-	 * 从属性文件或得hql片段
-	 * 
-	 * @param value
-	 * @return hql语句片段
-	 */
-	private String getHqlSnippet(String value) {
-		String fileName = StringUtils.substringBefore(value, ".");
-		String property = StringUtils.substringAfter(value, ".");
-		PropertiesUtil propertiesUtil = new PropertiesUtil(FileUtils.getClassPath("halo.hql", fileName + ".properties"));
-		return propertiesUtil.getHql(property);
+	private String getDataSnippet(String dataId) {
+		String entityName = this.entityType.getSimpleName();
+		File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH + getPosition(), entityName + ".xml");
+		XmlUtils xmlUtils = new XmlUtils(xmlPath);
+		String data = xmlUtils.getData(dataId);
+		return data;
 	}
-
+	private String getHqlSnippet(String value) {
+		String entityName = this.entityType.getSimpleName();
+		File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH + getPosition(), entityName + ".xml");
+		XmlUtils xmlUtils = new XmlUtils(xmlPath);
+		String hql = xmlUtils.getHql(value);
+		return hql;
+	}
 	private Object getDate(ColumnWithCondition columnWithCondition) {
 		Object value = columnWithCondition.getValue();
 		try {
 			if (null != columnWithCondition.getFormate()) {
 				value = DateUtils.parse(columnWithCondition.getFormate(), String.valueOf(value));
 			} else {
-				value = DateUtils.parseDate(String.valueOf(value), PATTERN);
+				value = DateUtils.parseDate(String.valueOf(value), HaloDao.PATTERN);
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -290,9 +299,91 @@ public class HaloViewDao<T> {
 	}
 
 	private String getGenColumnName(String str) {
-		str = str.split("\\" + FORMATESPT)[0];
-		str = StringUtils.replaceEach(str, NUMREPLACE, new String[] { "Q", "E", "T", "Y", "U", "I", "O", "P" });
-		return StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<", "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
+		str = str.split("\\" + HaloDao.FORMATESPT)[0];
+		str = StringUtils.replaceEach(str, HaloDao.NUMREPLACE, HaloDao.NUMREPLACELETTER);
+		return str;
+				//StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<", "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
+	}
+	/**
+	 * TODO 判断是否需要查询
+	 * 
+	 * @param keys
+	 * @param value
+	 * @return
+	 */
+	private boolean queryFlag(String[] keys, Object value) {
+		if (keys.length == 3 && (keys[2].endsWith(HaloDao.RX)||keys[2].equals(HaloDao.IN))) {
+			return true;
+		}
+		if (null != value && !StringUtils.isBlank(String.valueOf(value))) {
+			if (keys.length > 1) {
+				if (keys.length == 3 && keys[2].equals(HaloDao.EX)) {
+				} else {
+					return true;
+				}
+			}
+		}
+		if (keys.length == 3 && keys[2].equals(HaloDao.CK)) {
+			throw new RuntimeException("传入值为空!请自行处理!");
+		}
+		return false;
+	}
+	private ColumnWithCondition analyzeKeys(ColumnWithCondition columnWithCondition, boolean queryFlag, String[] keys, Object value) {
+		String condition = keys[1];
+		columnWithCondition.setColumnName(keys[0]);
+		if ("eq".equals(condition)) {
+			columnWithCondition.setCondition("=");
+			return columnWithCondition;
+		}
+		if ("gt".equals(condition) ) {
+			columnWithCondition.setCondition(">");
+			return columnWithCondition;
+		}
+		if (condition.indexOf("ge") != -1) {
+			if (queryFlag) {
+				condition = condition.replaceFirst("ge", "");
+				columnWithCondition.setCondition(">=");
+				columnWithCondition = extDateCondition(condition, "", false, columnWithCondition);
+			} 
+			return columnWithCondition;
+		}
+		if ("lt".equals(condition)) {
+			columnWithCondition.setCondition("<");
+			return columnWithCondition;
+		}
+		if (condition.indexOf("le") != -1) {
+			if (queryFlag) {
+				condition = condition.replaceFirst("le", "");
+				columnWithCondition.setCondition("<=");
+				columnWithCondition = extDateCondition(condition, "", true, columnWithCondition);
+			} 
+			return columnWithCondition;
+		}
+		if ("neq".equals(condition)) {
+			columnWithCondition.setCondition("<>");
+			return columnWithCondition;
+		}
+		if (condition.indexOf("like") != -1) {
+			if (queryFlag) {
+				columnWithCondition.setCondition("like");
+				condition = condition.replaceFirst("like", "");
+				columnWithCondition = extLikeCondition(condition, value, columnWithCondition);
+				if (columnWithCondition.getTempFlag()) {
+					columnWithCondition = extDateCondition(condition, "%", false, columnWithCondition);
+				}
+			}
+			return columnWithCondition;
+		}
+		if (condition.equals("notin")||condition.equals("notIn")) {
+			columnWithCondition.setCondition("not in");
+			return columnWithCondition;
+		}
+		if (StringUtils.isEnglish(condition)) {
+			columnWithCondition.setCondition(condition);
+			return columnWithCondition;
+		}
+		throw new RuntimeException("本版本不再允许带符号条件传入!比如=,>换用eq,gt");
+		//columnWithCondition.setCondition(condition);
 	}
 
 	/**
@@ -315,94 +406,31 @@ public class HaloViewDao<T> {
 		}
 		StringBuffer orgKey = new StringBuffer(key);
 		key = key.replaceAll("\\(|\\||\\)", "");
-
-		boolean flag = false;
-		String[] keyWithFormate = key.split("\\" + FORMATESPT);
+		String[] keyWithFormate = key.split("\\" + HaloDao.FORMATESPT);
 		if (keyWithFormate.length == 2) {
 			columnWithCondition.setFormate(keyWithFormate[1]);
 			key = keyWithFormate[0];
 		}
-		String[] keyWithType = key.split(TAPESPT);
-
+		String[] keyWithType = key.split(HaloDao.TAPESPT);
 		if (keyWithType.length == 2) {
 			columnWithCondition.setType(keyWithType[1]);
 			key = keyWithType[0];
 		}
-		String[] keys = key.split(MYSPACE);
-		if (keys.length == 1) {
-			columnWithCondition.setCondition("=");
-			orgKey.append(":eq");
-			columnWithCondition.setColumnName(keys[0]);
-		}
+		String[] keys = key.split(HaloDao.MYSPACE);
+		// 判断是否跳过查询
+		boolean queryFlag = queryFlag(keys, value);
 		if (keys.length >= 2) {
-			String condition = keys[1];
-			columnWithCondition.setColumnName(keys[0]);
-			if ("=".equals(condition) || "eq".equals(condition)) {
-				columnWithCondition.setCondition("=");
-				flag = true;
-			}
-			if (!flag) {
-				if (">".equals(condition) || "gt".equals(condition)) {
-					columnWithCondition.setCondition(">");
-					flag = true;
-				}
-			}
-			if (!flag) {
-				if (condition.indexOf(">=") != -1 || condition.indexOf("ge") != -1) {
-					condition = condition.replaceFirst("ge|\\>=", "");
-					columnWithCondition.setCondition(">=");
-					columnWithCondition = extDateCondition(condition, "", false, columnWithCondition);
-					flag = true;
-				}
-			}
-			if (!flag) {
-				if ("<".equals(condition) || "lt".equals(condition)) {
-					columnWithCondition.setCondition("<");
-					flag = true;
-				}
-			}
-			if (!flag) {
-				if (condition.indexOf("<=") != -1 || condition.indexOf("le") != -1) {
-					condition = condition.replaceFirst("le|\\<=", "");
-					columnWithCondition.setCondition("<=");
-					columnWithCondition = extDateCondition(condition, "", true, columnWithCondition);
-					flag = true;
-				}
-			}
-			if (!flag) {
-				if ("<>".equals(condition) || "!=".equals(condition) || "neq".equals(condition)) {
-					columnWithCondition.setCondition("<>");
-					flag = true;
-				}
-			}
-			if (!flag) {
-				if (condition.indexOf("like") != -1 || condition.indexOf("Like") != -1) {
-					columnWithCondition.setCondition("like");
-					condition = condition.replaceFirst("like|Like", "");
-					columnWithCondition = extLikeCondition(condition, value, columnWithCondition);
-					if (columnWithCondition.getTempFlag()) {
-						columnWithCondition = extDateCondition(condition, "%", false, columnWithCondition);
-					}
-					flag = true;
-				}
-			}
-			if (!flag) {
-				if (condition.equals("notIn")) {
-					columnWithCondition.setCondition("not in");
-					flag = true;
-				}
-			}
-			if (!flag) {
-				columnWithCondition.setCondition(condition);
-			}
+			columnWithCondition=    analyzeKeys(columnWithCondition, queryFlag, keys, value);
 		}
-		if (keys.length == 3) {
-			columnWithCondition.setIfQuery(keys[2]);
+		if (queryFlag) {
+			columnWithCondition.setIfQuery(true);
+		} else {
+			columnWithCondition.setIfQuery(false);
 		}
 		columnWithCondition.setGenColumnName(getGenColumnName(orgKey.toString()));
-
 		return columnWithCondition;
 	}
+
 
 	/**
 	 * convert 转换成当前字段类型 如果值类型不匹配
@@ -507,22 +535,27 @@ public class HaloViewDao<T> {
 		return map;
 	}
 
-	private String getDataSnippet(String value) {
-		String fileName = StringUtils.substringBefore(value, ".");
-		String property = StringUtils.substringAfter(value, ".");
-		PropertiesUtil propertiesUtil = new PropertiesUtil(FileUtils.getClassPath("halo.data", fileName + ".properties"));
-		return propertiesUtil.getData(property);
-	}
 
-	private String getViewSql(String viewName, HaloMap tplMap) {
-		String packStr = "";
-		if (viewName.indexOf(".") != -1) {
-			packStr = "." + StringUtils.substringBeforeLast(viewName, ".");
-			viewName = StringUtils.substringAfterLast(viewName, ".");
+
+	private String getViewSql(String viewAs, MyHashMap tplMap) {
+		if(viewAs.startsWith(HALO)){
+			String[] viewAss=viewAs.split(HaloDao.MYSPACE);
+			String fileName=viewAss[0];
+			String id=null;
+			File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH +  getPosition(), fileName + ".xml");
+			XmlUtils xmlUtils = new XmlUtils(xmlPath);
+			if(viewAss.length>1){
+				id=viewAss[1];
+			}
+			String view = xmlUtils.getView(id);
+			if (null != tplMap) {
+				ITplUtils tplUtils = new FreemarkerUtils();
+				view = tplUtils.generateString(tplMap, view);
+			}
+			return "("+view+")";
+		}else{
+			return viewAs;//是个数据库表或者视图对应的实体
 		}
-		FreemarkerUtils freemarkerUtils = new FreemarkerUtils();
-		File viewPath = FileUtils.getClassPath(HaloDao.HALOPACH + ".view" + packStr, "");
-		return freemarkerUtils.generateString(tplMap, viewPath, viewName + ".halo");
 	}
 
 
@@ -540,33 +573,29 @@ public class HaloViewDao<T> {
 	      return type;
 	}
 
-	/**
-	 * 根据haloview文件结果集查询获得SQLQuery和参数. 方式代码基本与createMyQuery相同,未重用
-	 * 
-	 * @param viewName
-	 * @param parameter
-	 * @return SqlWithParameter
-	 */
-	public SqlWithParameter createMySqlQuery(String viewName, HaloMap parameter) {
-		String viewAs = "temp";
+
+	public SqlWithParameter createMySqlQuery( HaloMap parameter) {
+		String viewAs =this.entityType.getSimpleName();
 		SqlWithParameter sqlWithParamter = new SqlWithParameter();
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sqlSelect = new StringBuffer();
 		StringBuffer order = new StringBuffer();
 		StringBuffer group = new StringBuffer();
 		StringBuffer column = new StringBuffer();
-		boolean queryByBlankFlag = false;
 		HaloMap sqlPrmMap = new HaloMap();// ....
-		HaloMap tplMap = new HaloMap();
+		MyHashMap tplMap = new MyHashMap();
 		if (null == parameter) {
 			parameter = new HaloMap();
 		}
-		if (viewName.indexOf(".") != -1) {
-			viewAs = StringUtils.substringAfterLast(viewName, ".");
-		}
+
 		for (Entry<String, ?> entry : parameter.entrySet()) {
 			String key = filterValue(entry.getKey());
 			Object value = entry.getValue();
+			if(key.equals(VIEWID)){
+				    // 子视图???
+				viewAs=viewAs+HaloDao.MYSPACE+value;//比如HaloUser_a
+				continue;
+			}
 			if (key.startsWith(HaloDao.ADDCOLUMN)) {
 				column = getColumn(column, value);
 				continue;
@@ -581,15 +610,16 @@ public class HaloViewDao<T> {
 			}
 			if (key.startsWith(HaloDao.ADDHQL)) {
 				value = getHqlSnippet(value.toString());
-				sql.append(String.format(" and (%s) ", TableUtil.toHql(value.toString())));
+				sql.append(String.format(" and (%s) ", TableUtil.toSql(value.toString())));
 				continue;// 灵活但不安全接口:sql查询片段
 			}
-
 			ColumnWithCondition columnWithCondition = analyzeKey(key, value);
+			if (!columnWithCondition.getIfQuery()) {// 不查询该字段
+				continue;
+			}
 			String type = columnWithCondition.getType();
 			if (null == type) {
 				try {
-					
 					type = getType(columnWithCondition.getColumnName()).toString();
 				} catch (Exception e) {
 					logger.warn("could not resolve property(无法得到字段类型)");
@@ -597,10 +627,10 @@ public class HaloViewDao<T> {
 				}
 				columnWithCondition.setType(type);
 			}
-			if (EX.equals(columnWithCondition.getCondition())) {
+			if (HaloDao.EX.equals(columnWithCondition.getCondition())) {
 				continue;// 条件为"ex"时排除该参数
 			}
-			if (columnWithCondition.getCondition().equals(PRM)) {
+			if (columnWithCondition.getCondition().equals(HaloDao.PRM)) {
 				if (null != type) {
 					value = convert(columnWithCondition);
 				}
@@ -612,69 +642,51 @@ public class HaloViewDao<T> {
 				String hqlValue = getHqlSnippet(hqlKey);
 				HaloMap map = getHqlSnippetMap(hqlValue, value);
 				sqlPrmMap.putAll(map);
-				hqlValue = TableUtil.toHql(hqlValue);
+				hqlValue = TableUtil.toSql(hqlValue);
 				sql.append(String.format(" and (%s) ", hqlValue));
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
-				boolean flag = false;
 				if (value instanceof String) {
-					String valueStr = String.valueOf(value);
-					if (StringUtils.indexOf(valueStr, ".data.") != -1) {
-						flag = true;
-					}// 前缀为data的不转换
-					value = getDataSnippet(valueStr);
-					if (!flag) {
-						value = SPACE + TableUtil.toHql(String.valueOf(value)) + SPACE;
-					}
+					String dataId = String.valueOf(value);
+					value = getDataSnippet(dataId);
 					tplMap.put(columnWithCondition.getColumnName(), value);
 				} else {
 					tplMap.put(columnWithCondition.getColumnName(), value);
 				}
 				continue;// 添加参数
 			}
-			if (null != columnWithCondition.getIfQuery()) {
-				if (EX.equals(columnWithCondition.getIfQuery())) {// 始终不查询该字段
+		
+			if (columnWithCondition.getIfQuery()) {// 查询该字段
+				if (null == value || "null".equalsIgnoreCase(String.valueOf(entry.getValue()).trim())) {
+					sql.append(String.format(" %s %s %s %s null %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(),TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
 					continue;
-				}
-				if (IN.equals(columnWithCondition.getIfQuery())) {// 始终查询该字段
-					if (null == value || "null".equalsIgnoreCase(String.valueOf(entry.getValue()).trim())) {
-						sql.append(String.format(" %s %s %s %s null %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toHql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
-					} else {
-						queryByBlankFlag = true;
+				} else {
+					if (null != columnWithCondition.getDirectValue()) {
+						sql.append(String.format(" %s %s %s %s %s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
+						continue;
 					}
-					continue;
-				}
-			}// in,ex
-			if (null == value && !queryByBlankFlag) {
-				logger.warn("参数值为空!");// 处理?
-			}
-			if (null != value) {
-				if (null != columnWithCondition.getDirectValue()) {
-					sql.append(String.format(" %s %s %s %s %s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toHql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
-					continue;
-				}
-				if (!StringUtils.isBlank(String.valueOf(value)) || queryByBlankFlag) {
 					if (null != type) {
 						value = convert(columnWithCondition);
 					}
-					sql.append(String.format(" %s %s %s %s :%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toHql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
+					sql.append(String.format(" %s %s %s %s:%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 					sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
 				}
 			}
+
 		}// for
-		String columnStr = TableUtil.toHql(column.toString());
-		String viewSql = getViewSql(viewName, tplMap);
+		String columnStr = TableUtil.toSql(column.toString());
+		String viewSql = getViewSql(viewAs, tplMap);
 		if (StringUtils.isNotBlank(columnStr)) {
-			sqlSelect = new StringBuffer(String.format("select %s from (%s) %s where 1=1 ", columnStr.substring(0, columnStr.length() - 1), viewSql, viewAs));
+			sqlSelect = new StringBuffer(String.format("select %s from %s %s where 1=1 ", columnStr.substring(0, columnStr.length() - 1), viewSql, viewAs));
 		} else {
-			sqlSelect.append(String.format("select *  from (%s) %s  where 1=1 ", viewSql, viewAs));
+			sqlSelect.append(String.format("select *  from %s %s  where 1=1 ", viewSql, viewAs));
 		}
-		String groupStr = TableUtil.toHql(group.toString());
+		String groupStr = TableUtil.toSql(group.toString());
 		if (StringUtils.isNotBlank(groupStr)) {
 			sql.append(String.format(" group by %s ", groupStr.substring(0, groupStr.length() - 1)));
 		}
-		String orderStr = TableUtil.toHql(order.toString());
+		String orderStr = TableUtil.toSql(order.toString());
 		if (StringUtils.isNotBlank(orderStr)) {
 			sql.append(String.format(" order by %s ", orderStr.substring(0, orderStr.length() - 1)));
 		}
@@ -690,7 +702,6 @@ public class HaloViewDao<T> {
 
 	/**
 	 * 生成SQLQuery
-	 * 
 	 * @param sql
 	 * @param Map
 	 * @return SQLQuery
@@ -701,52 +712,30 @@ public class HaloViewDao<T> {
 		return q;
 	}
 
-	/**
-	 * 根据haloview文件结果集查询获得SQLQuery.
-	 * 
-	 * @param viewName
-	 * @param parameter
-	 * @return SQLQuery
-	 */
-	public SQLQuery CreateMySqlQueryByHaloView(String viewName, HaloMap parameter) {
-		SqlWithParameter sqlWithParameter = createMySqlQuery(viewName, parameter);
+
+	public SQLQuery CreateMySqlQueryByHaloView(HaloMap parameter) {
+		SqlWithParameter sqlWithParameter = createMySqlQuery( parameter);
 		String sql = sqlWithParameter.getSql();
 		HaloMap hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
 		return query;
 	}
 
-	public SQLQuery CreateMySqlQueryByHaloViewToBean(String viewName, HaloMap parameter) {
-		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
+	public SQLQuery CreateMySqlQueryByHaloViewToBean( HaloMap parameter) {
+		SQLQuery query = CreateMySqlQueryByHaloView(parameter);
 		query.setResultTransformer(new ColumnToBean(this.entityType));
 		return query;
 	}
 
-	public SQLQuery CreateMySqlQueryByHaloViewToMap(String viewName, HaloMap parameter) {
-		SQLQuery query = CreateMySqlQueryByHaloView(viewName, parameter);
+	public SQLQuery CreateMySqlQueryByHaloViewToMap( HaloMap parameter) {
+		SQLQuery query = CreateMySqlQueryByHaloView( parameter);
 		query.setResultTransformer(new ColumnToMap());
 		return query;
 	}
 
-	/**
-	 * 根据haloView查询. 首先在halo.view包中在ViewTest编写好sql语句:select * from base_user
-	 * where role=:role ${email} ${groupBy} 调用findListByHaloView("ViewTest",new
-	 * HaloMap().set("role:prm",1).set("groupBy:data"," group by role")
-	 * .set("email:data"
-	 * ," and email=:eamil ").set("email:prm","123@ww.com").set(
-	 * "userName:like","von")
-	 * .addColumn("userName","password").addOrder("createDate","role");
-	 * 为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
-	 * 并只查询出用户名及密码字段并封装到实体中 拼接使用freemarker技术
-	 * 
-	 * @param viewName
-	 *            :haloView的sql文件名,可以加入包名:test.ViewTest(全:halo.view.test.
-	 *            ViewTest.halo)
-	 * @param parameter
-	 * @return {@link List}
-	 */
+
 	@SuppressWarnings("unchecked")
-	public <X> List<X> findListByHaloView(String viewName, HaloMap parameter) {
+	public <X> List<X> findListByHaloView(HaloMap parameter) {
 		Integer begin=0;
 		Integer end=null;
 		if(null!=parameter.get(HaloDao.ADDBEGIN)){
@@ -759,9 +748,9 @@ public class HaloViewDao<T> {
 		}
 		SQLQuery query = null;
 		if (this.entityType.getName().equals("com.ht.halo.hibernate3.HaloViewMap")) {
-			query = CreateMySqlQueryByHaloViewToMap(viewName, parameter);
+			query = CreateMySqlQueryByHaloViewToMap( parameter);
 		} else {
-			query = CreateMySqlQueryByHaloViewToBean(viewName, parameter);
+			query = CreateMySqlQueryByHaloViewToBean( parameter);
 		}
 	    if(null!=end){
         	query.setFirstResult(begin);
@@ -769,52 +758,39 @@ public class HaloViewDao<T> {
         }
 		return query.list();
 	}
-	private String getViewName(){
-		String entityName=this.entityType.getSimpleName();
-	    HaloView haloView =	this.entityType.getAnnotation(HaloView.class);
-	    if(null!=haloView&&StringUtils.isNotBlank(haloView.position())){
-	    	return haloView.position()+"."+entityName;
-	    }
-		return entityName;
+	private String getPosition() {
+		Halo halo = this.entityType.getAnnotation(Halo.class);
+		if (null != halo && StringUtils.isNotBlank(halo.position())) {
+			return "."+halo.position();
+		}
+		return "";
 	}
-	/**
-	 *  TODO 默认halo.view下相同实体名的HaloView文件,建议添加@HaloView注解,加入模块包名
-	 *  比如@HaloView(position="test")
-	 * @param parameter
-	 * @return
-	 */
-	public <X> List<X> findListByHaloView(HaloMap parameter) {	
-		return findListByHaloView(getViewName(),parameter) ;
-	}
-	private SQLQuery CreateSqlQueryByHaloView(String viewName, HaloMap parameter){
+	
+	private SQLQuery CreateSqlQueryByHaloView(HaloMap parameter){
 		SQLQuery query = null;
 		if (this.entityType.getName().equals("com.ht.halo.hibernate3.HaloViewMap")) {
-			query = CreateMySqlQueryByHaloViewToMap(viewName, parameter);
+			query = CreateMySqlQueryByHaloViewToMap(parameter);
 		} else {
-			query = CreateMySqlQueryByHaloViewToBean(viewName, parameter);
+			query = CreateMySqlQueryByHaloViewToBean(parameter);
 		}
 		return query;
 	}
 	@SuppressWarnings("unchecked")
-	public T  findByHaloView(String viewName, HaloMap parameter) {
-		SQLQuery query = CreateSqlQueryByHaloView(viewName,parameter);
+	public T  findFirstByHaloView(HaloMap parameter) {
+		SQLQuery query = CreateSqlQueryByHaloView(parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
 		return (T) query.uniqueResult();
 	}
-	public T  findByHaloView(HaloMap parameter) {	
-		return findByHaloView(getViewName(),parameter) ;
-	}
+
 	@SuppressWarnings("unchecked")
-	public <X> List<X>   findListByHaloView(String viewName, HaloMap parameter,int begin,int end) {
-		SQLQuery query = CreateSqlQueryByHaloView(viewName,parameter);
+	public <X> List<X>   findListByHaloView(HaloMap parameter,int begin,int end) {
+		SQLQuery query = CreateSqlQueryByHaloView(parameter);
 		query.setFirstResult(begin);
 		query.setMaxResults(end);
 		return query.list();
 	}
-	public <X> List<X>  findListByHaloView( HaloMap parameter,int begin,int end) {
-		return findListByHaloView(getViewName(), parameter,begin,end);
-	}
+
 	/**
 	 *  TODO 查询前几条数据
 	 * @param viewName
@@ -823,19 +799,15 @@ public class HaloViewDao<T> {
 	 * @return
 	 */
 	public <X> List<X>  findListByHaloView(String viewName, HaloMap parameter,int num) {
-		return findListByHaloView(viewName, parameter,0, num);
+		return findListByHaloView( parameter,0, num);
 	}
-	public <X> List<X>  findListByHaloView( HaloMap parameter,int num) {
-		return findListByHaloView(getViewName(), parameter,num);
-	}
+
 	@SuppressWarnings("unchecked")
-	public T  findUniqueByHaloView(String viewName, HaloMap parameter) {
-		SQLQuery query = CreateSqlQueryByHaloView(viewName,parameter);
+	public T  findUniqueByHaloView(HaloMap parameter) {
+		SQLQuery query = CreateSqlQueryByHaloView(parameter);
 		return (T) query.uniqueResult() ;
 	}
-	public T  findUniqueByHaloView( HaloMap parameter) {
-		return findUniqueByHaloView(getViewName(), parameter) ;
-	}
+
 	/**
 	 * 生成总条数的sql语句.
 	 * @param sql
@@ -856,15 +828,15 @@ public class HaloViewDao<T> {
 		Query query = this.createSQLQuery(countSql, parameter);
 		return ((Number) query.uniqueResult()).longValue();
 	}
-	protected Query setPageParameterToQuery( Query q,  Page<T> page) {
+	protected Query setPageParameterToQuery(Query q,  Page<T> page) {
 		q.setFirstResult(page.getFirstEntityIndex());
 		q.setMaxResults(page.getPageSize());
 		return q;
 	}
 	@SuppressWarnings("unchecked")
-	public Page<T> findPageByHaloView(String viewName, Page<T> page, HaloMap parameter) {
+	public Page<T> findPageByHaloView( Page<T> page, HaloMap parameter) {
 		notNull(page, "page");
-		SqlWithParameter sqlWithParameter = createMySqlQuery(viewName, parameter);
+		SqlWithParameter sqlWithParameter = createMySqlQuery( parameter);
 		String sql = sqlWithParameter.getSql();
 		HaloMap hqlPrmMap = sqlWithParameter.getParamterMap();
 		SQLQuery query = createSQLQuery(sql, hqlPrmMap);
@@ -879,9 +851,6 @@ public class HaloViewDao<T> {
 		page.setEntities(query.list());
 		return page;
 	}
-	public Page<T> findPageByHaloView(Page<T> page, HaloMap parameter){
-		return findPageByHaloView(getViewName(), page, parameter);
-      }
 	protected void notNull(Object obj, String name) {
 		Assert.notNull(obj, "[" + name + "] must not be null.");
 	}

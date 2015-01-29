@@ -20,15 +20,15 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	}
 	@Override
 	public BaseCompany findBaseCompanyFirst(HaloMap parameter) {
-		return baseCompanyDao.findFirstByMap(parameter);
+		return baseCompanyDao.queryFirstByMap(parameter);
 	}
 	@Override
 	public List<BaseCompany> findBaseCompanyListByMap(HaloMap parameter) {
-		return baseCompanyDao.findListByMap(parameter);
+		return baseCompanyDao.queryListByMap(parameter);
 	}
 	@Override
 	public Page<BaseCompany> findBaseCompanyPageByMap(Page<BaseCompany> page,HaloMap parameter) {
-		return baseCompanyDao.findPageByMap(page, parameter);
+		return baseCompanyDao.queryPageByMap(page, parameter);
 	}
 	@Override
 	public BaseCompany changeBaseCompanyNotNull(BaseCompany entity) {
@@ -43,7 +43,7 @@ public  class BaseCompanyBaseServiceImpl  implements IBaseCompanyBaseService{
 	}
 	@Override
 	public void deleteBaseCompanyById(String id) {
-		 baseCompanyDao.delete(id);
+		 baseCompanyDao.deleteById(id);
 	}
 	@Override
 	public int deleteBaseCompanyByMap(HaloMap parameter) {

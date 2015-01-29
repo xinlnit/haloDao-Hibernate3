@@ -16,6 +16,10 @@ import com.ht.halo.hibernate3.utils.file.FileUtils;
 public class XmlUtils {
 	private static String HQLS="hqls";
 	private static String HQL="hql";
+	private static String VIEWS="views";
+	private static String VIEW="view";
+	private static String EXECUTES="executes";
+	private static String EXECUTE="execute";
 	private static String DATAS="datas";
 	private static String DATA="data";
 	private static String SQLS="sqls";
@@ -73,6 +77,25 @@ public class XmlUtils {
 			return null;
 	}
 	@SuppressWarnings("unchecked")
+	public String getView(String id){
+		  Element rootElement = document.getRootElement();    
+	        Element hqlsElement= rootElement.element(VIEWS);
+	        if (null==hqlsElement) {
+				return null;
+			}
+	        List<Element> hqlElements=    hqlsElement.elements(VIEW);
+	        for (Element element : hqlElements) {
+	           Attribute attribute=    element.attribute(ID);
+	           if(null==attribute){
+	        	   return element.getTextTrim();
+	           }
+	           if(attribute.getValue().equals(id)){
+	        	   return element.getTextTrim();
+	           }
+			}
+			return null;
+	}
+	@SuppressWarnings("unchecked")
 	public String getData(String id){
 		  Element rootElement = document.getRootElement();    
 	        Element hqlsElement= rootElement.element(DATAS);
@@ -104,6 +127,27 @@ public class XmlUtils {
 			}
 			return null;
 	}
+	/**
+	 *  TODO 自在haloView中存在,表示执行更新,删除,创建sql
+	 * @param id
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public String getExecute(String id){
+		  Element rootElement = document.getRootElement();    
+	        Element hqlsElement= rootElement.element(EXECUTES);
+	        if (null==hqlsElement) {
+				return null;
+			}
+	        List<Element> hqlElements=    hqlsElement.elements(EXECUTE);
+	        for (Element element : hqlElements) {
+	           Attribute attribute=    element.attribute(ID);
+	           if(attribute.getValue().equals(id)){
+	        	   return element.getTextTrim();
+	           }
+			}
+			return null;
+	}
 	public static void main(String[] args) {
 		System.out.println(System.currentTimeMillis());
 		XmlUtils xmlUtils = new XmlUtils(FileUtils.getClassPath("halo", "Test.xml"));
@@ -112,6 +156,9 @@ public class XmlUtils {
 		System.out.println(System.currentTimeMillis());
 		XmlUtils xmlUtils2 = new XmlUtils(FileUtils.getClassPath("halo", "Test.xml"));
 		System.out.println(xmlUtils2.getSql("updateById"));
+		System.out.println(System.currentTimeMillis());
+		XmlUtils xmlUtils3 = new XmlUtils(FileUtils.getClassPath("halo", "Test.xml"));
+		System.out.println(xmlUtils3.getView(null));
 		System.out.println(System.currentTimeMillis());
 	}
 	

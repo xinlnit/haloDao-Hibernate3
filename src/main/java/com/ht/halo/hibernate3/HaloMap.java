@@ -82,6 +82,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	}
 
 	public HaloMap put(String key, Object value) {
+		//throw new RuntimeException("本版本HaloMap不再支持put链式操作,同时也放弃单独put操作,请使用set");
 		return this.set(key, value);
 	}
 
@@ -113,7 +114,10 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		}
 		return this;
 	}
-
+	public HaloMap addViewId(String  value) {
+		this.set(HaloViewDao.VIEWID, value);
+		return this;
+	}
 	public HaloMap addColumn(String... columnNames) {
 		for (String columnName : columnNames) {
 			this.set(HaloDao.ADDCOLUMN, columnName);

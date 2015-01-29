@@ -18,9 +18,11 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 	@Resource
 	private BaseCompanyDao baseCompanyDao;
 	@Test
-	public void testFindListByMap() {
-		List<BaseCompany> baseCompanies = baseCompanyDao.findListByMap(new HaloMap()
+	public void testQueryListByMap() {
+	   System.out.println(System.currentTimeMillis());
+		List<BaseCompany> baseCompanies = baseCompanyDao.queryListByMap(new HaloMap()
 		.set("companyId", "4028805e49abcb1d0149abd0585a0000"));
+		 System.out.println(System.currentTimeMillis());
 		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
 	}
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -19,10 +20,17 @@ public class OtherTest{
 
 	@Test
 	public void testConvert() {
+		System.out.println(System.currentTimeMillis());
+	Integer	value = (Integer) ConvertUtils.convert("13", Integer.class);
+	System.out.println(value);
+	System.out.println(System.currentTimeMillis());
+		//int i =    .asInt("123");
+	}
+	@Test
+	public void testTpl() {
 	    String str="我是{test.HaloView},我来自{133},今年{2}岁";
 	    MyHashMap myHashMap = 
-	    		new MyHashMap().set("test.HaloView", "中国人").set("133", "北京")
-	    		;
+	    		new MyHashMap().set("test.HaloView", "中国人").set("133", "北京");
 	       System.out.println(fillStringByMap(str, myHashMap));
 	}
     private static String fillStringByMap(String str,Map<String,Object> data){

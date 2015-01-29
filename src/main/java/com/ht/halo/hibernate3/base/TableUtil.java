@@ -45,12 +45,12 @@ public class TableUtil {
 		}
 		return sb.toString();
 	}
-	public static String toHql(String entityColName) {
+	public static String toSql(String myHql) {
 		StringBuffer sb = new StringBuffer();
 		boolean flag=false;
 		boolean isLetter=false;
-		for (int i = 0; i < entityColName.length(); i++) {
-			char cur = entityColName.charAt(i);
+		for (int i = 0; i < myHql.length(); i++) {
+			char cur = myHql.charAt(i);
 			if (cur=='_') {
 					throw new NotAllowTableColumnException("不允许使用数据库字段!");
 			}
@@ -79,8 +79,8 @@ public class TableUtil {
 		return sb.toString();
 	}
 	public static void main(String[] args) {
-		System.out.println(TableUtil.toHql("ViewTest"));
-		System.out.println(TableUtil.toHql(" userIdName =:userName and tableId=:UUUU"));
+		System.out.println(TableUtil.toSql("ViewTest"));
+		System.out.println(TableUtil.toSql(" userIdName =:userName and tableId=:UUUU"));
 		System.out.println(TableUtil.toFiled("receivable_detail_id"));
 	}
 }

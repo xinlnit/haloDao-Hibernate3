@@ -3,8 +3,8 @@ package com.ht.test.dao;
 import org.springframework.stereotype.Repository;
 
 import com.ht.halo.hibernate3.HaloViewDao;
-import com.ht.halo.hibernate3.HaloViewMap;
+import com.ht.test.entity.HaloTest;
 @Repository
-public class HaloViewMapDao extends HaloViewDao<HaloViewMap>{
+public class HaloTestDao extends HaloViewDao<HaloTest>{
 
 }

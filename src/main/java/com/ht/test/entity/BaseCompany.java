@@ -3,7 +3,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import com.ht.halo.hibernate3.utils.annotations.FieldInfo;
+
+import com.ht.halo.annotations.FieldInfo;
 import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 
 import java.math.BigDecimal;

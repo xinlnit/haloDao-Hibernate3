@@ -1,4 +1,4 @@
-package com.ht.halo.hibernate3.utils.annotations;
+package com.ht.halo.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

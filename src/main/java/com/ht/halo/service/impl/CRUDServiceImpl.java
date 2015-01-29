@@ -2,16 +2,35 @@ package com.ht.halo.service.impl;
 
 import java.io.Serializable;
 
-import com.ht.halo.hibernate3.HaloDao;
+import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.service.ICRUDService;
 
+public abstract class CRUDServiceImpl<T, PK extends Serializable> implements ICRUDService<T, PK> {
+	public abstract IHaloDao<T, PK> getDao();// abstract
 
-public abstract class CRUDServiceImpl<T, PK extends Serializable> implements ICRUDService<T, PK>{
-	public abstract HaloDao<T,PK> getDao();
-	@Override
-	public T findById(PK id) {
-		return getDao().get(id);
+
+	public final T findById(PK id) {
+		return getDao().queryById(id);
 	}
-	
-}
 
+	
+	public T checkById(PK id) {
+		return getDao().checkById(id);
+	}
+
+	public void add(T entity) {
+		 getDao().save(entity);
+	}
+
+	public void modify(T entity) {
+		 getDao().update(entity);
+	}
+
+	public void removeById(PK id) {
+        getDao().deleteById(id);
+	}
+
+	public void remove(T entity) {
+		getDao().delete(entity);
+	}
+}
