@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<halo>
+<views>
+<view>
+SELECT md5(tab.table_name) table_id ,tab.TABLE_SCHEMA as db_name,
+tab.table_name,tab.table_comment,tab.table_type
+,tab.create_time,tab.update_time
+FROM `information_schema`.`TABLES` tab  
+where   tab.table_schema =:dbName
+</view>
+</views>
+</halo>
