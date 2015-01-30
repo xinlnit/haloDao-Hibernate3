@@ -269,8 +269,6 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		str = str.split("\\" + FORMATESPT)[0];
 		str = StringUtils.replaceEach(str, NUMREPLACE, NUMREPLACELETTER);
 		return str;
-		// StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<",
-		// "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
 	}
 
 	/**

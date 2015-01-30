@@ -19,7 +19,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	private int addOrder = 0;
 	private int addGroup = 0;
 	private int addHql = 0;
-	public static final String  ADDMETHOD="addMethod";
+	//public static final String  ADDMETHOD="addMethod";
 	public HaloMap() {
 	}
 
@@ -166,10 +166,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		this.set(key +  HaloDao.MYSPACE+HaloViewDao.DATA, value);
 		return this;
 	}
-	public HaloMap addMethod(Object value) {
-		this.set(ADDMETHOD, value);
-		return this;
-	}
+
 
 	/**
 	 * @Title: put

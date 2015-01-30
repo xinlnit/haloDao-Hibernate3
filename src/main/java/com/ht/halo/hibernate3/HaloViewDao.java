@@ -306,7 +306,6 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		str = str.split("\\" + HaloDao.FORMATESPT)[0];
 		str = StringUtils.replaceEach(str, HaloDao.NUMREPLACE, HaloDao.NUMREPLACELETTER);
 		return str;
-	    //StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<", "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
 	}
 	/**
 	 * TODO 判断是否需要查询
