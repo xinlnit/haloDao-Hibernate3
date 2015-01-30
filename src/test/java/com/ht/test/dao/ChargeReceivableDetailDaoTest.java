@@ -26,7 +26,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 		List<ChargeReceivableDetail> chargeReceivableDetails = chargeReceivableDetailDao.findListByMap(new HaloMap()
 		.set("houseId_eq", "4028813a47f2772c0147f2780578056a")
 		.set("ratio_notin", "1.0")
-		.set("state_=", 1)
+		.set("state_eq", 1)
 		.set("houseName_5like5", "1")
 		.set("periodNum_eq_ck", 0) 
 		.addOrder("periodNum_desc")

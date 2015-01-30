@@ -17,7 +17,9 @@ public class HaloTestDaoTest extends BaseDaoTestCase{
 	@Test
 	public void testQueryListByMap() {
 	List<HaloTest> haloTests=	haloTestDao.findListByHaloView(new HaloMap()
-	.set("houseId_data", "ab").set("houseName_like", "6").addOrder("houseName_desc")
+	.set("houseId_data", "ab").set("houseName_like", "6")
+	.set("houseName_eq", "6")
+	.addOrder("houseName_desc")
 	);
 	 System.out.println(GsonUtils.getGsonIn().toJson(haloTests));
 	}

@@ -25,5 +25,17 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 		 System.out.println(System.currentTimeMillis());
 		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
 	}
+	@Test
+	public void testDelete() {
+		baseCompanyDao.deleteByMap(null);
+		baseCompanyDao.deleteByMap(new HaloMap());
+		baseCompanyDao.deleteByMap(new HaloMap().set("code", "1"));
+	//	baseCompanyDao.deleteByMap(new HaloMap().set("code_eq", "1"));
+	}
+	@Test
+	public void testUpdate() {
+		baseCompanyDao.updateWithNotNullByHql(new BaseCompany()
+		.setShortName("ttt"),new HaloMap().set("type_eq", 0));//.setCompanyId("4028805e49abcb1d0149abd0585a0000")
+	}
 
 }

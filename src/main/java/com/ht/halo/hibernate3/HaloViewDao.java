@@ -46,7 +46,7 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 	private static final Log logger = LogFactory.getLog(HaloViewDao.class);
 	private static final String SPACE = "\u0020";
 	private static final char SPACECHAR = '\u0020';
-	private static final String DATA = "data";// haloView中的模板数据
+	public static final String DATA = "data";// haloView中的模板数据
 	public static final String VIEWID = "viewId";
 	private static final String HALO= "Halo";
 	
@@ -306,7 +306,7 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		str = str.split("\\" + HaloDao.FORMATESPT)[0];
 		str = StringUtils.replaceEach(str, HaloDao.NUMREPLACE, HaloDao.NUMREPLACELETTER);
 		return str;
-				//StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<", "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
+	    //StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<", "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
 	}
 	/**
 	 * TODO 判断是否需要查询
@@ -567,7 +567,7 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		Type type =null;
 		 String method=null;
 			try {
-			      method="get"+StringUtils.capitalize(property);
+			    method="get"+StringUtils.capitalize(property);
 				type=	 this.entityType.getMethod(method).getReturnType();
 			} catch (SecurityException e) {
 				e.printStackTrace();
@@ -591,7 +591,7 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		if (null == parameter) {
 			parameter = new HaloMap();
 		}
-
+		String link = "where";
 		for (Entry<String, ?> entry : parameter.entrySet()) {
 			String key = filterValue(entry.getKey());
 			Object value = entry.getValue();
@@ -663,17 +663,20 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		
 			if (columnWithCondition.getIfQuery()) {// 查询该字段
 				if (null == value || "null".equalsIgnoreCase(String.valueOf(entry.getValue()).trim())) {
-					sql.append(String.format(" %s %s %s %s null %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(),TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
+					sql.append(String.format(" %s %s %s %s null %s ", link, columnWithCondition.getLeftBracket(),TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
+					link = columnWithCondition.getAndOr();
 					continue;
 				} else {
 					if (null != columnWithCondition.getDirectValue()) {
-						sql.append(String.format(" %s %s %s %s %s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
+						sql.append(String.format(" %s %s %s %s %s %s ", link, columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
+						link = columnWithCondition.getAndOr();
 						continue;
 					}
 					if (null != type) {
 						value = convert(columnWithCondition);
 					}
-					sql.append(String.format(" %s %s %s %s:%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
+					sql.append(String.format(" %s %s %s %s:%s %s ", link, columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
+					link = columnWithCondition.getAndOr();
 					sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
 				}
 			}
@@ -682,9 +685,9 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		String columnStr = TableUtil.toSql(column.toString());
 		String viewSql = getViewSql(viewAs, tplMap);
 		if (StringUtils.isNotBlank(columnStr)) {
-			sqlSelect = new StringBuffer(String.format("select %s from %s %s where 1=1 ", columnStr.substring(0, columnStr.length() - 1), viewSql, viewAs));
+			sqlSelect = new StringBuffer(String.format("select %s from %s %s ", columnStr.substring(0, columnStr.length() - 1), viewSql, viewAs));
 		} else {
-			sqlSelect.append(String.format("select *  from %s %s  where 1=1 ", viewSql, viewAs));
+			sqlSelect.append(String.format("select  *  from %s %s ", viewSql, viewAs));
 		}
 		String groupStr = TableUtil.toSql(group.toString());
 		if (StringUtils.isNotBlank(groupStr)) {

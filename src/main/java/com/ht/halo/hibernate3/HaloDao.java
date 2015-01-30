@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.EntityMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -29,6 +27,7 @@ import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ht.halo.annotations.Halo;
+import com.ht.halo.base.HaloBase;
 import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.hibernate3.base.Assert;
 import com.ht.halo.hibernate3.base.ColumnToBean;
@@ -56,32 +55,7 @@ import com.ht.halo.hibernate3.utils.xml.XmlUtils;
  * @date 2014-12-20 下午3:14:10
  * @version 3.0
  */
-public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
-	private static final Log logger = LogFactory.getLog(HaloDao.class);
-	public static final String ADDCOLUMN = "addColumn";// 添加查询字段,默认查询出主键
-	public static final String ADDORDER = "addOrder";// 添加排序
-	public static final String ADDGROUP = "addGroup";// 添加排序
-	public static final String ADDHQL = "addHql";// 添加查询hql片段的key值,比如fcy.user.baseUser.a(最前是文件名,放到halo.hql中)
-	public static final String ADDBEGIN = "addBegin";// 开始条数
-	public static final String ADDEND = "addEnd";// 结束条数
-	public static final String HQL = "hql";
-	public static final String PRM = "prm";// 添加查询hql中的参数标识
-	public static final String SPACE = "\u0020";
-	public static final char SPACECHAR = '\u0020';
-	public static final String TAPESPT = "#";
-	public static final String FORMATESPT = "?";
-	public static final String MYSPACE = "_";//原先:改为_ 空格意义明确 并不和占位符冲突 sql使用hql方式也名正言顺
-	public static final char MYSPACECHAR = '_';
-	public static final String EX = "ex";
-	public static final String IN = "in";// 老版就是查询 与条件in冲突
-	public static final String RX = "rx";// 任性 就是查询
-	public static final String CK = "ck";// check 检查值为空或者""
-	private static final String TOBEAN = "toBean";
-	public static final String HALOPACH = "halo";
-	public static final String[] NUMS = new String[] { "1", "3", "5",  "7", "8", "9", "0" };
-	public static final String[] NUMREPLACE = new String[] { "|", "#", "%",  "?", ".", "(", ")" };
-	public static final String[] NUMREPLACELETTER= new String[] { "Q", "E", "T",  "U", "I", "O", "P" };
-	public static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
+public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHaloDao<T, PK> {
 
 	protected SessionFactory sessionFactory;
 	protected Class<T> entityType = getEntityType();
@@ -251,7 +225,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	public void deleteById(PK id) {
-		     delete(get(id));
+		delete(get(id));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -274,7 +248,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	private String CheckSpace(String value) {
-		if(value.indexOf(SPACE)!=-1){
+		if (value.indexOf(SPACE) != -1) {
 			throw new RuntimeException("不允许包含空格!");
 		}
 		if (value.startsWith("_")) {
@@ -295,7 +269,8 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		str = str.split("\\" + FORMATESPT)[0];
 		str = StringUtils.replaceEach(str, NUMREPLACE, NUMREPLACELETTER);
 		return str;
-				//StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<", "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
+		// StringUtils.replaceEach(str, new String[] { ">=", ">", "<=", "<",
+		// "!=", "=" }, new String[] { "ge", "gt", "le", "lt", "neq", "eq" });
 	}
 
 	/**
@@ -516,7 +491,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 			columnWithCondition.setCondition("=");
 			return columnWithCondition;
 		}
-		if ("gt".equals(condition) ) {
+		if ("gt".equals(condition)) {
 			columnWithCondition.setCondition(">");
 			return columnWithCondition;
 		}
@@ -525,7 +500,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 				condition = condition.replaceFirst("ge", "");
 				columnWithCondition.setCondition(">=");
 				columnWithCondition = extDateCondition(condition, "", false, columnWithCondition);
-			} 
+			}
 			return columnWithCondition;
 		}
 		if ("lt".equals(condition)) {
@@ -537,7 +512,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 				condition = condition.replaceFirst("le", "");
 				columnWithCondition.setCondition("<=");
 				columnWithCondition = extDateCondition(condition, "", true, columnWithCondition);
-			} 
+			}
 			return columnWithCondition;
 		}
 		if ("neq".equals(condition)) {
@@ -555,7 +530,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 			}
 			return columnWithCondition;
 		}
-		if (condition.equals("notin")||condition.equals("notIn")) {
+		if (condition.equals("notin") || condition.equals("notIn")) {
 			columnWithCondition.setCondition("not in");
 			return columnWithCondition;
 		}
@@ -564,7 +539,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 			return columnWithCondition;
 		}
 		throw new RuntimeException("本版本不再允许带符号条件传入!比如=,>换用eq,gt");
-		//columnWithCondition.setCondition(condition);
+		// columnWithCondition.setCondition(condition);
 	}
 
 	/**
@@ -601,7 +576,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		// 判断是否跳过查询
 		boolean queryFlag = queryFlag(keys, value);
 		if (keys.length >= 2) {
-			columnWithCondition=    analyzeKeys(columnWithCondition, queryFlag, keys, value);
+			columnWithCondition = analyzeKeys(columnWithCondition, queryFlag, keys, value);
 		}
 		if (queryFlag) {
 			columnWithCondition.setIfQuery(true);
@@ -792,17 +767,15 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 
-		if (null == parameter || null == addSelect) {
-			hqlSelect.append(String.format(" from %s where 1=1 ", entityName));
+		if (null == parameter || null == addSelect) {// addSelect
+														// 作用只用于拼接Upadter和delete语句,便于重用
+			hqlSelect.append(String.format(" from %s ", entityName));
 		} else {
-			if (addSelect.indexOf("where") == -1) {
-				hqlSelect.append(String.format(" %s where 1=1 ", addSelect));
-			} else {
-				hqlSelect.append(String.format(" %s ", addSelect));
-			}
+			hqlSelect.append(String.format(" %s ", addSelect));
 		}
 
 		if (null != parameter) {
+			String link = "where";
 			for (Entry<String, ?> entry : parameter.entrySet()) {
 				String key = filterValue(entry.getKey());
 				Object value = entry.getValue();
@@ -856,20 +829,22 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 					hqlPrmMap.putAll(map);
 					continue;// 添加参数
 				}
-				
 				if (columnWithCondition.getIfQuery()) {// 查询该字段
 					if (null == value || "null".equalsIgnoreCase(String.valueOf(entry.getValue()).trim())) {
-						hql.append(String.format(" %s %s %s %s null %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
+						hql.append(String.format(" %s %s %s %s null %s ", link, columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getRightBracket()));
+						link = columnWithCondition.getAndOr();
 						continue;
 					} else {
 						if (null != columnWithCondition.getDirectValue()) {
-							hql.append(String.format(" %s %s %s %s %s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
+							hql.append(String.format(" %s %s %s %s %s %s ", link, columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getDirectValue(), columnWithCondition.getRightBracket()));
+							link = columnWithCondition.getAndOr();
 							continue;
 						}
 						if (null != type) {
 							value = convert(columnWithCondition);
 						}
-						hql.append(String.format(" %s %s %s %s:%s %s ", columnWithCondition.getAndOr(), columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
+						hql.append(String.format(" %s %s %s %s:%s %s ", link, columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
+						link = columnWithCondition.getAndOr();
 						hqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
 					}
 				}
@@ -879,7 +854,8 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 			if (!"".equals(columnStr)) {
 				hqlWithParameter.setAddColumn(true);
 				String entityIdName = cm.getIdentifierPropertyName();
-				hqlSelect = new StringBuffer(String.format("select %s as %s,%s from %s where 1=1 ", entityIdName, entityIdName, columnStr.substring(0, columnStr.length() - 1), entityName));
+				hqlSelect = new StringBuffer(String.format("select %s as %s,%s from %s ", entityIdName, entityIdName, columnStr.substring(0, columnStr.length() - 1), entityName));
+
 			}
 			String groupStr = group.toString();
 			if (!"".equals(groupStr)) {
@@ -921,7 +897,6 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		}
 		return query;
 	}
-
 
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByMap(HaloMap parameter) {
@@ -1175,19 +1150,16 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	 * @return 返回行数 失败返回-1
 	 */
 	public int deleteByMap(HaloMap parameter) {
-		if (null == parameter || parameter.isEmpty()) {
-			return -1;
-		}
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 		String selectHql = String.format("delete %s ", entityName);
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter, selectHql);
 		String hql = hqlWithParameter.getHql();
-		String tempHql = StringUtils.substringAfter(hql, "where 1=1");
-		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
+		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
+		if (hqlPrmMap.isEmpty()) {
+			logger.warn("不允许无条件删除!防止全表更新(可通过条件实现)");
 			return -1;
 		}
-		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
 		Query query = createQuery(hql, hqlPrmMap);
 		return query.executeUpdate();
 	}
@@ -1214,8 +1186,6 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		T bean = updater.getBean();
 		T po = (T) getSession().get(this.entityType, cm.getIdentifier(bean, (SessionImplementor) this.getSession()));
-		// T po =(T) getSession().get(this.entityType, cm.getIdentifier(bean,
-		// POJO));
 		updaterCopyToPersistentObject(updater, po, cm);
 		return po;
 	}
@@ -1268,7 +1238,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 			}
 			Object value = MyBeanUtils.getSimpleProperty(entity, propName);
 			if (null != value) {
-				parameter.put(propName + ":prm", value);
+				parameter.put(propName + MYSPACE + PRM, value);
 				updateHql.append(String.format(" %s=:%s ,", propName, propName));
 			}
 		}
@@ -1278,10 +1248,10 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		}
 		Object value = MyBeanUtils.getSimpleProperty(entity, identifierName);
 		if (null != value) {
-			parameter.put(identifierName, value);
+			parameter.put(identifierName + MYSPACE + "eq", value);
 		}
 		updateHql = new StringBuffer();
-		updateHql.append(String.format("update %s set %s where 1=1 ", entityName, tempUpdateHql.substring(0, tempUpdateHql.length() - 1)));
+		updateHql.append(String.format("update %s set %s ", entityName, tempUpdateHql.substring(0, tempUpdateHql.length() - 1)));
 		return updateHql.toString();
 	}
 
@@ -1301,8 +1271,8 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 		newParameter.putAll(parameter);
 		HqlWithParameter hqlWithParameter = createQueryHql(newParameter, updateHql);
 		String hql = hqlWithParameter.getHql();
-		String tempHql = StringUtils.substringAfter(hql, "where 1=1");
-		if ("".equals(tempHql.replaceAll(SPACE, ""))) {
+		if (hql.indexOf("where") == -1) {
+			logger.warn("不允许无条件更新!防止全表更新(可通过条件实现)");
 			return -1;
 		}
 		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
@@ -1323,7 +1293,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	private String getPosition() {
 		Halo halo = this.entityType.getAnnotation(Halo.class);
 		if (null != halo && StringUtils.isNotBlank(halo.position())) {
-			return "."+halo.position();
+			return "." + halo.position();
 		}
 		return "";
 	}
@@ -1332,7 +1302,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 
 	private String getHql(String id, MyHashMap tplMap) {
 		String entityName = this.entityType.getSimpleName();
-		File xmlPath = FileUtils.getClassPath(HALOPACH +  getPosition(), entityName + ".xml");
+		File xmlPath = FileUtils.getClassPath(HALOPACH + getPosition(), entityName + ".xml");
 		XmlUtils xmlUtils = new XmlUtils(xmlPath);
 		String hql = xmlUtils.getHql(id);
 		if (null != tplMap) {
@@ -1402,7 +1372,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	// sql------------------------------------------------------
 	private String getSql(String id, MyHashMap tplMap) {
 		String entityName = this.entityType.getSimpleName();
-		File xmlPath = FileUtils.getClassPath(HALOPACH +  getPosition(), entityName + ".xml");
+		File xmlPath = FileUtils.getClassPath(HALOPACH + getPosition(), entityName + ".xml");
 		XmlUtils xmlUtils = new XmlUtils(xmlPath);
 		String sql = xmlUtils.getSql(id);
 		if (null != tplMap) {
@@ -1429,7 +1399,7 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T      findFirstBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+	public T findFirstBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
 		SQLQuery query = createSQLQueryByXml(id, tplMap, parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -1486,7 +1456,5 @@ public class HaloDao<T, PK extends Serializable> implements IHaloDao<T, PK> {
 	protected void notNull(Object obj, String name) {
 		Assert.notNull(obj, "[" + name + "] must not be null.");
 	}
-
-
 
 }

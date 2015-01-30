@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ht.halo.base.Base;
 import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.MyBeanUtils;
@@ -12,11 +13,12 @@ import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.service.ICURDService;
 
 @Transactional
-public abstract class CURDServiceImpl<T, PK extends Serializable> implements ICURDService<T, PK> {
+public abstract class CURDServiceImpl<T, PK extends Serializable> extends Base implements ICURDService<T, PK> {
 	public abstract IHaloDao<T, PK> getDao();// abstract
 	 private void init(HaloMap parameter){
 		  if(null!=parameter.get(HaloMap.ADDMETHOD)){
 			  String method=(String) parameter.get(HaloMap.ADDMETHOD);
+			  logger.info("将先执行方法:"+this.getClass().getSimpleName()+"中"+method);
 			  MyBeanUtils.invoke(this, method, parameter, HaloMap.class);
 			  parameter.remove(HaloMap.ADDMETHOD);
 		  }

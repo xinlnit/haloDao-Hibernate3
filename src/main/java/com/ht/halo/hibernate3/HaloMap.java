@@ -101,8 +101,8 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 
 	public HaloMap addOrderDesc(String... orderDescs) {
 		for (String orderDesc : orderDescs) {
-			if (orderDesc.indexOf(":desc") == -1) {
-				orderDesc = orderDesc + ":desc";
+			if (orderDesc.indexOf(HaloDao.MYSPACE+"desc") == -1) {
+				orderDesc = orderDesc +HaloDao.MYSPACE+ "desc";
 			}
 			this.set(HaloDao.ADDORDER, orderDesc);
 		}
@@ -158,16 +158,16 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	 * @return
 	 */
 	public HaloMap addParameter(String key, Object value) {
-		this.set(key + ":prm", value);
+		this.set(key + HaloDao.MYSPACE+HaloDao.PRM, value);
 		return this;
 	}
 
 	public HaloMap addData(String key, Object value) {
-		this.set(key + ":data", value);
+		this.set(key +  HaloDao.MYSPACE+HaloViewDao.DATA, value);
 		return this;
 	}
 	public HaloMap addMethod(Object value) {
-		this.set("addMethod", value);
+		this.set(ADDMETHOD, value);
 		return this;
 	}
 

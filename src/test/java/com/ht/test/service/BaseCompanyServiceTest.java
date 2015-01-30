@@ -17,7 +17,7 @@ public class BaseCompanyServiceTest extends BaseServiceTestCase{
 	@Test
 	public void testFindBaseCompanyListByMap() {
 		//BaseCompany entity =new BaseCompany();
-		//baseCompanyService.save(entity);
+	//baseCompanyService.save(entity);
 	  List<BaseCompany> basweBaseCompanies= 	
 			  baseCompanyService.findListByMap(new HaloMap().addMethod("findListTest"));
 		  System.out.println(GsonUtils.getGsonIn().toJson(basweBaseCompanies));
@@ -28,7 +28,6 @@ public class BaseCompanyServiceTest extends BaseServiceTestCase{
 	  BaseCompany baseCompany= 	
 			  baseCompanyService.findById("4028805e49abcb1d0149abd0585a0000");
 		  System.out.println(GsonUtils.getGsonIn().toJson(baseCompany));
-		
 	}
 
 
