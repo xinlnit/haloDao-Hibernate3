@@ -1,5 +1,6 @@
 package com.ht.test.other;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -25,6 +26,36 @@ public class OtherTest{
 	System.out.println(value);
 	System.out.println(System.currentTimeMillis());
 		//int i =    .asInt("123");
+	}
+	@Test
+	public void testHqlToSql() {
+		//String str="select * from roleName where name=:name and house_id=:hous_Id and";
+		System.out.println(System.currentTimeMillis());
+		String str="select * from roleName where name=:name and house_id=:hous_Id and";
+		List<String>  placeholders= new ArrayList<String>() ;
+		
+		Matcher m=Pattern.compile("\\:([\\w]*)").matcher(str);
+	        while(m.find()){
+	        	   System.out.println(m.group());
+	        	   String group=m.group();
+	        	   group= group.replaceAll("\\:", "");
+	        	   System.out.println(group);
+	        	   placeholders.add(m.group());
+	           // str=str.replace(m.group(),String.valueOf(data.get(group)));
+	        }
+	        String str2="select * from roleName where name=? and house_id=?  and";
+	        Matcher m2=Pattern.compile("\\?").matcher(str2);
+	        int i=0;
+	        while(m2.find()){
+	        	   System.out.println(m2.group());
+	        
+	
+	            str=str.replace(m2.group(),placeholders.get(i));
+	            i++;
+	        }
+	        System.out.println(str);
+	        System.out.println(System.currentTimeMillis()); 
+	      
 	}
 	@Test
 	public void testTpl() {

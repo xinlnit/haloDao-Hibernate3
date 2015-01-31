@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +17,6 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionImplementor;
-import org.hibernate.hql.FilterTranslator;
-import org.hibernate.hql.QueryTranslatorFactory;
-import org.hibernate.impl.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.EntityType;
 import org.hibernate.type.Type;
@@ -32,6 +28,7 @@ import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.hibernate3.base.Assert;
 import com.ht.halo.hibernate3.base.ColumnToBean;
 import com.ht.halo.hibernate3.base.ColumnToMap;
+import com.ht.halo.hibernate3.base.HibernateUtils;
 import com.ht.halo.hibernate3.base.MyBeanUtils;
 import com.ht.halo.hibernate3.base.MyEntityUtils;
 import com.ht.halo.hibernate3.base.Page;
@@ -979,7 +976,6 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		query.setMaxResults(1);
 		return (T) query.uniqueResult();
 	}
-
 	/**
 	 * 查询唯一记录
 	 * 
@@ -990,7 +986,6 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	public T findUnique(HaloMap parameter) {
 		return (T) createMyQuery(parameter).uniqueResult();
 	}
-
 	/**
 	 * 生成计算总条数的hql
 	 * 
@@ -1001,23 +996,7 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		hql = "from " + StringUtils.substringAfter(hql, "from");
 		hql = StringUtils.substringBefore(hql, "order by");
 		return "select count(*) " + hql;
-	}
-
-	/**
-	 * hql转sql
-	 * 
-	 * @param hql
-	 * @return sql语句
-	 */
-	public String hqlToSql(String hql) {
-		SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl) this.getSessionFactory();
-		QueryTranslatorFactory queryTranslatorFactory = sessionFactoryImpl.getSettings().getQueryTranslatorFactory();
-		FilterTranslator filterTranslator = queryTranslatorFactory.createFilterTranslator(hql, hql, Collections.EMPTY_MAP, sessionFactoryImpl);
-		filterTranslator.compile(Collections.EMPTY_MAP, false);
-		return filterTranslator.getSQLString();
-
-	}
-
+	}	
 	/**
 	 * 计算总条数
 	 * 
@@ -1028,9 +1007,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	protected long countMyHqlResult(String hql, HaloMap parameter) {
 		String countHql = generateMyCountHql(hql);
 		if (countHql.indexOf("group by") != -1) {
-			String tempSQL = hqlToSql(countHql);
+			String tempSQL =HibernateUtils.hqlToSqlByPlaceholder(countHql, this.getSessionFactory());
 			String countSQL = "select count(*) from (" + tempSQL + ") temp";
-			Query query = this.createSQLQuery(countSQL, parameter.values().toArray());
+			Query query = this.createSQLQuery(countSQL, parameter);
 			return ((Number) query.uniqueResult()).longValue();
 		} else {
 			return ((Number) findUnique(countHql, parameter)).longValue();

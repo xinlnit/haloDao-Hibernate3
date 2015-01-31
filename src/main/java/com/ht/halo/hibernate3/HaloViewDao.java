@@ -684,6 +684,10 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 						sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
 						continue;
 					}
+					if(columnWithCondition.getCondition().equals("in")||columnWithCondition.getCondition().equals("not in")){
+						columnWithCondition.setColumnName(columnWithCondition.getColumnName()+" (") ;
+						columnWithCondition.setRightBracket(") "+columnWithCondition.getRightBracket());
+					}
 					sql.append(String.format(" %s %s %s %s:%s %s ", link, columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 					link = columnWithCondition.getAndOr();
 					sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);

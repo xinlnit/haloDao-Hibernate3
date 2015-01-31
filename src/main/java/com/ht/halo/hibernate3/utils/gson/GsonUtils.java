@@ -2,6 +2,8 @@ package com.ht.halo.hibernate3.utils.gson;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 /**
  * @ClassName: HtGson
@@ -49,5 +51,16 @@ public class GsonUtils {
 		.setExclusionStrategies(new GsonExclude().addExclusionList(fieldNames))
 		.create();
 		return gson;
+	}
+	/**
+	 *  TODO  美化json
+	 * @param str
+	 * @return
+	 */
+	public static String format(String  str){
+		 Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		 JsonParser jsonParser = new JsonParser();
+		 JsonElement jsonElement = jsonParser.parse(str);
+		 return  gson.toJson(jsonElement);
 	}
 }

@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import com.ht.halo.hibernate3.HaloMap;
+import com.ht.halo.hibernate3.base.Page;
 import com.ht.halo.hibernate3.utils.gson.GsonUtils;
 import com.ht.test.entity.BaseCompany;
 import com.ht.utils.junit.BaseDaoTestCase;
@@ -26,6 +27,15 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 		);
 		 System.out.println(System.currentTimeMillis());
 		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
+	}
+	@Test
+	public void testFindListByPage() {
+		 Page<BaseCompany> page =new Page<BaseCompany>(3, 1);
+		 page=baseCompanyDao.findPageByMap(new Page<BaseCompany>(3, 1), new HaloMap()
+		 .set("code_not", 1)
+		 .addGroup("code")
+		 );
+		System.out.println(GsonUtils.format(GsonUtils.getGsonIn("entities").toJson(page)));
 	}
 	@Test
 	public void testDelete() {

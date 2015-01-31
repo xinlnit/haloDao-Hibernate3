@@ -98,17 +98,6 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		}
 		return this;
 	}
-
-	public HaloMap addOrderDesc(String... orderDescs) {
-		for (String orderDesc : orderDescs) {
-			if (orderDesc.indexOf(HaloDao.MYSPACE+"desc") == -1) {
-				orderDesc = orderDesc +HaloDao.MYSPACE+ "desc";
-			}
-			this.set(HaloDao.ADDORDER, orderDesc);
-		}
-		return this;
-	}
-
 	public HaloMap addHql(String... hqls) {
 		for (String hql : hqls) {
 			this.set(HaloDao.ADDHQL, hql);
