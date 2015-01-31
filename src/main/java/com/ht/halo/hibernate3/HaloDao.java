@@ -532,6 +532,10 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 			columnWithCondition.setCondition("not in");
 			return columnWithCondition;
 		}
+		if (condition.equals("not")) {//比如not 3 为!=3 or is null 
+			columnWithCondition.setCondition("not");
+			return columnWithCondition;
+		}
 		if (StringUtils.isEnglish(condition)) {
 			columnWithCondition.setCondition(condition);
 			return columnWithCondition;
@@ -841,6 +845,12 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 						if (null != type) {
 							value = convert(columnWithCondition);
 						}
+						if(columnWithCondition.getCondition().equals("not")){
+							hql.append(String.format(" %s (%s <>:%s or %s is null) ", link,  columnWithCondition.getColumnName(),  columnWithCondition.getGenColumnName(),columnWithCondition.getColumnName()));
+							link = columnWithCondition.getAndOr();
+							hqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
+							continue;
+						}
 						hql.append(String.format(" %s %s %s %s:%s %s ", link, columnWithCondition.getLeftBracket(), columnWithCondition.getColumnName(), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 						link = columnWithCondition.getAndOr();
 						hqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
@@ -1025,7 +1035,6 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		} else {
 			return ((Number) findUnique(countHql, parameter)).longValue();
 		}
-
 	}
 
 	/**

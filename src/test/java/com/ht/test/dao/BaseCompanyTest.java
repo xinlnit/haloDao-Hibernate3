@@ -21,7 +21,9 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 	public void testFindListByMap() {
 	   System.out.println(System.currentTimeMillis());
 		List<BaseCompany> baseCompanies = baseCompanyDao.findListByMap(new HaloMap()
-		.set("companyId_eq", "4028805e49abcb1d0149abd0585a0000"));
+		.set("code_not", "1")
+		.set("companyId_eq", "4028805e49abcb1d0149abd0585a0000")
+		);
 		 System.out.println(System.currentTimeMillis());
 		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
 	}

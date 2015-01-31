@@ -12,18 +12,20 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.ht.halo.hibernate3.HaloDao;
 import com.ht.halo.hibernate3.HaloMap;
 
 
 public class MyEntityUtils {
 	private static final Log logger = LogFactory.getLog(MyEntityUtils.class);
-	 /**
+	/**
 	   * @Title: setEntity
 	   * @Description: TODO Action层  设置实体某字段值 map转entity
 	   * @param entity
 	   * @param parameters
 	    */
 	 public  static  Object setEntity(Object entity,HaloMap parameter){
+		 
 		if(null!=parameter){
 			for (Entry<String, ?> entry : parameter.entrySet()) {
 				try {
@@ -60,8 +62,10 @@ public class MyEntityUtils {
 	                    Object[] args = new Object[1];
 	                    args[0] = value;
 	                    try {
+	                    	
 	                        descriptor.getWriteMethod().invoke(obj, args);
 	                    } catch (InvocationTargetException e) {
+	                    	
 	                    	logger.warn("字段映射失败");
 	                    }
 	                }
@@ -114,6 +118,46 @@ public class MyEntityUtils {
 	        }
 	        return returnMap;
 	    }
+	    public static HaloMap toFindHaloMap(Object bean) {
+	        Class<? extends Object> clazz = bean.getClass();
+	        HaloMap returnMap = new HaloMap();
+	        BeanInfo beanInfo = null;
+	        try {
+	            beanInfo = Introspector.getBeanInfo(clazz);
+	            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+	            for (int i = 0; i < propertyDescriptors.length; i++) {
+	                PropertyDescriptor descriptor = propertyDescriptors[i];
+	                String propertyName = descriptor.getName();
+	                if (!propertyName.equals("class")) {
+	                    Method readMethod = descriptor.getReadMethod();
+	                     Object result  = readMethod.invoke(bean, new Object[0]);
+	                    if (null != propertyName) {
+	                        propertyName = propertyName.toString();
+	                    }
+	                    if(null==result){
+	                    	continue;
+	                    }
+	                    if (null != result) {
+	                        result = result.toString();
+	                    }
+	                   if(propertyName.equals("json")){
+	                	   continue;
+	                   }
+	                   returnMap.put(propertyName+HaloDao.MYSPACE+HaloDao.PRM, result);
+	                }
+	            }
+	        } catch (IntrospectionException e) {
+	        	logger.error("分析类属性失败");
+	        } catch (IllegalAccessException e) {
+	        	logger.error("实例化 JavaBean 失败");
+	        } catch (IllegalArgumentException e) {
+	        	logger.error("映射错误");
+	        } catch (InvocationTargetException e) {
+	        	logger.error("调用属性的 setter 方法失败");
+	        }
+	        return returnMap;
+	    }
+
 
 
 }

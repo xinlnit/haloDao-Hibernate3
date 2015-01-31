@@ -381,6 +381,10 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 			columnWithCondition.setCondition("not in");
 			return columnWithCondition;
 		}
+		if (condition.equals("not")) {//比如not 3 为!=3 or is null 
+			columnWithCondition.setCondition("not");
+			return columnWithCondition;
+		}
 		if (StringUtils.isEnglish(condition)) {
 			columnWithCondition.setCondition(condition);
 			return columnWithCondition;
@@ -673,6 +677,12 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 					}
 					if (null != type) {
 						value = convert(columnWithCondition);
+					}
+					if(columnWithCondition.getCondition().equals("not")){
+						sql.append(String.format(" %s (%s <>:%s or %s is null) ", link, TableUtil.toSql( columnWithCondition.getColumnName()),  columnWithCondition.getGenColumnName(),TableUtil.toSql(columnWithCondition.getColumnName())));
+						link = columnWithCondition.getAndOr();
+						sqlPrmMap.put(columnWithCondition.getGenColumnName(), value);
+						continue;
 					}
 					sql.append(String.format(" %s %s %s %s:%s %s ", link, columnWithCondition.getLeftBracket(), TableUtil.toSql(columnWithCondition.getColumnName()), columnWithCondition.getCondition(), columnWithCondition.getGenColumnName(), columnWithCondition.getRightBracket()));
 					link = columnWithCondition.getAndOr();

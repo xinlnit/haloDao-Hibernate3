@@ -110,7 +110,7 @@ public class  BaseCompany implements java.io.Serializable {
      @Column(name = "state", precision = 10)
      @FieldInfo(info="状态")
      private Integer  state;
-      
+   
       
      public BaseCompany() {
      }
@@ -272,7 +272,9 @@ public class  BaseCompany implements java.io.Serializable {
          this.state = state;
          return this;
       }
-     @Override
+     
+
+	@Override
 	 public String toString() {
 		 return GsonUtils.getGsonIn().toJson(this);
 	 }
