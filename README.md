@@ -5,27 +5,9 @@ haloDao
 --------
 #该通用dao层基于hql或sql语句实现动态条件查询,很容易扩展成基于其他orm或者存jdbc的Dao层,并容易在前台直接改变查询条件,
 不用写一句代码,即前后台一致,并有良好的安全性及灵活性,基本可以除去Dao层的编写,将只专注业务层业务逻辑!
--------
-#简述
-         1.前台容易修改查询条件.该通用dao主要是像(Criteria Query)一样实现了动态条件查询,不过不同处在于,查询字段条件等全部在
-         一个HaloMap的Map对象的key值中,value值为字段值,于是在前台传json对象封装到Map对象类便可查询.
-         并且相比较MyBatis的动态SQL方式更容易编写和使用.
-         修改前台json便可更改查询条件.
-         2.免掉了判断字段是否为空的大量代码.因为为空不会查询,要查询也可直接修改key值实现
-         3.批量更新,删除实现.直接生成执行的hql语句,灵活度增加,并可以根据查询条件删除修改
-         4.查询第一条记录.
-         5.扩展了查询条件,以适应一些常用需求.比如从某月到某月查询的实现.修改key值就可以了!
-         6.基于sql的haloView可变参数视图及其在视图基础上的结果集中的动态查询实现(很拗口^_^).
-         这也是基于Mybatis思想,但实现及其使用比其要好许多.也是编写jdbc版本的基础.
-         虽然体系较新不太完善,但在hibernate中足以应付一些需求.
-         7.结合代码生成技术,将极大减少代码编写量,并使其专注于业务逻
-         8.主要代码不到700行
-#不足
-        1.还未编写基于jdbc版本的haloDao,不过这个好重构.但和成熟orm比较,暂时会缺少缓存.懒加载等其他特性.
-        如果做成框架,那么要考虑的还有很多.
-        2.最初版本是公司内部实用,不过这版本是重构版本,代码大多不同,不能兼容,可能有部分bug未发现,需要实践.
+--------
 #主要功能:
-##动态条件查询的实现
+##动态条件查询
      
      一般情况我们不会查询值为null值或者为空值的条件.
      比如:findListByMap(new HaloMap().set("userName_eq","vonchange").set("password_eq","123").set("email_eq",null)).
@@ -92,30 +74,13 @@ haloDao
           如果key的变量起始是数字,可以在前加入_防止命名规范问题(前台json)
           注:生成的条件包含QWRTYUIOP对应键盘上方数字
           因而数据库字段不可以含数字
-########################
-##基于sql的haloView可变参数视图实现(暂不完善,但足以应付一些特殊需求)
-        实体命名必须Halo开头!
-        首先在halo包中对应实体xml中views中view编写好sql语句:select * from base_user where role=:role ${email} ${groupBy}
-        调用findListByHaloView(new HaloMap().set("role_prm",1).set("groupBy_data","aa")
-        .set("email_data","ab").set("email_prm","123@ww.com").set("userName_like","von")
-        .addColumn("userName_eq","password").addOrder("createDate_eq","role");
-        //datas中data数据 id 为aa:group by role 
-        id 为ab  and email=:email
-        为:查询出角色为1,邮箱为123@ww.com,并按角色分组的结果集中查询用户名左模糊von,并按照createDate和role正序,
-        并只查询出用户名及密码字段并封装到实体中
-        其中拼接文件中拼接字符串使用了freemarker
-##基于sql实现的haloView 中sql拼接为山寨版hql  基于骆驼命名法 遇到大写转为_小写
-          sets("aa","von"+"%","123@ww.com").set("userName_prm":"von"+"%");
-          在 配置中hqls中hql id 为aa:userName like :userName and email =:email
 ##实现原理基于hql或sql语句字符串,可直接前台传json对象构建查询语句并有良好的安全性
          addColumn("userName")==set("addColumn","userName") 
          addOrder("createdate")==set("addOrder","createdate")
          addGroup("role")==set("addGroup","role") 
          用haloMap可在set("addGroup","userName"):前台可避免重复可以addGroup1,addGroup2 
-
-  
 ##完全防止sql注入
-         完全防止sql注入,所以在拼接hql和sql中追加sql片断时需要写入属性文件,虽然麻烦一步,
+         完全防止sql注入,所以在拼接hql和sql中追加sql片断时需要写入xml,虽然麻烦一步,
          但在程序上已完全杜绝用户sql注入的可能.
 ##HaloMap
           支持链式和一些方便设置参数的方法,为迫使使用,Dao层参数未使用父类Map,而是用子类HaloMap
