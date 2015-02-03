@@ -3,9 +3,8 @@ haloDao
 
 前台及其后台动态多条件查询实现
 --------
-#该通用dao层基于hql或sql语句实现动态条件查询,很容易扩展成基于其他orm或者存jdbc的Dao层,并容易在前台直接改变查询条件,
+#$该通用dao层基于hql或sql语句实现动态条件查询,很容易扩展成基于其他orm或者存jdbc的Dao层,并容易在前台直接改变查询条件,
 不用写一句代码,即前后台一致,并有良好的安全性及灵活性,基本可以除去Dao层的编写,将只专注业务层业务逻辑!
---------
 ##------------第一部分:基于hibernate的dao层组件----------
 ##动态条件查询预览  
      一般情况我们不会查询值为null值或者为空值的条件.
@@ -18,7 +17,7 @@ haloDao
      查询用户名左模糊于vonchange,创建时间小于当前,邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
      
      findListByMap(new HaloMap().set("userName_like","vonchange").set("(createDate_le",new Date())
-      .set("|email_in)",new String[]{"123@vonchange.com","345@vonchange.com"}))
+      .set("|email_in)",new String[]{"123@change.com","345@vonchange.com"}))
       查询用户名左模糊于vonchange,创建时间小于当前或者邮箱在"123@vonchange.com","345@vonchange.com"中的结果集
     
 ###(可以理解空格为_符号) 
@@ -71,12 +70,13 @@ haloDao
             ---或者在实体加入halo注释标明位置比如halo(postion="user") 则xml需要放入halo.user包下
 ###日期可传字符
         new HaloMap().set(createDate_ge,'2012-11').set(createDate_ge,'2012年11月12日'))
+        支持的格式可以统一在halo.config包下的hao.xml中配置
         对于不支持格式可以set(createDate_ge?yy年11月,'12年11月')
 ##可以完全无特殊字符,用数字替换
-          5==% 比如全模糊5like5==%like% (键盘对应)
-          9==( 0==) (键盘对应)
-          3==# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
-           1==|(形象一) 8==.
+          5等于% 比如全模糊5like5等于%like% (键盘对应)
+          9等于(     0==) (键盘对应)
+          3等于# #后面可明确字段类型:set("money#bigdecimal","999") (键盘对应)
+           1等于|(形象一) 8等于.
           如果key的变量起始是数字,可以在前加入_防止命名规范问题(前台json)
           注:生成的条件包含QWRTYUIOP对应键盘上方数字
           因而数据库字段不可以含数字
@@ -89,7 +89,7 @@ haloDao
          完全防止sql注入,所以在拼接hql和sql中追加sql片断时需要写入xml,虽然麻烦一步,
          但在程序上已完全杜绝用户sql注入的可能.
 ##HaloMap
-          支持链式和一些方便设置参数的方法,为迫使使用,Dao层参数未使用父类Map,而是用子类HaloMap
+          支持链式和一些方便设置参数的方法,为迫使其使用,Dao层参数未使用Map接口实现,而是用子类HaloMap
 ##------------第二部分:基于Halo视图方式的sql动态拼接实现
           部分功能未完善,暂不提供说明,主要特性可以很好的解决复杂查询,复杂报表等需求
 ##--------------第三部分:基于HaloDao的泛型dao及Service层及其代码生成
