@@ -2,21 +2,13 @@
 <config>
 <!-- 支持的日期格式 -->
         <pattern>
-               <format></format>
-               <format></format>
+               <format>yyyy</format>
+               <format>yyyy-MM</format>
                <format>yyyy-MM-dd</format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
-               <format></format>
+               <format>yyyy-MM-dd HH</format>
+               <format>yyyy-MM-dd HH:mm</format>
+               <format>yyyy-MM-dd HH:mm:ss</format>
+               <format>yyyy年MM月dd日</format>
                <format></format>
                <format></format>
         </pattern>
