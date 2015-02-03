@@ -8,11 +8,18 @@
 			WHERE id = #{id};
 		</hql>
 		<hql id="aa">
-			houseId =:houseId
+			houseId =:houseId实收
 		</hql>
 	</hqls>
-     <datas>
-        <data id="">
-        </data>
-     </datas>
+	<datas>
+		<data id="aa">
+			wwww都是
+		</data>
+	</datas>
+	<sqls>
+		<sql id="updateById">
+			wwww
+		</sql>
+	</sqls>
+
 </halo>  

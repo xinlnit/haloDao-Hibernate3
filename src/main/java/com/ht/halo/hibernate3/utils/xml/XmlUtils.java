@@ -1,6 +1,7 @@
 package com.ht.halo.hibernate3.utils.xml;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.ht.halo.hibernate3.map.HashMap;
+import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 
 public class XmlUtils {
@@ -147,6 +149,22 @@ public class XmlUtils {
 	           }
 			}
 			return null;
+	}
+	@SuppressWarnings("unchecked")
+	public String[] getPattern(){
+		List<String> patterns = new ArrayList<String>();
+		 Element rootElement = document.getRootElement();    
+	        Element hqlsElement= rootElement.element("pattern");
+	        if (null==hqlsElement) {
+				return patterns.toArray(new String[0]);
+			}
+	        List<Element> hqlElements=    hqlsElement.elements("format");
+	        for (Element element : hqlElements) {
+	        	if(StringUtils.isNotBlank(element.getTextTrim())){
+	        	   patterns.add(element.getTextTrim());
+	        	}
+			}
+			return patterns.toArray(new String[patterns.size()]);
 	}
 	public static void main(String[] args) {
 		System.out.println(System.currentTimeMillis());

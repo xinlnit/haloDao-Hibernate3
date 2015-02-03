@@ -1,5 +1,10 @@
 package com.ht.halo.base;
 
+import java.io.File;
+
+import com.ht.halo.hibernate3.utils.file.FileUtils;
+import com.ht.halo.hibernate3.utils.xml.XmlUtils;
+
 
 public class HaloBase extends Base{
 	public static final String ADDCOLUMN = "addColumn";// 添加查询字段,默认查询出主键
@@ -25,7 +30,13 @@ public class HaloBase extends Base{
 	public static final String[] NUMS = new String[] { "1", "3", "5",  "7", "8", "9", "0" };
 	public static final String[] NUMREPLACE = new String[] { "|", "#", "%",  "?", ".", "(", ")" };
 	public static final String[] NUMREPLACELETTER= new String[] { "Q", "E", "T",  "U", "I", "O", "P" };
-	public static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
+	public static final String[] PATTERN  = getPattern();//从xml配置文件获得
+    private   static  String[] getPattern(){
+		File xmlPath = FileUtils.getClassPath(HALOPACH + ".config", "halo.xml");
+		XmlUtils xmlUtils  = new XmlUtils(xmlPath);
+		return xmlUtils.getPattern();
+	}	
+	//public static final String[] PATTERN = new String[] { "yyyy", "yyyy-MM", "yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH", "yyyy-MM-dd HH:mm", "yyyy-MM-dd HH:mm:ss", "yyyy年MM月dd日", "yyyy年MM月dd日 HH:mm:ss", "yyyyMM", "yyyyMMdd", "yyyy/MM", "yyyy/MM/dd", "yyyy/MM/dd HH:mm:ss" };
 
 
 }

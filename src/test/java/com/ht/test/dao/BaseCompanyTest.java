@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
 import com.ht.halo.hibernate3.HaloMap;
@@ -15,7 +13,7 @@ import com.ht.test.entity.BaseCompany;
 import com.ht.utils.junit.BaseDaoTestCase;
 
 public class BaseCompanyTest extends BaseDaoTestCase{
-	private static final Log logger = LogFactory.getLog(BaseCompanyTest.class);
+
 	@Resource
 	private IBaseCompanyDao baseCompanyDao;
 	@Test
@@ -23,10 +21,11 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 	   System.out.println(System.currentTimeMillis());
 		List<BaseCompany> baseCompanies = baseCompanyDao.findListByMap(new HaloMap()
 		.set("code_not", "1")
-		.set("companyId_eq", "4028805e49abcb1d0149abd0585a0000")
+		//.set("companyId_eq", "4028805e49abcb1d0149abd0585a0000")
+		.set("createTime_lt", "2015-01")
 		);
 		 System.out.println(System.currentTimeMillis());
-		logger.info(GsonUtils.getGsonIn().toJson(baseCompanies));
+		System.out.println(GsonUtils.format(GsonUtils.getGsonIn().toJson(baseCompanies)));
 	}
 	@Test
 	public void testFindListByPage() {

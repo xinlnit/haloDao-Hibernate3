@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<halo>
+	<views>
+		<view>
+			select crd.receivableDetailId,crd.houseName from charge_receivable_detail
+			crd
+			where crd.house_id='${houseId}'
+		</view>
+	</views>
+	<hqls>
+		<hql id="aa">
+			houseId =:houseId实收
+		</hql>
+	</hqls>
+	<datas>
+		<data id="aa">
+			wwww都是
+		</data>
+	</datas>
+</halo>  
