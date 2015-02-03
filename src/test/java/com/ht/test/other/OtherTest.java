@@ -1,5 +1,6 @@
 package com.ht.test.other;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,9 @@ public class OtherTest{
 	Integer	value = (Integer) ConvertUtils.convert("13", Integer.class);
 	System.out.println(value);
 	System.out.println(System.currentTimeMillis());
-		//int i =    .asInt("123");
+	System.out.println("四舍五入取整:(2.5)=" + new BigDecimal("2.5").setScale(0, BigDecimal.ROUND_HALF_UP)); 
+
+	//int i =    .asInt("123");
 	}
 	@Test
 	public void testHqlToSql() {
