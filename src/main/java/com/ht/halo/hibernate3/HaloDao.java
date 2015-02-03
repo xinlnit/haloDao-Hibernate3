@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.hibernate.EntityMode;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -37,6 +36,7 @@ import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.HqlWithParameter;
 import com.ht.halo.hibernate3.map.MyHashMap;
 import com.ht.halo.hibernate3.map.MyLinkedHashMap;
+import com.ht.halo.hibernate3.utils.ConvertUtils;
 import com.ht.halo.hibernate3.utils.DateUtils;
 import com.ht.halo.hibernate3.utils.MyUUID;
 import com.ht.halo.hibernate3.utils.StringUtils;
@@ -631,41 +631,44 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		String valueType = StringUtils.substringAfterLast(value.getClass().getName(), ".");
 		if (!valueType.equalsIgnoreCase(type)) {
 			if ("string".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, String.class);
+				value = ConvertUtils.toString(value);
 				return value;
 			}
 			if ("integer".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Double.class);
-				value = ConvertUtils.convert(value, Integer.class);
+				value = ConvertUtils.toInteger(value);
 				return value;
 			}
 			if ("long".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Double.class);
-				value = ConvertUtils.convert(value, Long.class);
+				value = ConvertUtils.toLong(value);
 				return value;
 			}
 			if ("boolean".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Boolean.class);
+				value = ConvertUtils.toBoolean(value);
 				return value;
 			}
 			if ("double".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Double.class);
+				value = ConvertUtils.toDouble(value);
 				return value;
 			}
 			if ("float".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Float.class);
+				value = ConvertUtils.toFloat(value);
 				return value;
 			}
 			if ("short".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Double.class);
-				value = ConvertUtils.convert(value, Short.class);
+				value = ConvertUtils.toShort(value);
 				return value;
 			}
 			if ("byte".equalsIgnoreCase(type)) {
-				value = ConvertUtils.convert(value, Byte.class);
+				value = ConvertUtils.toByte(value);
 				return value;
 			}
 			if ("timestamp".equalsIgnoreCase(type) || "datetime".equalsIgnoreCase(type) || "date".equalsIgnoreCase(type)) {
+				if(value instanceof Integer){
+					value=ConvertUtils.toString(value);
+				}
+				if(value instanceof Long){
+					value=ConvertUtils.toString(value);
+				}
 				if (value instanceof String) {
 					value = getDate(columnWithCondition);
 				}
@@ -673,7 +676,7 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 			}
 			if ("big_decimal".equalsIgnoreCase(type) || "bigDecimal".equalsIgnoreCase(type)) {
 				if (!(value instanceof BigDecimal)) {
-					value = ConvertUtils.convert(value, BigDecimal.class);
+					value = ConvertUtils.toBigDecimal(value);
 				}
 				return value;
 			}
