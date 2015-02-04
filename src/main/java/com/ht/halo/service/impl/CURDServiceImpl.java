@@ -26,23 +26,41 @@ public abstract class CURDServiceImpl<T, PK extends Serializable> extends Base i
 	public void initSave(T entity) {
 	}
 
-	public  final void save(T entity) {
+	public  final int save(T entity) {
 		initSave(entity);
-		getDao().save(entity);
+		try {
+			getDao().save(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		return 1;
 	}
 
 	public  void initUpdate(T entity) {
 	}
-	public final void update(T entity) {
+	public final int update(T entity) {
 		initUpdate(entity);
-		getDao().update(entity);
+		try {
+			getDao().update(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		return 1;
 	}
 
 	public  void initUpdateNotNull(T entity) {
 	}
-	public final void updateNotNull(T entity) {
+	public final int updateNotNull(T entity) {
 		initUpdate(entity);
-		getDao().updateWithNotNull(entity);
+		try {
+			getDao().updateWithNotNull(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+		return 1;
 	}
 
 	public final int updateNotNullByHql(T entity, HaloMap parameter) {

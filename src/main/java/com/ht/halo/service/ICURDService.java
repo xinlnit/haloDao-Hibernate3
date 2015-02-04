@@ -8,9 +8,9 @@ import com.ht.halo.hibernate3.base.Page;
 
 public interface ICURDService <T, PK extends Serializable>{
 	
-	    public void save(T entity);
-	    public void update(T entity);
-	    public void updateNotNull(T entity);
+	    public int save(T entity);
+	    public int update(T entity);
+	    public int updateNotNull(T entity);
 	    public int updateNotNullByHql(T entity, HaloMap parameter);
 	    /**
 	     *  TODO 1 成功删除 0:失败
