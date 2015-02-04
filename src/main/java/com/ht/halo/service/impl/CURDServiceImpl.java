@@ -15,6 +15,11 @@ import com.ht.halo.service.ICURDService;
 @Transactional
 public abstract class CURDServiceImpl<T, PK extends Serializable> extends Base implements ICURDService<T, PK> {
 	public abstract IHaloDao<T, PK> getDao();//
+	/**
+	 *  TODO 创建对象
+	 * @return
+	 */
+	public abstract T  create();
 /*	 private void init(HaloMap parameter){
 		  if(null!=parameter.get(HaloMap.ADDMETHOD)){
 			  String method=(String) parameter.get(HaloMap.ADDMETHOD);
@@ -93,10 +98,35 @@ public abstract class CURDServiceImpl<T, PK extends Serializable> extends Base i
 	}
 
 	public final T findById(PK id) {
-		return getDao().findById(id);
+		if(null==id){
+			return create();
+		}
+		if(id instanceof String){
+			String idStr =String.valueOf(id);
+			if(StringUtils.isBlank(idStr)){
+				return create();
+			}
+		}
+		T  entity =create();
+		try {
+			entity = getDao().findById(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return create();
+		}
+		return entity;
 	}
 
 	public final T checkById(PK id) {
+		if(null==id){
+			return create();
+		}
+		if(id instanceof String){
+			String idStr =String.valueOf(id);
+			if(StringUtils.isBlank(idStr)){
+				return create();
+			}
+		}
 		return getDao().checkById(id);
 	}
 	public final T  findFirstByMap(HaloMap parameter) {		

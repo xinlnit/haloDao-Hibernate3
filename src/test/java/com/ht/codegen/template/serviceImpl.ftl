@@ -24,4 +24,8 @@ public class ${bean.entityName!}ServiceImpl extends [#if bean.entityType!="view"
 	public IHaloDao<${bean.entityName!}, ${bean.idType}> getDao() {
 		return ${bean.entityName!?uncap_first}Dao;
 	}
+	@Override
+	public ${bean.entityName!} create() {
+		return new ${bean.entityName!}();
+	}
 }

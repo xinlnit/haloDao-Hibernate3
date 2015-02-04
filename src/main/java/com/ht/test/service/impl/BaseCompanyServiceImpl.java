@@ -28,6 +28,10 @@ public class BaseCompanyServiceImpl extends CURDServiceImpl<BaseCompany, String>
 	public void  findListTest(HaloMap parameter){
 		parameter.addOrder("createTime_desc");
 	}
+	@Override
+	public BaseCompany create() {
+		return new BaseCompany();
+	}
 
  
 }

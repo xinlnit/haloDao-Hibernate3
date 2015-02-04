@@ -1227,7 +1227,7 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 			}
 			Object value = MyBeanUtils.getSimpleProperty(entity, propName);
 			if (null != value) {
-				parameter.put(propName + MYSPACE + PRM, value);
+				parameter.put(propName + MYSPACE + PRM+MYSPACE+RX, value);
 				updateHql.append(String.format(" %s=:%s ,", propName, propName));
 			}
 		}
@@ -1265,6 +1265,7 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 			return -1;
 		}
 		HaloMap hqlPrmMap = hqlWithParameter.getParamterMap();
+		
 		Query query = createQuery(hql, hqlPrmMap);
 		return query.executeUpdate();
 	}

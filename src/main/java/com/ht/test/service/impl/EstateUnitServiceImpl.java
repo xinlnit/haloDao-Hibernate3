@@ -16,4 +16,9 @@ public class EstateUnitServiceImpl extends CURDServiceImpl<EstateUnit, String> i
 	public IHaloDao<EstateUnit, String> getDao() {
 		return estateUnitDao;
 	}
+	@Override
+	public EstateUnit create() {
+		// TODO Auto-generated method stub
+		return new EstateUnit();
+	}
 }    
