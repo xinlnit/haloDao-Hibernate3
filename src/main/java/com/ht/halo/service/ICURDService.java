@@ -12,8 +12,13 @@ public interface ICURDService <T, PK extends Serializable>{
 	    public void update(T entity);
 	    public void updateNotNull(T entity);
 	    public int updateNotNullByHql(T entity, HaloMap parameter);
-	    public void deleteById(PK id);
-	    public void delete(T entity);
+	    /**
+	     *  TODO 1 成功删除 0:失败
+	     * @param id
+	     * @return
+	     */
+	    public int deleteById(PK id);
+	    public int delete(T entity);
 		public int deleteByMap(HaloMap parameter);
 	    public T findById(PK id);
 	    public T checkById(PK id);

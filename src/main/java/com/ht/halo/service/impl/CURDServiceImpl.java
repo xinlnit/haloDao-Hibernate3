@@ -9,6 +9,7 @@ import com.ht.halo.base.Base;
 import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.hibernate3.HaloMap;
 import com.ht.halo.hibernate3.base.Page;
+import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.service.ICURDService;
 
 @Transactional
@@ -48,11 +49,25 @@ public abstract class CURDServiceImpl<T, PK extends Serializable> extends Base i
 		return getDao().updateWithNotNullByHql(entity);
 	}
 
-	public final void deleteById(PK id) {
+	public final int deleteById(PK id) {
+		if(null==id){
+			return 0;
+		}
+		if(id instanceof String){
+			String idStr =String.valueOf(id);
+			if(StringUtils.isBlank(idStr)){
+				return 0;
+			}
+		}
 		getDao().deleteById(id);
+		return 1;
 	}
-	public  final void delete(T entity) {
+	public  final int delete(T entity) {
+		if(null==entity){
+			return 0;
+		}
 		getDao().delete(entity);
+		return 1;
 	}
 
 	public final int deleteByMap(HaloMap parameter) {
