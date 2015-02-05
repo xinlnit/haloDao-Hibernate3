@@ -20,8 +20,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 	private static final String ENCODING = "UTF-8";
 
 	private static String getFilePath(String packageName, String name) {
-		String path = packageName.replaceAll("\\.", "/");
-		return  path + "/" + name;//"/" +
+		String path = packageName.replaceAll("\\.", File.separator);
+		return  path + File.separator + name;//"/" +
 	}
 
 	public static File getClassPath(String packageName, String name) {

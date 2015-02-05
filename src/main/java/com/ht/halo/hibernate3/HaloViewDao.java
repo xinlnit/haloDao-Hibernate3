@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.ConvertUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -19,6 +17,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ht.halo.annotations.Halo;
+import com.ht.halo.base.HaloViewBase;
 import com.ht.halo.dao.IHaloViewDao;
 import com.ht.halo.hibernate3.base.Assert;
 import com.ht.halo.hibernate3.base.ColumnToBean;
@@ -42,13 +41,8 @@ import com.ht.halo.hibernate3.utils.xml.XmlUtils;
  * @date 2015-1-21 下午8:04:14
  * @param <T>
  */
-public class HaloViewDao<T> implements IHaloViewDao<T>{
-	private static final Log logger = LogFactory.getLog(HaloViewDao.class);
-	private static final String SPACE = "\u0020";
-	private static final char SPACECHAR = '\u0020';
-	public static final String DATA = "data";// haloView中的模板数据
-	public static final String VIEWID = "viewId";
-	private static final String HALO= "Halo";
+public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
+
 	
 	protected SessionFactory sessionFactory;
 
@@ -583,6 +577,11 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 
 	public SqlWithParameter createMySqlQuery( HaloMap parameter) {
 		String viewAs =this.entityType.getSimpleName();
+		if (this.entityType.getName().equals("com.ht.halo.hibernate3.HaloViewMap")) {
+			if(null!=parameter.get(ADDXML)){
+				viewAs=String.valueOf(parameter.get(ADDXML));
+			}
+		}
 		SqlWithParameter sqlWithParamter = new SqlWithParameter();
 		StringBuffer sql = new StringBuffer();
 		StringBuffer sqlSelect = new StringBuffer();
@@ -598,7 +597,7 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		for (Entry<String, ?> entry : parameter.entrySet()) {
 			String key = filterValue(entry.getKey());
 			Object value = entry.getValue();
-			if(key.equals(VIEWID)){
+			if(key.equals(ADDVIEW)){
 				    // 子视图???
 				viewAs=viewAs+HaloDao.MYSPACE+value;//比如HaloUser_a
 				continue;
@@ -854,7 +853,7 @@ public class HaloViewDao<T> implements IHaloViewDao<T>{
 		return q;
 	}
 	@SuppressWarnings("unchecked")
-	public Page<T> findPageByHaloView( Page<T> page, HaloMap parameter) {
+	public Page<T> findPageByHaloView(Page<T> page, HaloMap parameter) {
 		notNull(page, "page");
 		SqlWithParameter sqlWithParameter = createMySqlQuery( parameter);
 		String sql = sqlWithParameter.getSql();

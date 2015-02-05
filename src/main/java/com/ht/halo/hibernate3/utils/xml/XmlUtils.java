@@ -11,11 +11,12 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.ht.halo.base.Base;
 import com.ht.halo.hibernate3.map.HashMap;
 import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 
-public class XmlUtils {
+public class XmlUtils extends Base{
 	private static String HQLS="hqls";
 	private static String HQL="hql";
 	private static String VIEWS="views";
@@ -32,6 +33,7 @@ public class XmlUtils {
 
 	public XmlUtils(File xml){
 		long lastModifiedTime=xml.lastModified();
+		logger.debug("xml位置:"+xml.getPath());
     	if(lastModifiedTime!=0){
     	String md5File=xml.getPath();	//MD5Util.getMD5(xml.getPath());
     	if(null!=fileTimeMap.get(md5File)){

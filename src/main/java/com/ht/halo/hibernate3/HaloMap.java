@@ -19,6 +19,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	private int addOrder = 0;
 	private int addGroup = 0;
 	private int addHql = 0;
+
 	//public static final String  ADDMETHOD="addMethod";
 	public HaloMap() {
 	}
@@ -104,8 +105,13 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		}
 		return this;
 	}
-	public HaloMap addViewId(String  value) {
-		this.set(HaloViewDao.VIEWID, value);
+	/**
+	 *  TODO 添加子视图ID
+	 * @param value
+	 * @return
+	 */
+	public HaloMap addView(String  value) {
+		this.set(HaloViewDao.ADDVIEW, value);
 		return this;
 	}
 	public HaloMap addColumn(String... columnNames) {

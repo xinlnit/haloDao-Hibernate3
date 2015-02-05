@@ -15,7 +15,7 @@ public class HaloTestDaoTest extends BaseDaoTestCase{
 	@Resource
 	private HaloTestDao haloTestDao;
 	@Test
-	public void testQueryListByMap() {
+	public void testFindListByMap() {
 	List<HaloTest> haloTests=	haloTestDao.findListByHaloView(new HaloMap()
 	.set("houseId_data", "ab").set("houseName_like", "6")
 	.set("houseName_eq", "6")
