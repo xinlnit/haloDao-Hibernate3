@@ -2,9 +2,6 @@ package com.ht.codegen.entity;
 
 import java.util.Date;
 
-import com.ht.halo.annotations.Halo;
-
-@Halo(position="codegen")
 public class HaloViewTable {
 
 	private String tableId;

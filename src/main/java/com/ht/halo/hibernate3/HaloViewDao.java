@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.ConvertUtils;
@@ -16,7 +17,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ht.halo.annotations.Halo;
 import com.ht.halo.base.HaloViewBase;
 import com.ht.halo.dao.IHaloViewDao;
 import com.ht.halo.hibernate3.base.Assert;
@@ -28,7 +28,7 @@ import com.ht.halo.hibernate3.bean.ColumnWithCondition;
 import com.ht.halo.hibernate3.bean.SqlWithParameter;
 import com.ht.halo.hibernate3.map.MyHashMap;
 import com.ht.halo.hibernate3.utils.DateUtils;
-import com.ht.halo.hibernate3.utils.MyUUID;
+import com.ht.halo.hibernate3.utils.HaloUtils;
 import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 import com.ht.halo.hibernate3.utils.tpl.ITplUtils;
@@ -156,14 +156,14 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
 
 	private String getDataSnippet(String dataId) {
 		String entityName = this.entityType.getSimpleName();
-		File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH + getPosition(), entityName + ".xml");
+		File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH + getPosition(entityName), entityName + ".xml");
 		XmlUtils xmlUtils = new XmlUtils(xmlPath);
 		String data = xmlUtils.getData(dataId);
 		return data;
 	}
 	private String getHqlSnippet(String value) {
 		String entityName = this.entityType.getSimpleName();
-		File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH + getPosition(), entityName + ".xml");
+		File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH + getPosition(entityName), entityName + ".xml");
 		XmlUtils xmlUtils = new XmlUtils(xmlPath);
 		String hql = xmlUtils.getHql(value);
 		return hql;
@@ -499,51 +499,12 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
 
 		return value;
 	}
-
-	private static HaloMap getHqlSnippetMap(String hqlSnippet, Object value) {
-		Object[] newValue = null;
-		if (value instanceof Object[]) {
-			newValue = (Object[]) value;
-		} else {
-			newValue = new Object[] { value };
-		}
-		HaloMap map = new HaloMap();
-		StringBuffer sb = new StringBuffer();
-		boolean flag = false;
-		int j = 0;
-		for (int i = 0; i < hqlSnippet.length(); i++) {
-			char cur = hqlSnippet.charAt(i);
-			if (!Character.isLetter(cur)) {
-				if (flag) {
-					map.put(sb.toString(), newValue[j]);
-					sb = new StringBuffer();
-					j++;
-				}
-				flag = false;
-			}
-			if (flag) {
-				sb.append(cur);
-			}
-			if (cur == ':') {
-				flag = true;
-			}
-			if (cur == '?') {
-				map.put(MyUUID.create(), newValue[j]);
-				sb = new StringBuffer();
-				j++;
-			}
-		}
-		return map;
-	}
-
-
-
 	private String getViewSql(String viewAs, MyHashMap tplMap) {
 		if(viewAs.startsWith(HALO)){
 			String[] viewAss=viewAs.split(HaloDao.MYSPACE);
 			String fileName=viewAss[0];
 			String id=null;
-			File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH +  getPosition(), fileName + ".xml");
+			File xmlPath = FileUtils.getClassPath(HaloDao.HALOPACH +  getPosition(fileName), fileName + ".xml");
 			XmlUtils xmlUtils = new XmlUtils(xmlPath);
 			if(viewAss.length>1){
 				id=viewAss[1];
@@ -646,10 +607,12 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
 			if (columnWithCondition.getCondition().equals(HaloDao.HQL)) {
 				String hqlKey = columnWithCondition.getColumnName();
 				String hqlValue = getHqlSnippet(hqlKey);
-				HaloMap map = getHqlSnippetMap(hqlValue, value);
-				sqlPrmMap.putAll(map);
+				Map<String,Object> map = HaloUtils.getHqlSnippetMap(hqlValue, value);
+				logger.debug(map);
+				sqlPrmMap.setAll(map);
 				hqlValue = TableUtil.toSql(hqlValue);
-				sql.append(String.format(" and (%s) ", hqlValue));
+				sql.append(String.format(" %s (%s) ", link,hqlValue));
+				link="and";
 				continue;// 添加参数
 			}
 			if (columnWithCondition.getCondition().equals(DATA)) {
@@ -777,12 +740,9 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
         }
 		return query.list();
 	}
-	private String getPosition() {
-		Halo halo = this.entityType.getAnnotation(Halo.class);
-		if (null != halo && StringUtils.isNotBlank(halo.position())) {
-			return "."+halo.position();
-		}
-		return "";
+	private String getPosition(String fileName) {
+		
+		return HaloViewDao.xmlMap.get(fileName);
 	}
 	
 	private SQLQuery CreateSqlQueryByHaloView(HaloMap parameter){

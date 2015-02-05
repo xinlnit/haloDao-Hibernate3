@@ -4,7 +4,7 @@ import com.ht.test.entity.EstateUnit;
 /**
  * 单元Dao
  * @author fengchangyi@haitao-tech.com
- * @date 2015年01月29日 17:11:54 
+ * @date 2015年02月05日 17:21:57 
  */
 public interface IEstateUnitDao extends IHaloDao<EstateUnit, String>{
  

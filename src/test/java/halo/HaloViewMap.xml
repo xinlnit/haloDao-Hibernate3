@@ -8,7 +8,7 @@
     </views>
 	<hqls>
 		<hql id="aa">
-			houseId =:houseId实收
+			houseName like :houseName
 		</hql>
 	</hqls>
       	<datas>

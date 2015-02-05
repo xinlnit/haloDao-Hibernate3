@@ -20,12 +20,15 @@ public class ${bean.entityName!}ServiceImpl extends [#if bean.entityType!="view"
 		entity.setCreateTime(new  Date());
 	}
 	[/#if]
-	@Override
+
 	public IHaloDao<${bean.entityName!}, ${bean.idType}> getDao() {
 		return ${bean.entityName!?uncap_first}Dao;
 	}
-	@Override
+
 	public ${bean.entityName!} create() {
 		return new ${bean.entityName!}();
+	}
+	public ${bean.idType} getId(${bean.entityName!} entity) {
+		return entity.get${bean.idName!?cap_first}();
 	}
 }

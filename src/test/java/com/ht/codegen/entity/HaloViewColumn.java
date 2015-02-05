@@ -1,8 +1,7 @@
 package com.ht.codegen.entity;
 
-import com.ht.halo.annotations.Halo;
 
-@Halo(position="codegen")
+
 public class HaloViewColumn {
     private String columnId;
 	 private String tableId;

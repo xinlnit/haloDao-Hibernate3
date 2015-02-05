@@ -23,7 +23,6 @@ import org.hibernate.type.EntityType;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ht.halo.annotations.Halo;
 import com.ht.halo.base.HaloBase;
 import com.ht.halo.dao.IHaloDao;
 import com.ht.halo.hibernate3.base.Assert;
@@ -40,7 +39,7 @@ import com.ht.halo.hibernate3.map.MyHashMap;
 import com.ht.halo.hibernate3.map.MyLinkedHashMap;
 import com.ht.halo.hibernate3.utils.ConvertUtils;
 import com.ht.halo.hibernate3.utils.DateUtils;
-import com.ht.halo.hibernate3.utils.MyUUID;
+import com.ht.halo.hibernate3.utils.HaloUtils;
 import com.ht.halo.hibernate3.utils.StringUtils;
 import com.ht.halo.hibernate3.utils.file.FileUtils;
 import com.ht.halo.hibernate3.utils.tpl.ITplUtils;
@@ -711,43 +710,6 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		return getHql(value, null);
 	}
 
-	private static HaloMap getHqlSnippetMap(String hqlSnippet, Object value) {
-		Object[] newValue = null;
-		if (value instanceof Object[]) {
-			newValue = (Object[]) value;
-		} else {
-			newValue = new Object[] { value };
-		}
-		HaloMap map = new HaloMap();
-		StringBuffer sb = new StringBuffer();
-		boolean flag = false;
-		int j = 0;
-		for (int i = 0; i < hqlSnippet.length(); i++) {
-			char cur = hqlSnippet.charAt(i);
-			if (!Character.isLetter(cur)) {
-				if (flag) {
-					map.put(sb.toString(), newValue[j]);
-					sb = new StringBuffer();
-					j++;
-				}
-				flag = false;
-			}
-			if (flag) {
-				sb.append(cur);
-			}
-			if (cur == ':') {
-				flag = true;
-			}
-			if (cur == '?') {
-				map.put(MyUUID.create(), newValue[j]);
-				sb = new StringBuffer();
-				j++;
-			}
-		}
-		return map;
-
-	}
-
 	public HqlWithParameter createQueryHql(HaloMap parameter) {
 		return createQueryHql(parameter, null);
 	}
@@ -829,8 +791,8 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 					String hqlKey = columnWithCondition.getColumnName();
 					String hqlValue = getHqlSnippet(hqlKey);
 					hql.append(String.format(" and (%s) ", hqlValue));
-					HaloMap map = getHqlSnippetMap(hqlValue, value);
-					hqlPrmMap.putAll(map);
+					Map<String,Object> map = HaloUtils.getHqlSnippetMap(hqlValue, value);
+					hqlPrmMap.setAll(map);
 					continue;// 添加参数
 				}
 				if (columnWithCondition.getIfQuery()) {// 查询该字段
@@ -1283,19 +1245,15 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 		return updateWithNotNullByHql(entity, new HaloMap());
 	}
 
-	private String getPosition() {
-		Halo halo = this.entityType.getAnnotation(Halo.class);
-		if (null != halo && StringUtils.isNotBlank(halo.position())) {
-			return "." + halo.position();
-		}
-		return "";
+	private String getPosition(String fileName) {
+		return HaloViewDao.xmlMap.get(fileName);
 	}
 
 	// hql------------------------------------------------------
 
 	private String getHql(String id, MyHashMap tplMap) {
 		String entityName = this.entityType.getSimpleName();
-		File xmlPath = FileUtils.getClassPath(HALOPACH + getPosition(), entityName + ".xml");
+		File xmlPath = FileUtils.getClassPath(HALOPACH + getPosition(entityName), entityName + ".xml");
 		XmlUtils xmlUtils = new XmlUtils(xmlPath);
 		String hql = xmlUtils.getHql(id);
 		if (null != tplMap) {
@@ -1365,7 +1323,7 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	// sql------------------------------------------------------
 	private String getSql(String id, MyHashMap tplMap) {
 		String entityName = this.entityType.getSimpleName();
-		File xmlPath = FileUtils.getClassPath(HALOPACH + getPosition(), entityName + ".xml");
+		File xmlPath = FileUtils.getClassPath(HALOPACH + getPosition(entityName), entityName + ".xml");
 		XmlUtils xmlUtils = new XmlUtils(xmlPath);
 		String sql = xmlUtils.getSql(id);
 		if (null != tplMap) {

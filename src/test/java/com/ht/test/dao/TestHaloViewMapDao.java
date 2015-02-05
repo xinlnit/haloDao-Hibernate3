@@ -17,11 +17,13 @@ public class TestHaloViewMapDao extends BaseDaoTestCase{
 	@Test
 	public void testFindListByMap() {
 		List<HaloViewMap> haloTests=	haloViewMapDao.findListByHaloView(new HaloMap()
-		.set("houseId_data", "ab").set("houseName_like", "6")
-		.set("houseName_eq", "6")
+		 .set("houseId_data", "ab")
+		//.set("houseName_like", "6")
+		//.set("", value)
+		.set("aa_hql", "6"+"%")
 		.addOrder("houseName_desc")
 		);
-		 System.out.println(GsonUtils.getGsonIn().toJson(haloTests));
+		 System.out.println(GsonUtils.format(GsonUtils.getGsonIn().toJson(haloTests)));
 	}
 	
 }

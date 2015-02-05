@@ -13,7 +13,7 @@ import org.hibernate.annotations.GenericGenerator;
 /**
  *  单元
  * @author fengchangyi@haitao-tech.com
- * @date 2015年01月29日 17:11:54 
+ * @date 2015年02月05日 17:21:57 
  */
 @Entity
 @Table(name = "estate_unit")
