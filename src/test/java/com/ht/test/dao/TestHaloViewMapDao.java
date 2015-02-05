@@ -18,6 +18,7 @@ public class TestHaloViewMapDao extends BaseDaoTestCase{
 	public void testFindListByMap() {
 		List<HaloViewMap> haloTests=	haloViewMapDao.findListByHaloView(new HaloMap()
 		 .set("houseId_data", "ab")
+		 .ADDXML("HaloTest")
 		//.set("houseName_like", "6")
 		//.set("", value)
 		.set("aa_hql", "6"+"%")

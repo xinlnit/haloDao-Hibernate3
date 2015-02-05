@@ -110,8 +110,12 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	 * @param value
 	 * @return
 	 */
-	public HaloMap addView(String  value) {
-		this.set(HaloViewDao.ADDVIEW, value);
+	public HaloMap addView(String  viewId) {
+		this.set(HaloViewDao.ADDVIEW, viewId);
+		return this;
+	}
+	public HaloMap ADDXML(String  xmlName) {
+		this.set(HaloViewDao.ADDXML, xmlName);
 		return this;
 	}
 	public HaloMap addColumn(String... columnNames) {
