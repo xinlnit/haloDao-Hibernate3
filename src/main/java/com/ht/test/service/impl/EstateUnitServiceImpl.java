@@ -21,4 +21,9 @@ public class EstateUnitServiceImpl extends CURDServiceImpl<EstateUnit, String> i
 		// TODO Auto-generated method stub
 		return new EstateUnit();
 	}
+	@Override
+	public String getId(EstateUnit entity) {
+		// TODO Auto-generated method stub
+		return entity.getUnitId();
+	}
 }    

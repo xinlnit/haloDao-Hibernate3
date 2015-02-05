@@ -32,6 +32,11 @@ public class BaseCompanyServiceImpl extends CURDServiceImpl<BaseCompany, String>
 	public BaseCompany create() {
 		return new BaseCompany();
 	}
+	@Override
+	public String getId(BaseCompany entity) {
+		// TODO Auto-generated method stub
+		return entity.getCompanyId();
+	}
 
  
 }

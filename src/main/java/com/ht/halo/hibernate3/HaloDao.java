@@ -1,5 +1,7 @@
 package com.ht.halo.hibernate3;
 
+import static org.hibernate.EntityMode.POJO;
+
 import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -1170,11 +1172,12 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	 * @param updater
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	private T updateByUpdater(Updater<T> updater) {
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		T bean = updater.getBean();
-		T po = (T) getSession().get(this.entityType, cm.getIdentifier(bean, (SessionImplementor) this.getSession()));
+		T po = (T) getSession().get(this.entityType, cm.getIdentifier(bean, POJO));
+		//T po = (T) getSession().get(this.entityType, cm.getIdentifier(bean, (SessionImplementor) this.getSession()));
 		updaterCopyToPersistentObject(updater, po, cm);
 		return po;
 	}
