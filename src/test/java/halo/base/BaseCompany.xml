@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<halo>
+  
+	<hqls>
+		<hql id="aa">
+			houseId =:houseId实收
+		</hql>
+		<hql id="ab">
+		   fullName like :fullName
+		</hql>
+	</hqls>
+      	<datas>
+		<data id="aa">
+		   wwww都是
+		</data>
+		<data id="ab">
+		   4028813a47f2772c0147f2780578056a
+		</data>
+	</datas>
+</halo>  

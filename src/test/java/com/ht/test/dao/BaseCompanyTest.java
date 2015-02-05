@@ -21,7 +21,8 @@ public class BaseCompanyTest extends BaseDaoTestCase{
 	   System.out.println(System.currentTimeMillis());
 		List<BaseCompany> baseCompanies = baseCompanyDao.findListByMap(new HaloMap()
 		.set("code_not", 1)
-		.set("state_eq", "3.0")
+		//.set("state_eq", "3.0")
+		.set("ab_hql", "海"+"%")
 		//.set("companyId_eq", "4028805e49abcb1d0149abd0585a0000")
 		.set("createTime_lt", "2015-01")
 		);

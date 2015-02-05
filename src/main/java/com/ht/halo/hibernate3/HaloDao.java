@@ -790,7 +790,8 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 				if (columnWithCondition.getCondition().equals(HQL)) {
 					String hqlKey = columnWithCondition.getColumnName();
 					String hqlValue = getHqlSnippet(hqlKey);
-					hql.append(String.format(" and (%s) ", hqlValue));
+					hql.append(String.format(" %s (%s) ",link, hqlValue));
+					link="and";
 					Map<String,Object> map = HaloUtils.getHqlSnippetMap(hqlValue, value);
 					hqlPrmMap.setAll(map);
 					continue;// 添加参数
