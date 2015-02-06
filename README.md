@@ -72,7 +72,7 @@ haloDao
            findPageByMap(new HaloMap().sets("aa","von"+"%","123@ww.com").set("userName_prm":"von"+"%");
            在 halo包下同名实体的xml中的hql定义id为aa的  写入 userName like :userName and email =:email
             (注:起个名很费脑啊!直接id为aa到zz,简单暴力)
-            ---或者在实体加入halo注释标明位置比如halo(postion="user") 则xml需要放入halo.user包下
+            ---注:同名xml文件可以放到halo包下任意子包下 但不允许重名!
 ###日期可传字符
         new HaloMap().set(createDate_ge,'2012-11').set(createDate_ge,'2012年11月12日'))
         支持的格式可以统一在halo.config包下的hao.xml中配置
