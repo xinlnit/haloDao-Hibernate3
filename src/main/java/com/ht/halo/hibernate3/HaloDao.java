@@ -873,6 +873,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByMap(HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		Integer begin = 0;
 		Integer end = null;
 		if (null != parameter.get(ADDBEGIN)) {
@@ -914,6 +917,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	 */
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findListByMap(HaloMap parameter, int begin, int end) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(begin);
 		query.setMaxResults(end - begin);
@@ -939,6 +945,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	 */
 	@SuppressWarnings({ "unchecked" })
 	public T findFirstByMap(HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		Query query = createMyQuery(parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -993,6 +1002,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	 */
 	@SuppressWarnings("unchecked")
 	public Page<T> findPageByMap(Page<T> page, HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		notNull(page, "page");
 		HqlWithParameter hqlWithParameter = createQueryHql(parameter);
 		String hql = hqlWithParameter.getHql();
@@ -1104,6 +1116,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	 * @return 返回行数 失败返回-1
 	 */
 	public int deleteByMap(HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		ClassMetadata cm = sessionFactory.getClassMetadata(this.entityType);
 		String entityName = cm.getEntityName();
 		String selectHql = String.format("delete %s ", entityName);
@@ -1218,6 +1233,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	 * @return 更新条数
 	 */
 	public int updateWithNotNullByHql(T entity, HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		HaloMap newParameter = new HaloMap();
 		String updateHql = getUpdateHql(entity, newParameter);
 		if (null == updateHql) {
@@ -1282,6 +1300,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findByHql(String id, MyHashMap tplMap, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		Integer begin = 0;
 		Integer end = null;
 		if (null != parameter.get(ADDBEGIN)) {
@@ -1306,6 +1327,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 
 	@SuppressWarnings("unchecked")
 	public Page<T> findPageByHql(Page<T> page, String id, MyHashMap tplMap, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		notNull(page, "page");
 		String hql = getHql(id, tplMap);
 		Query q = createQuery(hql, parameter);
@@ -1352,6 +1376,9 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 
 	@SuppressWarnings("unchecked")
 	public T findFirstBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		SQLQuery query = createSQLQueryByXml(id, tplMap, parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -1360,12 +1387,18 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 
 	@SuppressWarnings("unchecked")
 	public T findUniqueBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		SQLQuery query = createSQLQueryByXml(id, tplMap, parameter);
 		return (T) query.uniqueResult();
 	}
 
 	@SuppressWarnings("unchecked")
 	public <X> List<X> findBySql(String id, MyHashMap tplMap, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		Integer begin = 0;
 		Integer end = null;
 		if (null != parameter.get(ADDBEGIN)) {
@@ -1385,11 +1418,17 @@ public class HaloDao<T, PK extends Serializable> extends HaloBase implements IHa
 	}
 
 	public <X> List<X> findBySql(String id, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		return findBySql(id, null, parameter);
 	}
 
 	@SuppressWarnings("unchecked")
 	public Page<T> findPageBySql(Page<T> page, String id, MyHashMap tplMap, MyHashMap parameter) {
+		if(null==parameter){
+			parameter= new MyHashMap();
+		}
 		notNull(page, "page");
 		String sql = getSql(id, tplMap);
 		SQLQuery q = createSQLQuery(sql, parameter);

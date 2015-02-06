@@ -756,6 +756,9 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
 	}
 	@SuppressWarnings("unchecked")
 	public T  findFirstByHaloView(HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		SQLQuery query = CreateSqlQueryByHaloView(parameter);
 		query.setFirstResult(0);
 		query.setMaxResults(1);
@@ -764,6 +767,9 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
 
 	@SuppressWarnings("unchecked")
 	public <X> List<X>   findListByHaloView(HaloMap parameter,int begin,int end) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		SQLQuery query = CreateSqlQueryByHaloView(parameter);
 		query.setFirstResult(begin);
 		query.setMaxResults(end);
@@ -814,6 +820,9 @@ public class HaloViewDao<T> extends HaloViewBase implements IHaloViewDao<T>{
 	}
 	@SuppressWarnings("unchecked")
 	public Page<T> findPageByHaloView(Page<T> page, HaloMap parameter) {
+		if(null==parameter){
+			parameter= new HaloMap();
+		}
 		notNull(page, "page");
 		SqlWithParameter sqlWithParameter = createMySqlQuery( parameter);
 		String sql = sqlWithParameter.getSql();
