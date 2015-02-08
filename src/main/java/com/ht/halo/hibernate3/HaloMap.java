@@ -20,24 +20,25 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	private int addGroup = 0;
 	private int addHql = 0;
 
-	//public static final String  ADDMETHOD="addMethod";
+	// public static final String ADDMETHOD="addMethod";
 	public HaloMap() {
 	}
 
 	public HaloMap(Map<String, Object> map) {
-		if(null==map){
-			map= new HaloMap();
+		if (null == map) {
+			map = new HaloMap();
 		}
-		for (Entry<String, Object> entry:map.entrySet()) {
+		for (Entry<String, Object> entry : map.entrySet()) {
 			this.set(entry.getKey(), entry.getValue());
 		}
-		//super(map);
+		// super(map);
 	}
-	public HaloMap  setAll(Map<String, Object> map) {
-		if(null==map){
-			map= new HaloMap();
+
+	public HaloMap setAll(Map<String, Object> map) {
+		if (null == map) {
+			map = new HaloMap();
 		}
-		for (Entry<String, Object> entry:map.entrySet()) {
+		for (Entry<String, Object> entry : map.entrySet()) {
 			this.set(entry.getKey(), entry.getValue());
 		}
 		return this;
@@ -47,12 +48,18 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	 * 设置数组
 	 * 
 	 * @param key
+	 * 
 	 * @param value
+	 * 
 	 * @return
 	 */
 	public HaloMap sets(String key, Object... value) {
 		Object valueTemp = value;
 		return this.set(key, valueTemp);
+	}
+
+	public HaloMap puts(String key, Object... value) {
+		return this.sets(key, value);
 	}
 
 	public HaloMap set(String key, Object value) {
@@ -84,11 +91,14 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	}
 
 	public HaloMap put(String key, Object value) {
-		throw new RuntimeException("本版本HaloMap不再支持put链式操作,同时也放弃单独put操作,请使用set");
+		// throw new
+		// RuntimeException("本版本HaloMap不再支持put链式操作,同时也放弃单独put操作,请使用set");
+		return this.set(key, value);
 	}
 
 	/**
-	 *  TODO 添加排序(可追加)
+	 * TODO 添加排序(可追加)
+	 * 
 	 * @param orders
 	 * @return
 	 */
@@ -98,25 +108,30 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		}
 		return this;
 	}
+
 	public HaloMap addHql(String... hqls) {
 		for (String hql : hqls) {
 			this.set(HaloDao.ADDHQL, hql);
 		}
 		return this;
 	}
+
 	/**
-	 *  TODO 添加子视图ID
+	 * TODO 添加子视图ID
+	 * 
 	 * @param value
 	 * @return
 	 */
-	public HaloMap addView(String  viewId) {
+	public HaloMap addView(String viewId) {
 		this.set(HaloViewDao.ADDVIEW, viewId);
 		return this;
 	}
-	public HaloMap ADDXML(String  xmlName) {
+
+	public HaloMap ADDXML(String xmlName) {
 		this.set(HaloViewDao.ADDXML, xmlName);
 		return this;
 	}
+
 	public HaloMap addColumn(String... columnNames) {
 		for (String columnName : columnNames) {
 			this.set(HaloDao.ADDCOLUMN, columnName);
@@ -130,24 +145,29 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		}
 		return this;
 	}
+
 	/**
-	 *  TODO 添加开始条数
+	 * TODO 添加开始条数
+	 * 
 	 * @param value
 	 * @return
 	 */
-	public HaloMap addBegin( Object value) {
+	public HaloMap addBegin(Object value) {
 		this.set(HaloDao.ADDBEGIN, value);
 		return this;
 	}
+
 	/**
-	 *  TODO 添加结束条数
+	 * TODO 添加结束条数
+	 * 
 	 * @param value
 	 * @return
 	 */
-	public HaloMap addEnd( Object value) {
+	public HaloMap addEnd(Object value) {
 		this.set(HaloDao.ADDEND, value);
 		return this;
 	}
+
 	/**
 	 * @Title: addParameter
 	 * @Description: TODO key:prm
@@ -156,15 +176,13 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	 * @return
 	 */
 	public HaloMap addParameter(String key, Object value) {
-		this.set(key + HaloDao.MYSPACE+HaloDao.PRM, value);
+		this.set(key + HaloDao.MYSPACE + HaloDao.PRM, value);
 		return this;
 	}
 
 	public HaloMap addData(String key, Object value) {
-		this.set(key +  HaloDao.MYSPACE+HaloViewDao.DATA, value);
+		this.set(key + HaloDao.MYSPACE + HaloViewDao.DATA, value);
 		return this;
 	}
-
-
 
 }
