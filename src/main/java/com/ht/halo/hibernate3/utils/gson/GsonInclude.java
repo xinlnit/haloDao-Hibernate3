@@ -34,6 +34,9 @@ public class GsonInclude  implements ExclusionStrategy{
 		if(field.getDeclaredType().toString().endsWith("Integer")){
 			return false;
 		}
+		if(field.getDeclaredType().toString().endsWith("Long")){
+			return false;
+		}
 		if(field.getDeclaredType().toString().endsWith("Double")){
 			return false;
 		}
