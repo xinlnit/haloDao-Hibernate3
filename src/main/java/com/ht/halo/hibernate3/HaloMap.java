@@ -46,11 +46,8 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 
 	/*
 	 * 设置数组
-	 * 
 	 * @param key
-	 * 
 	 * @param value
-	 * 
 	 * @return
 	 */
 	public HaloMap sets(String key, Object... value) {
