@@ -3,7 +3,11 @@
     <views>
       <view>
       select crd.receivable_detail_id,crd.house_name  from charge_receivable_detail crd
-        where crd.house_id='${houseId}'
+        where crd.house_id='${houseId}' 
+      </view>
+      <view id="a">
+      select crd.receivable_detail_id,crd.house_name  from charge_receivable_detail crd
+        where crd.house_id='${houseId}'  and
       </view>
     </views>
 	<hqls>

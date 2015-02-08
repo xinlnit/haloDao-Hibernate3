@@ -5,6 +5,10 @@
       select crd.receivableDetailId,crd.houseName  from charge_receivable_detail crd
         where crd.house_id='${houseId}'
       </view>
+      <view id="a">
+      select crd.receivableDetailId,crd.houseName  from charge_receivable_detail crd
+        where crd.house_id='${houseId}' and
+      </view>
     </views>
 	<hqls>
 		<hql id="aa">

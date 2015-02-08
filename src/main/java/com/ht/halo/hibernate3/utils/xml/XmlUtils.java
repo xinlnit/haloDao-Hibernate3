@@ -83,18 +83,22 @@ public class XmlUtils extends Base{
 	@SuppressWarnings("unchecked")
 	public String getView(String id){
 		  Element rootElement = document.getRootElement();    
-	        Element hqlsElement= rootElement.element(VIEWS);
-	        if (null==hqlsElement) {
+	        Element viewsElement= rootElement.element(VIEWS);
+	        if (null==viewsElement) {
 				return null;
 			}
-	        List<Element> hqlElements=    hqlsElement.elements(VIEW);
-	        for (Element element : hqlElements) {
+	        List<Element> viewElements=    viewsElement.elements(VIEW);
+	        for (Element element : viewElements) {
 	           Attribute attribute=    element.attribute(ID);
 	           if(null==attribute){
-	        	   return element.getTextTrim();
+	        	   if(null==id){
+	        		   return element.getTextTrim();
+	        	   }
 	           }
-	           if(attribute.getValue().equals(id)){
-	        	   return element.getTextTrim();
+	           if(null!=attribute){
+	        	   if(attribute.getValue().equals(id)){
+		        	   return element.getTextTrim();
+		              }
 	           }
 			}
 			return null;
@@ -169,16 +173,16 @@ public class XmlUtils extends Base{
 			return patterns.toArray(new String[patterns.size()]);
 	}
 	public static void main(String[] args) {
-		System.out.println(System.currentTimeMillis());
+	/*	System.out.println(System.currentTimeMillis());
 		XmlUtils xmlUtils = new XmlUtils(FileUtils.getClassPath("halo", "Test.xml"));
 		System.out.println(xmlUtils.getData("aa"));
 		System.out.println(xmlUtils.getHql("aa"));
 		System.out.println(System.currentTimeMillis());
 		XmlUtils xmlUtils2 = new XmlUtils(FileUtils.getClassPath("halo", "Test.xml"));
 		System.out.println(xmlUtils2.getSql("updateById"));
-		System.out.println(System.currentTimeMillis());
-		XmlUtils xmlUtils3 = new XmlUtils(FileUtils.getClassPath("halo", "Test.xml"));
-		System.out.println(xmlUtils3.getView(null));
+		System.out.println(System.currentTimeMillis());*/
+		XmlUtils xmlUtils3 = new XmlUtils(FileUtils.getClassPath("halo", "HaloTest.xml"));
+		System.out.println(xmlUtils3.getView("a"));
 		System.out.println(System.currentTimeMillis());
 	}
 	
