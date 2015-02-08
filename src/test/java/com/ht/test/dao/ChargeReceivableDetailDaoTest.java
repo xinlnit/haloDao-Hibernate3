@@ -28,7 +28,7 @@ public class ChargeReceivableDetailDaoTest extends BaseDaoTestCase {
 		.set("ratio_notin", "1.0")
 		.set("state_eq", 1)
 		.set("houseName_5like5", "1")
-		.set("periodNum_eq_ck", 0) 
+		.set("periodNum_eq_ck", 0)
 		.addOrder("periodNum_desc")
 		//.set("periodNum", 3)
 		//.addHql("fcy.charge.chargeReceivableDetail.aa")

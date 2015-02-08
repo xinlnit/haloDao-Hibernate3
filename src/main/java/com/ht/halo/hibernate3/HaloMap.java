@@ -43,7 +43,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 		return this;
 	}
 
-	/**
+	/*
 	 * 设置数组
 	 * 
 	 * @param key
@@ -84,8 +84,7 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	}
 
 	public HaloMap put(String key, Object value) {
-		//throw new RuntimeException("本版本HaloMap不再支持put链式操作,同时也放弃单独put操作,请使用set");
-		return this.set(key, value);
+		throw new RuntimeException("本版本HaloMap不再支持put链式操作,同时也放弃单独put操作,请使用set");
 	}
 
 	/**
@@ -167,16 +166,5 @@ public class HaloMap extends LinkedHashMap<String, Object> implements Map<String
 	}
 
 
-	/**
-	 * @Title: put
-	 * @Description: TODO 给Map设置数组 变参数模式
-	 * @author fengchangyi
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public HaloMap put(String key, Object... value) {
-		Object valueTemp = value;
-		return this.set(key, valueTemp);
-	}
+
 }
