@@ -8,16 +8,18 @@ public class GsonSet {
 		return dateFormat;
 	}
 
-	public void setDateFormat(String dateFormat) {
+	public GsonSet setDateFormat(String dateFormat) {
 		this.dateFormat = dateFormat;
+		return this;
 	}
 
 	public Object getHibernateFlag() {
 		return hibernateFlag;
 	}
 
-	public void setHibernateFlag(Object hibernateFlag) {
+	public GsonSet setHibernateFlag(Object hibernateFlag) {
 		this.hibernateFlag = hibernateFlag;
+		return this;
 	}
 
 
