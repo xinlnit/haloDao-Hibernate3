@@ -11,23 +11,21 @@ import com.ht.halo.hibernate3.utils.ConvertUtils;
 import com.ht.halo.hibernate3.utils.gson.bean.GsonHelpBean;
 
 /**
- * @ClassName: HtGson
+ * @ClassName: GsonUtils
  * @Description: TODO
  * @author fengchangyi
  * @date 2014-12-2 下午1:21:11
  */
 public class GsonUtils {
-	private static String DATEFORMAT = "dateFormat";
-	private static String HIBERNATE = "hibernate";
 
 	private static GsonHelpBean getCommonBuilder(Object... parameter) {
 		GsonHelpBean gsonHelpBean = new GsonHelpBean();
 		Object[] parameters = parameter;
-		GsonMap gsonMap = new GsonMap();
+		GsonSet gsonSet = new GsonSet();
 		List<String> filedNameList = new ArrayList<String>();
 		for (Object object : parameters) {
-			if (object instanceof GsonMap) {
-				gsonMap = (GsonMap) object;
+			if (object instanceof GsonSet) {
+				gsonSet = (GsonSet) object;
 			} else {
 				filedNameList.add(String.valueOf(object));
 			}
@@ -35,15 +33,15 @@ public class GsonUtils {
 		String[] fieldNames = filedNameList.toArray(new String[filedNameList.size()]);
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		Boolean hiberanteFlag = true;
-		if (null != gsonMap.get(HIBERNATE)) {
-			hiberanteFlag = ConvertUtils.toBoolean(gsonMap.get(HIBERNATE));
+		if (null != gsonSet.getHibernateFlag()) {
+			hiberanteFlag = ConvertUtils.toBoolean( gsonSet.getHibernateFlag());
 		}
 		if (hiberanteFlag) {
 			gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
 		}
 		String dateFormat = null;
-		if (null != gsonMap.get(DATEFORMAT)) {
-			dateFormat = String.valueOf(gsonMap.get(DATEFORMAT));
+		if (null != gsonSet.getDateFormat()) {
+			dateFormat = String.valueOf(gsonSet.getDateFormat());
 		}
 		if (null != dateFormat) {
 			gsonBuilder.setDateFormat(dateFormat);
