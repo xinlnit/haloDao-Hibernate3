@@ -23,9 +23,7 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		String path = packageName.replaceAll("\\.", "\\"+File.separator);
 		return  path + File.separator + name;//"/" +
 	}
-
 	public static File getClassPath(String packageName, String name) {
-		
 		String path =Thread.currentThread().getContextClassLoader().getResource("").getPath();
 		try {
 			path=URLDecoder.decode(path,ENCODING);

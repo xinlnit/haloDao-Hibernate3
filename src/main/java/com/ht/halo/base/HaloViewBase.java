@@ -36,6 +36,7 @@ public class HaloViewBase  extends Base{
 			if(file.isFile()){
 				String fileName=file.getName();
 				if(fileName.endsWith(".xml")){
+					
 				fileName =StringUtils.substringBeforeLast(fileName, ".xml");
 				String filePath=file.getPath();
 				filePath=StringUtils.substringAfterLast(filePath, File.separator+"halo");

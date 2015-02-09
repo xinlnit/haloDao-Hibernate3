@@ -58,6 +58,12 @@ public class GsonInclude  implements ExclusionStrategy{
 		if(field.getDeclaredType().toString().endsWith("Float")){
 			return false;
 		}
+		if(field.getName().equals(("entities"))){
+			return false;
+		}
+		if(field.getName().equals(("zzzzz"))){
+			return false;
+		}
 		for (String exclusionStr: exclusionSet) {
 		if(field.getName().equals(exclusionStr)){
 			  return false;
