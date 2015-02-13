@@ -171,4 +171,39 @@ updateWithNotNullByHql(new BaseUser().setRole(1),new haloMap().set("userName_lik
 
 > 1.提供泛型Dao和Service接口,使Dao层继承,基本可以或者不用再写到Dao层代码,并且基本Service层的CRUD也可以免掉!
 > 2.同时配合代码生成,基本只要关心逻辑就可以了!
+
 ##面向sql动态视图的构思及其实现
+ &emsp;&emsp;简单的说他的理念是:
+ - **你可以再该sql视图基础上,再继续进行,全自动多条件动态查询.**
+&emsp;&emsp;并且:
+
+> 支持传入占位符参数.
+> 支持视图内动态拼接.使用freemarker轻松实现该功能.
+> 视图依赖和重用.支持视图了内直接引用某视图,也就是要支持子视图.(还未实现);
+
+```
+	List<HaloTest> haloTests=	haloTestDao.findListByHaloView(new HaloMap().set("state_prm", 1).set("houseId_data", "ab").set("houseName_like", "6").addView("a").addOrder("houseName_desc")); System.out.println(GsonUtils.getGsonIn().toJson(haloTests));
+	 /**
+	 对应实体HaloTest,sql视图放在xml中views/view/id='a'中,
+	 freemarker数据是在datas/data/id="ab"中,参数状态为1,在改结果集基础上,查询房间名有模糊6的并且按房间名倒序排序的结果集
+	 */
+	  //其中sql为:
+	 	  select crd.receivable_detail_id,crd.house_name  from charge_receivable_detail crd
+        where crd.house_id='${houseId}' and state=:state
+ 
+```
+ &emsp;&emsp;同时提供了封装到Map对象的方法,不过这个Map叫HaloViewMap,提供了getInteger等方法,方便将结果类型转换成你想要的.
+ 
+
+```
+	List<HaloViewMap> haloTests=	haloViewMapDao.findListByHaloView(new HaloMap()
+		 .set("houseId_data", "ab")
+		 .ADDXML("HaloTest")
+		.set("houseName_like", "6")
+		.set("aa_hql", "6"+"%")
+		.addOrder("houseName_desc")
+		);		 System.out.println(GsonUtils.format(GsonUtils.getGsonIn().toJson(haloTests)));
+		//使用HaloTest.xml下的默认view中sql进行查询
+		/**aa_hql使用hqls/hql/id="aa"的数据进行拼接,不够这个不能使用直接使用sql,要使用山寨hql---->只是基于命名规范,将大写字母比如A转为_a,而你要记住的就是要将sql变成山寨hql
+		*/
+```
