@@ -174,8 +174,9 @@ updateWithNotNullByHql(new BaseUser().setRole(1),new haloMap().set("userName_lik
 
 ##面向sql动态视图的构思及其实现
  &emsp;&emsp;简单的说他的理念是:
- - **你可以再该sql视图基础上,再继续进行,全自动多条件动态查询.**
+ - **你可以再该sql视图基础上,再继续进行,全自动多条件动态查询.**<br/>
 &emsp;&emsp;并且:
+
 
 > 支持传入占位符参数.
 > 支持视图内动态拼接.使用freemarker轻松实现该功能.
@@ -192,6 +193,7 @@ updateWithNotNullByHql(new BaseUser().setRole(1),new haloMap().set("userName_lik
         where crd.house_id='${houseId}' and state=:state
  
 ```
+
  &emsp;&emsp;同时提供了封装到Map对象的方法,不过这个Map叫HaloViewMap,提供了getInteger等方法,方便将结果类型转换成你想要的.
  
 
